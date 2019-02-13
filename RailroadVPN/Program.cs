@@ -20,13 +20,21 @@ namespace RailRoadVPN
             Application.SetCompatibleTextRenderingDefault(false);
             Form form = null;
 
+            string user_uuid = null;
             logger.LogMessageToFile("get user_uuid variable from properties");
-
-            var user_uuid = Properties.Settings.Default["user_uuid"];
+            try
+            {
+                user_uuid = (string) Properties.Settings.Default["user_uuid"];
+            } catch (System.Configuration.ConfigurationException e)
+            {
+                logger.LogMessageToFile("Configuration Exception");
+                logger.LogMessageToFile(e.BareMessage);
+                return;
+            }
 
             logger.LogMessageToFile("user_uuid: " + user_uuid);
 
-            if (user_uuid != null && (string) user_uuid != "")
+            if (user_uuid != null && user_uuid != "")
             {
                 logger.LogMessageToFile("Loading MainForm");
                 form = new MainForm();
