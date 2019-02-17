@@ -22,7 +22,7 @@ namespace RailRoadVPN
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void InputPinForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -31,7 +31,8 @@ namespace RailRoadVPN
             }
         }
 
-        ServiceAPI serviceAPI = new ServiceAPI();
+        private ServiceAPI serviceAPI = new ServiceAPI();
+
         public InputPinForm()
         {
             InitializeComponent();
@@ -94,7 +95,7 @@ namespace RailRoadVPN
                 {
                     MainForm mf = new MainForm();
                     mf.Show();
-                    this.Hide();
+                    this.Close();
                 } else
                 {
 
@@ -139,5 +140,42 @@ namespace RailRoadVPN
         {
             this.WindowState = FormWindowState.Minimized;
         }
+
+        private void pin_1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                this.pin_1.ResetText();
+                this.ActiveControl = pin_1;
+            }
+        }
+
+        private void pin_2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                this.pin_2.ResetText();
+                this.ActiveControl = pin_1;
+            }
+        }
+
+        private void pin_3_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                this.pin_3.ResetText();
+                this.ActiveControl = pin_2;
+            }
+        }
+
+        private void pin_4_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                this.pin_4.ResetText();
+                this.ActiveControl = pin_3;
+            }
+        }
+
     }
 }

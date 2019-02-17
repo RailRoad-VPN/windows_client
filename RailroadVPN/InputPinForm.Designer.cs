@@ -34,12 +34,12 @@
             this.pin_3 = new System.Windows.Forms.TextBox();
             this.pin_4 = new System.Windows.Forms.TextBox();
             this.enter_pin_label = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.menu_btn = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.menu_btn)).BeginInit();
+            this.closeBtn = new System.Windows.Forms.PictureBox();
+            this.minimizeBtn = new System.Windows.Forms.PictureBox();
+            this.menuBtn = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
             this.SuspendLayout();
             // 
             // pin_1
@@ -56,6 +56,7 @@
             this.pin_1.Size = new System.Drawing.Size(50, 49);
             this.pin_1.TabIndex = 2;
             this.pin_1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_1_KeyDown);
             this.pin_1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_1_KeyPress);
             // 
             // pin_2
@@ -69,6 +70,7 @@
             this.pin_2.Size = new System.Drawing.Size(50, 49);
             this.pin_2.TabIndex = 3;
             this.pin_2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_2_KeyDown);
             this.pin_2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_2_KeyPress);
             // 
             // pin_3
@@ -82,6 +84,7 @@
             this.pin_3.Size = new System.Drawing.Size(50, 49);
             this.pin_3.TabIndex = 4;
             this.pin_3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_3_KeyDown);
             this.pin_3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_3_KeyPress);
             // 
             // pin_4
@@ -95,6 +98,7 @@
             this.pin_4.Size = new System.Drawing.Size(50, 49);
             this.pin_4.TabIndex = 5;
             this.pin_4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_4_KeyDown);
             this.pin_4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_4_KeyPress);
             // 
             // enter_pin_label
@@ -107,42 +111,42 @@
             this.enter_pin_label.TabIndex = 6;
             this.enter_pin_label.Text = "Enter pincode";
             // 
-            // pictureBox1
+            // closeBtn
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.BackgroundImage = global::RailRoadVPN.Properties.Resources.close;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(367, 4);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.closeBtn.BackColor = System.Drawing.Color.Transparent;
+            this.closeBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("closeBtn.BackgroundImage")));
+            this.closeBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.closeBtn.Location = new System.Drawing.Point(367, 4);
+            this.closeBtn.Name = "closeBtn";
+            this.closeBtn.Size = new System.Drawing.Size(20, 20);
+            this.closeBtn.TabIndex = 7;
+            this.closeBtn.TabStop = false;
+            this.closeBtn.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // pictureBox2
+            // minimizeBtn
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.BackgroundImage = global::RailRoadVPN.Properties.Resources.minimize;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Location = new System.Drawing.Point(325, 2);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(0, 100, 0, 20);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox2.TabIndex = 8;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.minimizeBtn.BackColor = System.Drawing.Color.Transparent;
+            this.minimizeBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("minimizeBtn.BackgroundImage")));
+            this.minimizeBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.minimizeBtn.Location = new System.Drawing.Point(325, 2);
+            this.minimizeBtn.Margin = new System.Windows.Forms.Padding(0, 100, 0, 20);
+            this.minimizeBtn.Name = "minimizeBtn";
+            this.minimizeBtn.Size = new System.Drawing.Size(40, 40);
+            this.minimizeBtn.TabIndex = 8;
+            this.minimizeBtn.TabStop = false;
+            this.minimizeBtn.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
-            // menu_btn
+            // menuBtn
             // 
-            this.menu_btn.BackColor = System.Drawing.Color.Transparent;
-            this.menu_btn.BackgroundImage = global::RailRoadVPN.Properties.Resources.menu;
-            this.menu_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.menu_btn.Location = new System.Drawing.Point(0, 1);
-            this.menu_btn.Margin = new System.Windows.Forms.Padding(0, 100, 0, 20);
-            this.menu_btn.Name = "menu_btn";
-            this.menu_btn.Size = new System.Drawing.Size(40, 40);
-            this.menu_btn.TabIndex = 9;
-            this.menu_btn.TabStop = false;
+            this.menuBtn.BackColor = System.Drawing.Color.Transparent;
+            this.menuBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("menuBtn.BackgroundImage")));
+            this.menuBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.menuBtn.Location = new System.Drawing.Point(0, 1);
+            this.menuBtn.Margin = new System.Windows.Forms.Padding(0, 100, 0, 20);
+            this.menuBtn.Name = "menuBtn";
+            this.menuBtn.Size = new System.Drawing.Size(40, 40);
+            this.menuBtn.TabIndex = 9;
+            this.menuBtn.TabStop = false;
             // 
             // InputPinForm
             // 
@@ -151,9 +155,9 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
-            this.Controls.Add(this.menu_btn);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.menuBtn);
+            this.Controls.Add(this.minimizeBtn);
+            this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.enter_pin_label);
             this.Controls.Add(this.pin_4);
             this.Controls.Add(this.pin_3);
@@ -162,12 +166,13 @@
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InputPinForm";
             this.Text = "RRoadVPN - Enter pin";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.menu_btn)).EndInit();
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.InputPinForm_MouseDown);
+            ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,9 +184,9 @@
         private System.Windows.Forms.TextBox pin_3;
         private System.Windows.Forms.TextBox pin_4;
         private System.Windows.Forms.Label enter_pin_label;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox menu_btn;
+        private System.Windows.Forms.PictureBox closeBtn;
+        private System.Windows.Forms.PictureBox minimizeBtn;
+        private System.Windows.Forms.PictureBox menuBtn;
     }
 }
 

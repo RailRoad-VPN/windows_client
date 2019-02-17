@@ -17,18 +17,19 @@ namespace RailRoadVPN
         {
         }
 
-        public void LogMessageToFile(string msg)
+        public void log(string msg)
         {
-            System.IO.StreamWriter sw = System.IO.File.AppendText(System.Reflection.Assembly.GetEntryAssembly().Location + "_" + DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_rroadvpn.log");
+            System.IO.StreamWriter sw = null;
             try
-            {
-                string logLine = System.String.Format(
-                    "{0:G}: {1}.", System.DateTime.Now, msg);
+           {
+                sw = System.IO.File.AppendText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\RailRoadVPN\\" + DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.app_logfile_name);
+                string logLine = System.String.Format("{0:G}: {1}.", System.DateTime.Now, msg);
                 sw.WriteLine(logLine);
-            }
-            finally
-            {
                 sw.Close();
+            }
+            catch (Exception ex)
+            {
+                
             }
         }
     }

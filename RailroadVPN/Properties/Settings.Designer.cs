@@ -70,5 +70,41 @@ namespace RailRoadVPN.Properties {
                 this["x_device_token"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("openvpn_wip.log")]
+        public string openvpn_logfile_name {
+            get {
+                return ((string)(this["openvpn_logfile_name"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("rroadvpn.log")]
+        public string app_logfile_name {
+            get {
+                return ((string)(this["app_logfile_name"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string openvpn_management_host {
+            get {
+                return ((string)(this["openvpn_management_host"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7505")]
+        public int openvpn_management_port {
+            get {
+                return ((int)(this["openvpn_management_port"]));
+            }
+        }
     }
 }

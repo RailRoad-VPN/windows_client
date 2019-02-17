@@ -38,4 +38,12 @@ namespace RailRoadVPN
 
         }
     }
+
+    public class OpenVPNNotConnectedException : RailroadException
+    {
+        public OpenVPNNotConnectedException(string message) : base(message)
+        {
+
+        }
+    }
 }

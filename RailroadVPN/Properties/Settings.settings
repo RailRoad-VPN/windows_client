@@ -14,5 +14,17 @@
     <Setting Name="x_device_token" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="openvpn_logfile_name" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">openvpn_wip.log</Value>
+    </Setting>
+    <Setting Name="app_logfile_name" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">rroadvpn.log</Value>
+    </Setting>
+    <Setting Name="openvpn_management_host" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="openvpn_management_port" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">7505</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
