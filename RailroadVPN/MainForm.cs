@@ -25,8 +25,9 @@ namespace RailRoadVPN
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
 
+        private Logger logger = Logger.GetInstance();
+
         private OpenVPNService openVPNService;
-        private OpenVPNManager openVPNManager;
         private ServiceAPI serviceAPI;
 
 
@@ -109,23 +110,8 @@ namespace RailRoadVPN
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var zipBytes = Properties.Resources.rroad_openvpn;
-
-            string zipOut = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\RailRoadVPN";
-
-            Stream zipStream = new MemoryStream(zipBytes);
-            ZipStorer zip = ZipStorer.Open(zipStream, FileAccess.Read);
-
-            // Read the central directory collection
-            List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
-
-            // Look for the desired file
-            foreach (ZipStorer.ZipFileEntry entry in dir)
-            {
-                string entryOut = zipOut + "//" + entry.FilenameInZip;
-                zip.ExtractFile(entry, entryOut);
-            }
-            zip.Close();
+            string checksum = Utils.CreateMd5ForFolder(Utils.getLocalAppDir() + "//" + Properties.Settings.Default.local_app_openvpn_binaries_dir);
+            this.logger.log("checksum: " + checksum);
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -134,9 +120,7 @@ namespace RailRoadVPN
             string userUuid = Properties.Settings.Default.user_uuid;
 
             string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: Guid.Parse(userUuid), serverUuid: Guid.Parse(randomServerUuid));
-            //string[] configArr = configStr.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-            //Console.WriteLine(configStr);
-            string configPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\RailRoadVPN\\rroad_openvpn\\openvpn_rroad_config.ovpn";
+            string configPath = Utils.getLocalAppDir() + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn";
             System.IO.File.WriteAllText(configPath, configStr);
         }
     }

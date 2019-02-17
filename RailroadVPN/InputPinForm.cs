@@ -31,6 +31,8 @@ namespace RailRoadVPN
             }
         }
 
+        private Logger logger = Logger.GetInstance();
+
         private ServiceAPI serviceAPI = new ServiceAPI();
 
         public InputPinForm()
@@ -38,12 +40,6 @@ namespace RailRoadVPN
             InitializeComponent();
 
             this.ActiveControl = pin_1;
-        }
-
-        private void GetVPNConfig_Cick(object sender, EventArgs e)
-        {
-            var user_uuid = Properties.Settings.Default["user_uuid"];
-            Console.WriteLine(user_uuid);
         }
 
         private void pin_1_KeyPress(object sender, KeyPressEventArgs e)
@@ -89,16 +85,20 @@ namespace RailRoadVPN
             } else
             {
                 var pincode = pin_1.Text + pin_2.Text + pin_3.Text + e.KeyChar;
-                Console.WriteLine("entered pincode is: " + pincode);
+                this.logger.log("entered pincode is: " + pincode);
+                this.logger.log("try to register new user by entered pincode");
                 var success = this.registerNewUser(pincode);
                 if (success)
                 {
+                    this.logger.log("success. create Main Form");
                     MainForm mf = new MainForm();
+                    this.logger.log("show Main Form");
                     mf.Show();
+                    this.logger.log("close InputPin Form");
                     this.Close();
                 } else
                 {
-
+                    this.logger.log("failed. something goes wrong");
                 }
             }
             
@@ -106,16 +106,23 @@ namespace RailRoadVPN
 
         private bool registerNewUser(string pincode)
         {
+            this.logger.log("registerNewUser, pincode=" + pincode);
+
             User user = null;
             try {
+                this.logger.log("call get user by pincode");
                 user = this.serviceAPI.getUserByPincode(pincode);
+                this.logger.log("got user with email: " + user);
             } catch (RailroadException e) {
+                this.logger.log("RailroadException: " + e.Message);
                 MessageBox.Show(e.Message, "Pincode problem", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
+            this.logger.log("parse user uuid to Guid type");
             Guid UserUuid = Guid.Parse(user.uuid);
 
+            this.logger.log("generate device id = guid without -");
             string DeviceId = Guid.NewGuid().ToString().Replace("-", "");
             string VirtualIp = null;
             
@@ -123,10 +130,19 @@ namespace RailRoadVPN
             string DeviceIp = null;
 
             // TODO user api to get geo location of device
+            this.logger.log("get culture info to set location field");
             CultureInfo ci = CultureInfo.InstalledUICulture;
             string Location = ci.DisplayName; 
             bool IsActive = false;
-            this.serviceAPI.createUserDevice(UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive);
+
+            try
+            {
+                this.logger.log("call create user device");
+                this.serviceAPI.createUserDevice(UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive);
+            } catch (Exception e)
+            {
+                this.logger.log("Exception when create user device: " + e.Message);
+            }
 
             return true;
         }

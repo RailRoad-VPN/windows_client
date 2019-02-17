@@ -26,5 +26,8 @@
     <Setting Name="openvpn_management_port" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">7505</Value>
     </Setting>
+    <Setting Name="local_app_openvpn_binaries_dir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">rroad_openvpn</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

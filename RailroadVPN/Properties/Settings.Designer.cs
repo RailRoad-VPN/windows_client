@@ -106,5 +106,14 @@ namespace RailRoadVPN.Properties {
                 return ((int)(this["openvpn_management_port"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("rroad_openvpn")]
+        public string local_app_openvpn_binaries_dir {
+            get {
+                return ((string)(this["local_app_openvpn_binaries_dir"]));
+            }
+        }
     }
 }

@@ -151,6 +151,7 @@
     </Compile>
     <Compile Include="User.cs" />
     <Compile Include="UserDevice.cs" />
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="InputPinForm.resx">
       <DependentUpon>InputPinForm.cs</DependentUpon>
     </EmbeddedResource>
