@@ -38,9 +38,31 @@ namespace RailRoadVPN
             return BitConverter.ToString(md5.Hash).Replace("-", "").ToLower();
         }
 
-        public static string getLocalAppDir()
+        public static string getBinariesDirPath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\RailRoadVPN";
+            return Path.Combine(getLocalAppDirPath(), Properties.Settings.Default.local_app_openvpn_binaries_dir);
+        }
+
+        public static string getOpenVPNExePath()
+        {
+            return Path.Combine(getBinariesDirPath(), Properties.Settings.Default.local_app_openvpn_exe_path);
+        }
+
+        public static string getTapWindowsExePath()
+        {
+            return Path.Combine(getBinariesDirPath(), Properties.Settings.Default.local_app_openvpn_tap_exe_path);
+        }
+
+        public static string getServersConfigDirPath()
+        {
+            return Path.Combine(getLocalAppDirPath(), Properties.Settings.Default.local_app_openvpn_servers_config_dir);
+        }
+
+        public static string localDirAppName = "\\RailRoadVPN";
+
+        public static string getLocalAppDirPath()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + localDirAppName;
         }
     }
 }

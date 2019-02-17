@@ -22,7 +22,7 @@ namespace RailRoadVPN
             System.IO.StreamWriter sw = null;
             try
            {
-                sw = System.IO.File.AppendText(Utils.getLocalAppDir() + "//" + DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.app_logfile_name);
+                sw = System.IO.File.AppendText(Utils.getLocalAppDirPath() + "//" + DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.app_logfile_name);
                 string logLine = System.String.Format("{0:G}: {1}.", System.DateTime.Now, msg);
                 sw.WriteLine(logLine);
                 sw.Close();

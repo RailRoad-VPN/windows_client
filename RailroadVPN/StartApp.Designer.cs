@@ -1,6 +1,6 @@
 ﻿namespace RailRoadVPN
 {
-    partial class StartApp
+    partial class StartAppForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartApp));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartAppForm));
             this.closeBtn = new System.Windows.Forms.PictureBox();
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -36,6 +36,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.initAppWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // closeBtn
@@ -80,8 +81,13 @@
             this.loadingBar.Name = "loadingBar";
             this.loadingBar.Size = new System.Drawing.Size(391, 10);
             this.loadingBar.TabIndex = 10;
+            //
+            // initAppWorker
+            //
+            this.initAppWorker.WorkerReportsProgress = true;
+            this.initAppWorker.WorkerSupportsCancellation = true;
             // 
-            // StartApp
+            // StartAppForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -97,12 +103,11 @@
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "StartApp";
+            this.Name = "StartAppForm";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ic";
             this.Load += new System.EventHandler(this.StartApp_Load);
-            //this.Shown += new System.EventHandler(this.StartApp_Shown);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.StartApp_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();

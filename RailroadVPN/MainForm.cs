@@ -110,7 +110,7 @@ namespace RailRoadVPN
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string checksum = Utils.CreateMd5ForFolder(Utils.getLocalAppDir() + "//" + Properties.Settings.Default.local_app_openvpn_binaries_dir);
+            string checksum = Utils.CreateMd5ForFolder(Utils.getLocalAppDirPath() + "//" + Properties.Settings.Default.local_app_openvpn_binaries_dir);
             this.logger.log("checksum: " + checksum);
         }
 
@@ -120,7 +120,7 @@ namespace RailRoadVPN
             string userUuid = Properties.Settings.Default.user_uuid;
 
             string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: Guid.Parse(userUuid), serverUuid: Guid.Parse(randomServerUuid));
-            string configPath = Utils.getLocalAppDir() + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn";
+            string configPath = Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn";
             System.IO.File.WriteAllText(configPath, configStr);
         }
     }

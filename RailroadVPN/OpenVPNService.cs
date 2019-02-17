@@ -45,7 +45,7 @@ namespace RailRoadVPN
         {
             this.logger.log("installTapDriver");
 
-            var localAppDir = Utils.getLocalAppDir();
+            var localAppDir = Utils.getLocalAppDirPath();
             string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\tap -windows.exe  /S /D=c:\\TapWindows";
 
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -65,8 +65,8 @@ namespace RailRoadVPN
         {
             this.logger.log("startOpenVPN");
 
-            var localAppDir = Utils.getLocalAppDir();
-            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn >> " + Utils.getLocalAppDir() + "\\" + Properties.Settings.Default.openvpn_logfile_name;
+            var localAppDir = Utils.getLocalAppDirPath();
+            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn >> " + Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.openvpn_logfile_name;
             //string strCmdText = "/K " + localAppDir + "\\rroad_openvpn\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\rroad_openvpn\\openvpn_rroad_config.ovpn";
 
             ProcessStartInfo startInfo = new ProcessStartInfo

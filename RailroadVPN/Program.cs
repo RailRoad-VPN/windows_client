@@ -18,7 +18,7 @@ namespace RailRoadVPN
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            StartApp saf = new StartApp();
+            StartAppForm saf = new StartAppForm();
             Application.Run(saf);
         }
     }

@@ -5,12 +5,6 @@
     <Setting Name="user_uuid" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="vpn_configuration" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="is_ok" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="x_device_token" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -28,6 +22,18 @@
     </Setting>
     <Setting Name="local_app_openvpn_binaries_dir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">rroad_openvpn</Value>
+    </Setting>
+    <Setting Name="local_app_openvpn_servers_config_dir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">servers</Value>
+    </Setting>
+    <Setting Name="local_app_openvpn_exe_path" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">openvpn\\rroad_openvpn.exe</Value>
+    </Setting>
+    <Setting Name="local_app_openvpn_tap_exe_path" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\tap-windows.exe</Value>
+    </Setting>
+    <Setting Name="local_app_openvpn_binaries_dir_checksum" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">a36ba82d98d7e7ef5315b37ae53b7528</Value>
     </Setting>
   </Settings>
 </SettingsFile>

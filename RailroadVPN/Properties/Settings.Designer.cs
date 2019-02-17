@@ -38,30 +38,6 @@ namespace RailRoadVPN.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string vpn_configuration {
-            get {
-                return ((string)(this["vpn_configuration"]));
-            }
-            set {
-                this["vpn_configuration"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool is_ok {
-            get {
-                return ((bool)(this["is_ok"]));
-            }
-            set {
-                this["is_ok"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string x_device_token {
             get {
                 return ((string)(this["x_device_token"]));
@@ -113,6 +89,42 @@ namespace RailRoadVPN.Properties {
         public string local_app_openvpn_binaries_dir {
             get {
                 return ((string)(this["local_app_openvpn_binaries_dir"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("servers")]
+        public string local_app_openvpn_servers_config_dir {
+            get {
+                return ((string)(this["local_app_openvpn_servers_config_dir"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("openvpn\\\\rroad_openvpn.exe")]
+        public string local_app_openvpn_exe_path {
+            get {
+                return ((string)(this["local_app_openvpn_exe_path"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\tap-windows.exe")]
+        public string local_app_openvpn_tap_exe_path {
+            get {
+                return ((string)(this["local_app_openvpn_tap_exe_path"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("a36ba82d98d7e7ef5315b37ae53b7528")]
+        public string local_app_openvpn_binaries_dir_checksum {
+            get {
+                return ((string)(this["local_app_openvpn_binaries_dir_checksum"]));
             }
         }
     }
