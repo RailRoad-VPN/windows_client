@@ -42,7 +42,7 @@ namespace RailRoadVPN
             this.serviceAPI = new ServiceAPI();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void menuLogoutBtn_Click(object sender, EventArgs e)
         {
             var user_uuid = Properties.Settings.Default["user_uuid"];
             Properties.Settings.Default.Reset();
@@ -58,7 +58,7 @@ namespace RailRoadVPN
             this.openVPNService.installTapDriver();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void startOpenVPNBtn_Click(object sender, EventArgs e)
         {
             new Thread(() =>
             {
@@ -122,6 +122,59 @@ namespace RailRoadVPN
             string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: Guid.Parse(userUuid), serverUuid: Guid.Parse(randomServerUuid));
             string configPath = Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn";
             System.IO.File.WriteAllText(configPath, configStr);
+        }
+
+        private int _menuStartPos = 0;      // start position of the panel
+        private int _menuEndPos = 150;      // end position of the panel
+        private int _stepSizeAnimation = 10;      // pixels to move
+
+        private void menuBtn_Click(object sender, EventArgs e)
+        {
+            menuTimer.Enabled = true;
+        }
+
+        bool hidden = true;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            // if just starting, move to start location and make visible
+            if (!menuNavPanel.Visible)
+            {
+                menuNavPanel.Width = _menuStartPos;
+                menuNavPanel.Visible = true;
+            }
+            
+            if (hidden) { 
+                // show menu
+
+                // incrementally move
+                menuNavPanel.Width += _stepSizeAnimation;
+                this.menuBtn.Left += _stepSizeAnimation;
+                // make sure we didn't over shoot
+                if (menuNavPanel.Width > _menuEndPos) menuNavPanel.Width = _menuEndPos;
+
+                // have we arrived?
+                if (menuNavPanel.Width == _menuEndPos)
+                {
+                    hidden = false;
+                    menuTimer.Enabled = false;
+                }
+            } else
+            {
+                // hide menu
+
+                // incrementally move
+                menuNavPanel.Width -= _stepSizeAnimation;
+                this.menuBtn.Left -= _stepSizeAnimation;
+                // make sure we didn't over shoot
+                if (menuNavPanel.Width < _menuStartPos) menuNavPanel.Width = _menuStartPos;
+
+                // have we arrived?
+                if (menuNavPanel.Width == _menuStartPos)
+                {
+                    hidden = true;
+                    menuTimer.Enabled = false;
+                }
+            }
         }
     }
 }

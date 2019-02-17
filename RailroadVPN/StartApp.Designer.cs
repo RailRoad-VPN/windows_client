@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartAppForm));
             this.closeBtn = new System.Windows.Forms.PictureBox();
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.logoImg = new System.Windows.Forms.PictureBox();
             this.loadingBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logoImg)).BeginInit();
             this.initAppWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
@@ -64,15 +64,15 @@
             this.minimizeBtn.TabStop = false;
             this.minimizeBtn.Click += new System.EventHandler(this.minimizeBtn_Click);
             // 
-            // pictureBox1
+            // logoImg
             // 
-            this.pictureBox1.BackgroundImage = global::RailRoadVPN.Properties.Resources.logo;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(43, 254);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(322, 71);
-            this.pictureBox1.TabIndex = 9;
-            this.pictureBox1.TabStop = false;
+            this.logoImg.BackgroundImage = global::RailRoadVPN.Properties.Resources.logo;
+            this.logoImg.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.logoImg.Location = new System.Drawing.Point(43, 254);
+            this.logoImg.Name = "logoImg";
+            this.logoImg.Size = new System.Drawing.Size(322, 71);
+            this.logoImg.TabIndex = 9;
+            this.logoImg.TabStop = false;
             // 
             // loadingBar
             // 
@@ -96,22 +96,22 @@
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
             this.Controls.Add(this.loadingBar);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.logoImg);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "StartAppForm";
+            this.Name = "RailroadVPN";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ic";
+            this.Text = "RailroadVPN";
             this.Load += new System.EventHandler(this.StartApp_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.StartApp_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logoImg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -120,8 +120,7 @@
 
         private System.Windows.Forms.PictureBox closeBtn;
         private System.Windows.Forms.PictureBox minimizeBtn;
-        private System.Windows.Forms.PictureBox menuBtn;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox logoImg;
         private System.Windows.Forms.ProgressBar loadingBar;
     }
 }
