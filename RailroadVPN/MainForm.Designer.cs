@@ -170,12 +170,12 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
-            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.menuNavPanel);
             this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.semaphorePic);
+            this.Controls.Add(this.statusLabel);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

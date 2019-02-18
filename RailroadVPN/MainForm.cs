@@ -30,6 +30,7 @@ namespace RailRoadVPN
         private OpenVPNService openVPNService;
         private ServiceAPI serviceAPI;
 
+        private int _menuBtnStartPos;
 
         public MainForm()
         {
@@ -40,6 +41,7 @@ namespace RailRoadVPN
             this.openVPNService = new OpenVPNService(mgmtHost: mgmtHost, mgmtPort: mgmtPort);
 
             this.serviceAPI = new ServiceAPI();
+            this._menuBtnStartPos = this.menuBtn.Left;
         }
 
         private void menuLogoutBtn_Click(object sender, EventArgs e)
@@ -85,7 +87,7 @@ namespace RailRoadVPN
         private void menuTimer_Tick(object sender, EventArgs e)
         {
             // if just starting, move to start location and make visible
-            if (!menuNavPanel.Visible)
+            if (!menuNavPanel.Visible && hidden)
             {
                 menuNavPanel.Width = _menuStartPos;
                 menuNavPanel.Visible = true;
@@ -111,12 +113,14 @@ namespace RailRoadVPN
             else
             {
                 // hide menu
+                menuNavPanel.Visible = false;
 
                 // incrementally move
-                menuNavPanel.Width -= _stepSizeAnimation;
-                this.menuBtn.Left -= _stepSizeAnimation;
+                menuNavPanel.Width -= (_stepSizeAnimation);
+                this.menuBtn.Left -= (_stepSizeAnimation);
                 // make sure we didn't over shoot
                 if (menuNavPanel.Width < _menuStartPos) menuNavPanel.Width = _menuStartPos;
+                if (menuBtn.Left < _menuBtnStartPos) menuBtn.Left = _menuBtnStartPos;
 
                 // have we arrived?
                 if (menuNavPanel.Width == _menuStartPos)
