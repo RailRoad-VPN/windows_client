@@ -28,7 +28,6 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -65,24 +64,9 @@
     <ApplicationManifest>app1.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>90618CE72052324669FDB0D0D37790A8BBA0E6DA</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>RailRoadVPN_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetZip, Version=1.13.2.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetZip.1.13.2\lib\net40\DotNetZip.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -197,7 +181,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="RailRoadVPN_TemporaryKey.pfx" />
     <None Include="Resources\rroad_openvpn.zip" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +201,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_fck_icon.ico" />
+    <None Include="Resources\yellow_right.png" />
+    <None Include="Resources\yellow_left.png" />
+    <None Include="Resources\yellow.png" />
+    <None Include="Resources\red.png" />
+    <None Include="Resources\no_lights.png" />
+    <None Include="Resources\green.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

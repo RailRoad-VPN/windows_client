@@ -53,37 +53,6 @@ namespace RailRoadVPN
             user_uuid = Properties.Settings.Default["user_uuid"];
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            this.openVPNService.installTapDriver();
-        }
-
-        private void startOpenVPNBtn_Click(object sender, EventArgs e)
-        {
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                /* run your code here */
-                this.openVPNService.startOpenVPN();
-                this.openVPNService.connectManager();
-            }).Start();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var a1 = this.openVPNService.GetStatus();
-                Console.WriteLine(a1);
-
-                var a2 = this.openVPNService.GetPid();
-                Console.WriteLine(a2);
-            } catch (OpenVPNNotConnectedException ex)
-            {
-
-            }
-        }
-
         private void MainForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -103,27 +72,6 @@ namespace RailRoadVPN
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            this.openVPNService.stopOpenVPN();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            string checksum = Utils.CreateMd5ForFolder(Utils.getLocalAppDirPath() + "//" + Properties.Settings.Default.local_app_openvpn_binaries_dir);
-            this.logger.log("checksum: " + checksum);
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            string randomServerUuid = this.serviceAPI.getUserRandomServer(Guid.Parse(Properties.Settings.Default.user_uuid));
-            string userUuid = Properties.Settings.Default.user_uuid;
-
-            string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: Guid.Parse(userUuid), serverUuid: Guid.Parse(randomServerUuid));
-            string configPath = Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn";
-            System.IO.File.WriteAllText(configPath, configStr);
-        }
-
         private int _menuStartPos = 0;      // start position of the panel
         private int _menuEndPos = 150;      // end position of the panel
         private int _stepSizeAnimation = 10;      // pixels to move
@@ -134,7 +82,7 @@ namespace RailRoadVPN
         }
 
         bool hidden = true;
-        private void timer1_Tick(object sender, EventArgs e)
+        private void menuTimer_Tick(object sender, EventArgs e)
         {
             // if just starting, move to start location and make visible
             if (!menuNavPanel.Visible)
@@ -142,8 +90,9 @@ namespace RailRoadVPN
                 menuNavPanel.Width = _menuStartPos;
                 menuNavPanel.Visible = true;
             }
-            
-            if (hidden) { 
+
+            if (hidden)
+            {
                 // show menu
 
                 // incrementally move
@@ -158,7 +107,8 @@ namespace RailRoadVPN
                     hidden = false;
                     menuTimer.Enabled = false;
                 }
-            } else
+            }
+            else
             {
                 // hide menu
 
@@ -174,6 +124,225 @@ namespace RailRoadVPN
                     hidden = true;
                     menuTimer.Enabled = false;
                 }
+            }
+        }
+
+        private string VPN_CONNECT_STATUS = "NOT_CONNECTED";
+        private Thread vpnConnectingThread;
+        private Thread vpnDisconnectingThread;
+
+        private void semaphorePic_Click(object sender, EventArgs e)
+        {
+            this.semaphoreTimer.Enabled = true;
+            this.statusTextTimer.Enabled = true;
+
+            if (VPN_CONNECT_STATUS == "NOT_CONNECTED")
+            {
+                VPN_CONNECT_STATUS = "CONNECTING";
+                setVPNStatusText("Connecting...");
+                this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
+                this.vpnConnectingThread = new Thread(() =>
+                   {
+                       Thread.CurrentThread.IsBackground = true;
+                       /* run your code here */
+                       setVPNStatusText("Get server...");
+                       this.logger.log("get random server");
+                       Guid userGuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+                       string randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
+
+                       setVPNStatusText("Get server configuration...");
+                       this.logger.log("get server config");
+                       string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
+                       string configPath = Utils.getBinariesDirPath() + "\\openvpn_rroad_config.ovpn";
+                       this.logger.log("server config path: " + configPath);
+
+                       setVPNStatusText("Save server configuration...");
+                       this.logger.log("persist config to file system");
+                       System.IO.File.WriteAllText(configPath, configStr);
+
+                       // TODO DEBUG!!! REMOVE THIS LINE!!!
+                       File.AppendAllText(configPath, "management 127.0.0.1 7505" + Environment.NewLine);
+
+                       setVPNStatusText("Check installing driver...");
+                       this.logger.log("try to install driver");
+                       this.openVPNService.installTapDriver();
+
+                       setVPNStatusText("Start VPN...");
+                       this.openVPNService.startOpenVPN();
+                       setVPNStatusText("Start VPN Manager...");
+                       this.openVPNService.connectManager();
+                   });
+                this.vpnConnectingThread.Start();
+            }
+            else if (VPN_CONNECT_STATUS == "CONNECTING")
+            {
+                VPN_CONNECT_STATUS = "DISCONNECTING";
+
+                setVPNStatusText("Disconnecting...");
+                if (this.vpnConnectingThread.IsAlive)
+                {
+                    this.vpnConnectingThread.Abort();
+                }
+                
+                this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
+                this.vpnDisconnectingThread = new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    /* run your code here */
+                    this.logger.log("stop openvpn");
+                    this.openVPNService.stopOpenVPN();
+                    setVPNStatusText("Disconnected");
+                    VPN_CONNECT_STATUS = "NOT_CONNECTED";
+                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                });
+                this.vpnDisconnectingThread.Start();
+            }
+            else if (VPN_CONNECT_STATUS == "CONNECTED")
+            {
+                VPN_CONNECT_STATUS = "DISCONNECTING";
+
+                setVPNStatusText("Disconnecting...");
+                this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
+
+                this.vpnDisconnectingThread = new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    /* run your code here */
+                    this.logger.log("stop openvpn");
+                    this.openVPNService.stopOpenVPN();
+                    setVPNStatusText("Disconnected");
+                    VPN_CONNECT_STATUS = "NOT_CONNECTED";
+                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                });
+                this.vpnDisconnectingThread.Start();
+            }
+        }
+
+        private bool isLeftYellow = true;
+        private void semaphoreTimer_Tick(object sender, EventArgs e)
+        {
+            if (VPN_CONNECT_STATUS == "CONNECTING" || VPN_CONNECT_STATUS == "DISCONNECTING")
+            {
+                if (isLeftYellow)
+                {
+                    this.semaphorePic.BackgroundImage = Properties.Resources.yellow_right;
+                    isLeftYellow = false;
+                } else
+                {
+                    this.semaphorePic.BackgroundImage = Properties.Resources.yellow_left;
+                    isLeftYellow = true;
+                }
+            }
+        }
+
+        private void statusTextTimer_Tick(object sender, EventArgs e)
+        {
+            string status = this.getOpenVPNStatus();
+            if (status == "CONNECTED")
+            {
+                this.semaphoreTimer.Enabled = false;
+                this.statusTextTimer.Enabled = false;
+                isLeftYellow = true;
+                this.semaphorePic.BackgroundImage = Properties.Resources.green;
+                setVPNStatusText("Connected");
+                VPN_CONNECT_STATUS = "CONNECTED";
+            }
+            else if (status == "EXITING")
+            {
+                // TODO think
+                this.semaphoreTimer.Enabled = false;
+                this.statusTextTimer.Enabled = false;
+                isLeftYellow = true;
+                this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                setVPNStatusText("Disconnected");
+            }
+        }
+
+        /*
+CONNECTING    -- OpenVPN's initial state.
+WAIT          -- (Client only) Waiting for initial response
+                 from server.
+AUTH          -- (Client only) Authenticating with server.
+GET_CONFIG    -- (Client only) Downloading configuration options
+                 from server.
+ASSIGN_IP     -- Assigning IP address to virtual network
+                 interface.
+ADD_ROUTES    -- Adding routes to system.
+CONNECTED     -- Initialization Sequence Completed.
+RECONNECTING  -- A restart has occurred.
+EXITING       -- A graceful exit is in progress.
+         */
+        private string getOpenVPNStatus() {
+            String stateRaw = this.openVPNService.GetState();
+            if (stateRaw == null)
+            {
+                return "NOT_CONNECTED";
+            }
+            string[] stateArr = stateRaw.Split(new char[] { ',' });
+            string statusText = stateArr[1]; // CONNECTED
+            return statusText;
+        }
+
+        private string getOpenVPNVirtualIP()
+        {
+            String state = this.openVPNService.GetState();
+            if (state == null)
+            {
+                // TODO
+                return "";
+            }
+            string[] stateArr = state.Split(new char[] { ',' });
+            string virtIp = stateArr[3]; // virtualIP (10.10.0.10)
+            return virtIp;
+        }
+
+        // TODO
+        private string getTrafficInfo()
+        {
+            string statusRaw = this.openVPNService.GetStatus();
+            if (statusRaw == null)
+            {
+                // TODO
+                return "";
+            }
+
+            string[] statusArr = statusRaw.Split(
+                new[] { "\r\n", "\r", "\n" },
+                StringSplitOptions.None
+            );
+
+            string read_bytes = "";
+            string write_bytes = "";
+            foreach (string statusTxt in statusArr)
+            {
+                if (statusTxt.StartsWith("TCP/UDP read"))
+                {
+                    read_bytes = statusTxt.Split(new char[] { ',' })[1];
+                }
+                else if (statusTxt.StartsWith("TCP/UDP write"))
+                {
+                    write_bytes = statusTxt.Split(new char[] { ',' })[1];
+                }
+            }
+
+            return "";
+        }
+
+        delegate void SetTextCallback(string text);
+
+        private void setVPNStatusText(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.statusLabel.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(setVPNStatusText);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.statusLabel.Text = text;
             }
         }
     }

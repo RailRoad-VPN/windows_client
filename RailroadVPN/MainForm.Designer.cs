@@ -31,23 +31,22 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuLogoutBtn = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.closeBtn = new System.Windows.Forms.PictureBox();
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
             this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuProfileBtn = new System.Windows.Forms.Button();
             this.menuTimer = new System.Windows.Forms.Timer(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.semaphorePic = new System.Windows.Forms.PictureBox();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.semaphoreTimer = new System.Windows.Forms.Timer(this.components);
+            this.statusTextTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
             this.menuNavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).BeginInit();
             this.SuspendLayout();
             // 
             // menuLogoutBtn
@@ -59,46 +58,6 @@
             this.menuLogoutBtn.Text = "LogOut";
             this.menuLogoutBtn.UseVisualStyleBackColor = true;
             this.menuLogoutBtn.Click += new System.EventHandler(this.menuLogoutBtn_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(67, 214);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(145, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "install tap driver";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(67, 156);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(145, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "connect to VPN";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.startOpenVPNBtn_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(123, 282);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(145, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "disconnect VPN";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(67, 335);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(167, 23);
-            this.button5.TabIndex = 4;
-            this.button5.Text = "get adapter info";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // closeBtn
             // 
@@ -138,26 +97,6 @@
             this.menuBtn.TabStop = false;
             this.menuBtn.Click += new System.EventHandler(this.menuBtn_Click);
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(224, 129);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(163, 23);
-            this.button6.TabIndex = 10;
-            this.button6.Text = "unzip rroadn_vpn";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(224, 176);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(163, 23);
-            this.button7.TabIndex = 11;
-            this.button7.Text = "get random server";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.White;
@@ -168,6 +107,15 @@
             this.menuNavPanel.Name = "menuNavPanel";
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 536);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(126, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Need help?";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // menuProfileBtn
             // 
@@ -181,16 +129,38 @@
             // menuTimer
             // 
             this.menuTimer.Interval = 10;
-            this.menuTimer.Tick += new System.EventHandler(this.timer1_Tick);
+            this.menuTimer.Tick += new System.EventHandler(this.menuTimer_Tick);
             // 
-            // button1
+            // semaphorePic
             // 
-            this.button1.Location = new System.Drawing.Point(12, 536);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(126, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Need help?";
-            this.button1.UseVisualStyleBackColor = true;
+            this.semaphorePic.BackColor = System.Drawing.Color.Transparent;
+            this.semaphorePic.BackgroundImage = global::RailRoadVPN.Properties.Resources.red;
+            this.semaphorePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.semaphorePic.Location = new System.Drawing.Point(109, 163);
+            this.semaphorePic.Name = "semaphorePic";
+            this.semaphorePic.Size = new System.Drawing.Size(179, 117);
+            this.semaphorePic.TabIndex = 13;
+            this.semaphorePic.TabStop = false;
+            this.semaphorePic.Click += new System.EventHandler(this.semaphorePic_Click);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(141, 131);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(112, 14);
+            this.statusLabel.TabIndex = 14;
+            this.statusLabel.Text = "VPN Status here";
+            // 
+            // semaphoreTimer
+            // 
+            this.semaphoreTimer.Interval = 800;
+            this.semaphoreTimer.Tick += new System.EventHandler(this.semaphoreTimer_Tick);
+            // 
+            // statusTextTimer
+            // 
+            this.statusTextTimer.Interval = 500;
+            this.statusTextTimer.Tick += new System.EventHandler(this.statusTextTimer_Tick);
             // 
             // MainForm
             // 
@@ -200,16 +170,12 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.menuNavPanel);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.semaphorePic);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -222,25 +188,25 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.menuNavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button menuLogoutBtn;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.PictureBox closeBtn;
         private System.Windows.Forms.PictureBox minimizeBtn;
         private System.Windows.Forms.PictureBox menuBtn;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Panel menuNavPanel;
         private System.Windows.Forms.Timer menuTimer;
         private System.Windows.Forms.Button menuProfileBtn;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.PictureBox semaphorePic;
+        private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.Timer semaphoreTimer;
+        private System.Windows.Forms.Timer statusTextTimer;
     }
 }

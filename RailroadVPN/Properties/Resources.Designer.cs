@@ -73,6 +73,16 @@ namespace RailRoadVPN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap green {
+            get {
+                object obj = ResourceManager.GetObject("green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap input_pin_bg_cartoon {
             get {
                 object obj = ResourceManager.GetObject("input_pin_bg_cartoon", resourceCulture);
@@ -111,12 +121,62 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap no_lights {
+            get {
+                object obj = ResourceManager.GetObject("no_lights", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap red {
+            get {
+                object obj = ResourceManager.GetObject("red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] rroad_openvpn {
             get {
                 object obj = ResourceManager.GetObject("rroad_openvpn", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yellow {
+            get {
+                object obj = ResourceManager.GetObject("yellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yellow_left {
+            get {
+                object obj = ResourceManager.GetObject("yellow_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yellow_right {
+            get {
+                object obj = ResourceManager.GetObject("yellow_right", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

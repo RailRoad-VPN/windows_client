@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -91,6 +92,18 @@ namespace RailRoadVPN
 
         private Form prepareApplicationToStart(BackgroundWorker worker, DoWorkEventArgs e)
         {
+            logger.log("kill all processes rroad_openvpn.exe");
+            string strCmdText = "/K taskkill /F /IM rroad_openvpn.exe";
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = strCmdText,
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+            };
+            process.StartInfo = startInfo;
+            process.Start();
+
             string user_uuid = null;
             int reportProgress = 3;
             worker.ReportProgress(reportProgress);
@@ -120,6 +133,8 @@ namespace RailRoadVPN
             bool need_extract = false;
             reportProgress = 20;
             worker.ReportProgress(reportProgress);
+
+            Thread.Sleep(3000);
 
             logger.log("check binaries dir exist");
             if (Directory.Exists(binaries_path))

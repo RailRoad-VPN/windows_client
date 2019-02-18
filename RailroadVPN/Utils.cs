@@ -36,8 +36,13 @@ namespace RailRoadVPN
                 else
                     md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
             }
-
-            return BitConverter.ToString(md5.Hash).Replace("-", "").ToLower();
+            try {
+                byte[] hash = md5.Hash;
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            } catch (System.NullReferenceException e)
+            {
+                return "";
+            } 
         }
 
         public static string getBinariesDirPath()

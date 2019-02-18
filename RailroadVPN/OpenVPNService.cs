@@ -72,7 +72,8 @@ namespace RailRoadVPN
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = strCmdText
+                Arguments = strCmdText,
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
             };
             this.vpnProcess.StartInfo = startInfo;
             this.vpnProcess.Start();
