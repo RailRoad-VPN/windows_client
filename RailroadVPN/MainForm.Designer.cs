@@ -42,11 +42,17 @@
             this.statusLabel = new System.Windows.Forms.Label();
             this.semaphoreTimer = new System.Windows.Forms.Timer(this.components);
             this.statusTextTimer = new System.Windows.Forms.Timer(this.components);
+            this.helpArrowImg = new System.Windows.Forms.PictureBox();
+            this.helpText1Label = new System.Windows.Forms.Label();
+            this.helpTextRedLabel = new System.Windows.Forms.Label();
+            this.helpText2Label = new System.Windows.Forms.Label();
+            this.helpTextGreenLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
             this.menuNavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.helpArrowImg)).BeginInit();
             this.SuspendLayout();
             // 
             // menuLogoutBtn
@@ -146,9 +152,10 @@
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(141, 131);
+            this.statusLabel.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.Location = new System.Drawing.Point(119, 130);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(112, 14);
+            this.statusLabel.Size = new System.Drawing.Size(158, 18);
             this.statusLabel.TabIndex = 14;
             this.statusLabel.Text = "VPN Status here";
             // 
@@ -162,6 +169,62 @@
             this.statusTextTimer.Interval = 500;
             this.statusTextTimer.Tick += new System.EventHandler(this.statusTextTimer_Tick);
             // 
+            // helpArrowImg
+            // 
+            this.helpArrowImg.BackColor = System.Drawing.Color.Transparent;
+            this.helpArrowImg.BackgroundImage = global::RailRoadVPN.Properties.Resources.arrow_ye;
+            this.helpArrowImg.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.helpArrowImg.Location = new System.Drawing.Point(53, 271);
+            this.helpArrowImg.Name = "helpArrowImg";
+            this.helpArrowImg.Size = new System.Drawing.Size(108, 150);
+            this.helpArrowImg.TabIndex = 15;
+            this.helpArrowImg.TabStop = false;
+            // 
+            // helpText1Label
+            // 
+            this.helpText1Label.AutoSize = true;
+            this.helpText1Label.Font = new System.Drawing.Font("Courier New", 9F);
+            this.helpText1Label.Location = new System.Drawing.Point(78, 424);
+            this.helpText1Label.Name = "helpText1Label";
+            this.helpText1Label.Size = new System.Drawing.Size(42, 15);
+            this.helpText1Label.TabIndex = 16;
+            this.helpText1Label.Text = "Click";
+            // 
+            // helpTextRedLabel
+            // 
+            this.helpTextRedLabel.AutoSize = true;
+            this.helpTextRedLabel.BackColor = System.Drawing.Color.Red;
+            this.helpTextRedLabel.Font = new System.Drawing.Font("Courier New", 9F);
+            this.helpTextRedLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.helpTextRedLabel.Location = new System.Drawing.Point(126, 424);
+            this.helpTextRedLabel.Name = "helpTextRedLabel";
+            this.helpTextRedLabel.Size = new System.Drawing.Size(28, 15);
+            this.helpTextRedLabel.TabIndex = 17;
+            this.helpTextRedLabel.Text = "red";
+            // 
+            // helpText2Label
+            // 
+            this.helpText2Label.AutoSize = true;
+            this.helpText2Label.Font = new System.Drawing.Font("Courier New", 9F);
+            this.helpText2Label.Location = new System.Drawing.Point(159, 424);
+            this.helpText2Label.Name = "helpText2Label";
+            this.helpText2Label.Size = new System.Drawing.Size(175, 15);
+            this.helpText2Label.TabIndex = 18;
+            this.helpText2Label.Text = "semaphore to connect VPN";
+            // 
+            // helpTextGreenLabel
+            // 
+            this.helpTextGreenLabel.AutoSize = true;
+            this.helpTextGreenLabel.BackColor = System.Drawing.Color.DarkGreen;
+            this.helpTextGreenLabel.Font = new System.Drawing.Font("Courier New", 9F);
+            this.helpTextGreenLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.helpTextGreenLabel.Location = new System.Drawing.Point(126, 424);
+            this.helpTextGreenLabel.Name = "helpTextGreenLabel";
+            this.helpTextGreenLabel.Size = new System.Drawing.Size(42, 15);
+            this.helpTextGreenLabel.TabIndex = 19;
+            this.helpTextGreenLabel.Text = "green";
+            this.helpTextGreenLabel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -170,12 +233,17 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
+            this.Controls.Add(this.helpTextGreenLabel);
             this.Controls.Add(this.menuNavPanel);
             this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.semaphorePic);
             this.Controls.Add(this.statusLabel);
+            this.Controls.Add(this.helpArrowImg);
+            this.Controls.Add(this.helpText2Label);
+            this.Controls.Add(this.helpTextRedLabel);
+            this.Controls.Add(this.helpText1Label);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -189,6 +257,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.menuNavPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.helpArrowImg)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -208,5 +277,10 @@
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Timer semaphoreTimer;
         private System.Windows.Forms.Timer statusTextTimer;
+        private System.Windows.Forms.PictureBox helpArrowImg;
+        private System.Windows.Forms.Label helpText1Label;
+        private System.Windows.Forms.Label helpTextRedLabel;
+        private System.Windows.Forms.Label helpText2Label;
+        private System.Windows.Forms.Label helpTextGreenLabel;
     }
 }

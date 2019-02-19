@@ -81,8 +81,9 @@ namespace RailRoadVPN
             }
 
             Form resFo = (Form) e.Result;
-            resFo.Show();
             this.Hide();
+            resFo.Closed += (s, args) => this.Close();
+            resFo.Show();
         }
 
         private void initAppWorkder_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -92,17 +93,7 @@ namespace RailRoadVPN
 
         private Form prepareApplicationToStart(BackgroundWorker worker, DoWorkEventArgs e)
         {
-            logger.log("kill all processes rroad_openvpn.exe");
-            string strCmdText = "/K taskkill /F /IM rroad_openvpn.exe";
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = strCmdText,
-                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-            };
-            process.StartInfo = startInfo;
-            process.Start();
+            Utils.killAllOpenVPNProcesses();
 
             string user_uuid = null;
             int reportProgress = 3;
@@ -224,7 +215,8 @@ namespace RailRoadVPN
                 reportProgress = 85;
                 worker.ReportProgress(reportProgress);
                 logger.log("Loading MainForm");
-                form = new MainForm();
+                //form = new MainForm();
+                form = FormManager.Current.CreateForm<MainForm>();
                 Thread.Sleep(500);
                 reportProgress = 90;
                 worker.ReportProgress(reportProgress);
@@ -234,7 +226,8 @@ namespace RailRoadVPN
                 reportProgress = 85;
                 worker.ReportProgress(reportProgress);
                 logger.log("Loading InpuntPinForm");
-                form = new InputPinForm();
+                //form = new InputPinForm();
+                form = FormManager.Current.CreateForm<InputPinForm>();
                 Thread.Sleep(500);
                 reportProgress = 90;
                 worker.ReportProgress(reportProgress);

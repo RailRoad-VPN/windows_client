@@ -289,11 +289,19 @@ namespace RailRoadVPN
 
         private void SendGreeting()
         {
-            var bf = new byte[bufferSize];
-            int rb = socket.Receive(bf, 0, bf.Length, SocketFlags.None);
-            if (rb < 1)
+            this.logger.log("SendGreeting");
+
+            try
             {
-                throw new SocketException();
+                var bf = new byte[bufferSize];
+                int rb = socket.Receive(bf, 0, bf.Length, SocketFlags.None);
+                if (rb < 1)
+                {
+                    throw new SocketException();
+                }
+            } catch (System.Net.Sockets.SocketException e)
+            {
+                this.logger.log("SocketException");
             }
         }
         #endregion

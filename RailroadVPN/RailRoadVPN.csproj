@@ -118,9 +118,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Error.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
@@ -201,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_fck_icon.ico" />
+    <None Include="Resources\arrow_ye.png" />
     <None Include="Resources\yellow_right.png" />
     <None Include="Resources\yellow_left.png" />
     <None Include="Resources\yellow.png" />

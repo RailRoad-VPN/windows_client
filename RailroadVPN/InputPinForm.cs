@@ -91,11 +91,11 @@ namespace RailRoadVPN
                 if (success)
                 {
                     this.logger.log("success. create Main Form");
-                    MainForm mf = new MainForm();
-                    this.logger.log("show Main Form");
+                    MainForm mf = FormManager.Current.CreateForm<MainForm>();
+                    this.logger.log("close InputPinForm and show Main Form");
+                    this.Hide();
+                    mf.Closed += (s, args) => this.Close();
                     mf.Show();
-                    this.logger.log("close InputPin Form");
-                    this.Close();
                 } else
                 {
                     this.logger.log("failed. something goes wrong");
