@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -135,7 +136,7 @@ namespace RailRoadVPN
         private Thread vpnConnectingThread;
         private Thread vpnDisconnectingThread;
 
-        private int btnPressedWhileConnecting = 0;
+        private int btnPressedWhileConnecting = 1;
 
         private void semaphorePic_Click(object sender, EventArgs e)
         {
@@ -191,15 +192,24 @@ namespace RailRoadVPN
                 this.logger.log("VPN CONNECT STATUS is CONNECTING");
 
                 this.logger.log("check count of button pressed");
-                if (btnPressedWhileConnecting < 3)
+                if (btnPressedWhileConnecting < 2)
                 {
-                    this.logger.log("btn pressed lt 3 and eq=" + btnPressedWhileConnecting + ". do +1");
+                    this.logger.log("btn pressed lt 2 and eq=" + btnPressedWhileConnecting);
+                    
+                    if (btnPressedWhileConnecting == 1)
+                    {
+                        this.logger.log("first press while connecting. show dialog");
+                        Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.locale);
+                        MessageBox.Show(Properties.strings.disconnect_while_connect_message, Properties.strings.disconnect_while_connect_header, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    this.logger.log("+1 to btn pressed");
                     btnPressedWhileConnecting += 1;
                     return;
                 }
 
-                this.logger.log("reset btn pressed count to 0");
-                btnPressedWhileConnecting = 0;
+                this.logger.log("reset btn pressed count to 1");
+                btnPressedWhileConnecting = 1;
 
                 this.logger.log("set vpn connect status to DISCONNECTING");
                 this.VPN_CONNECT_STATUS = "DISCONNECTING";

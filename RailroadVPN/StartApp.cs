@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -117,6 +118,14 @@ namespace RailRoadVPN
             logger.log("user_uuid: " + user_uuid);
             reportProgress = 15;
             worker.ReportProgress(reportProgress);
+
+            logger.log("get user language");
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string locale = ci.ToString();
+            logger.log("user locale: " + locale);
+
+            logger.log("persist to settings");
+            Properties.Settings.Default.locale = locale;
 
             logger.log("get binaries path");
             string binaries_path = Utils.getBinariesDirPath();

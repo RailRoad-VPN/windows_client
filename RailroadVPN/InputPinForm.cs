@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -115,7 +116,8 @@ namespace RailRoadVPN
                 this.logger.log("got user with email: " + user);
             } catch (RailroadException e) {
                 this.logger.log("RailroadException: " + e.Message);
-                MessageBox.Show(e.Message, "Pincode problem", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.locale);
+                MessageBox.Show(Properties.strings.wrong_pin_error_message, Properties.strings.wrong_pin_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 

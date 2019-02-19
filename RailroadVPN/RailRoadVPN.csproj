@@ -148,6 +148,11 @@
     <Compile Include="StartApp.Designer.cs">
       <DependentUpon>StartApp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="User.cs" />
     <Compile Include="UserDevice.cs" />
     <Compile Include="Utils.cs" />
@@ -165,6 +170,11 @@
     <EmbeddedResource Include="StartApp.resx">
       <DependentUpon>StartApp.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\strings.ru.resx" />
     <None Include="app1.manifest">
       <SubType>Designer</SubType>
     </None>

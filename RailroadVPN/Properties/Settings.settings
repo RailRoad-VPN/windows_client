@@ -35,5 +35,8 @@
     <Setting Name="local_app_openvpn_binaries_dir_checksum" Type="System.String" Scope="Application">
       <Value Profile="(Default)">a36ba82d98d7e7ef5315b37ae53b7528</Value>
     </Setting>
+    <Setting Name="locale" Type="System.String" Scope="User">
+      <Value Profile="(Default)">en-US</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

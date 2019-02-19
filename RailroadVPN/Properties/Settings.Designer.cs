@@ -127,5 +127,17 @@ namespace RailRoadVPN.Properties {
                 return ((string)(this["local_app_openvpn_binaries_dir_checksum"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en-US")]
+        public string locale {
+            get {
+                return ((string)(this["locale"]));
+            }
+            set {
+                this["locale"] = value;
+            }
+        }
     }
 }
