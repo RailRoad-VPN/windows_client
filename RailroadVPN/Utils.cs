@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +12,71 @@ using System.Windows.Forms;
 
 namespace RailRoadVPN
 {
+    public sealed class PropertiesHelper
+    {
+        public Dictionary<string, VPNServer> vpnServersDict;
+
+        private static readonly Lazy<PropertiesHelper> lazy = new Lazy<PropertiesHelper>(() => new PropertiesHelper());
+
+        public static PropertiesHelper GetInstance()
+        { return lazy.Value; }
+
+        private PropertiesHelper()
+        {
+            this.vpnServersDict = new Dictionary<string, VPNServer>();
+
+            var serversJson = Properties.Settings.Default.servers_json;
+            List<VPNServer> vpnServersList = JsonConvert.DeserializeObject<List<VPNServer>>(serversJson);
+            if (vpnServersList == null)
+            {
+                return;
+            }
+
+            foreach (VPNServer vpnServer in vpnServersList)
+            {
+                if (!this.vpnServersDict.ContainsKey(vpnServer.Uuid.ToString()))
+                {
+                    this.vpnServersDict.Add(vpnServer.Uuid.ToString(), vpnServer);
+                }
+            }
+        }
+
+        public VPNServer getVPNServer(string uuid)
+        {
+            return this.vpnServersDict[uuid];
+        }
+
+        public List<VPNServer> getVPNServersList()
+        {
+            return this.vpnServersDict.Values.ToList();
+        }
+
+        public void addVPNServer(VPNServer vpnServer)
+        {
+            this.vpnServersDict.Add(vpnServer.Uuid.ToString(), vpnServer);
+            this.persistVPNServers();
+        }
+
+        public void removeVPNServer(VPNServer vpnServer)
+        {
+            this.vpnServersDict.Remove(vpnServer.Uuid.ToString());
+            this.persistVPNServers();
+        }
+
+        private void persistVPNServers()
+        {
+            List<VPNServer> vpnServersList = this.vpnServersDict.Values.ToList();
+            string json = JsonConvert.SerializeObject(vpnServersList);
+            Properties.Settings.Default.servers_json = json;
+            Properties.Settings.Default.Save();
+        }
+
+        public bool hasVPNServer(string uuid)
+        {
+            return this.vpnServersDict.ContainsKey(uuid);
+        }
+    }
+
     class Utils
     {
         public static Logger logger = Logger.GetInstance();
@@ -73,7 +139,14 @@ namespace RailRoadVPN
 
         public static string getServersConfigDirPath()
         {
-            return Path.Combine(getLocalAppDirPath(), Properties.Settings.Default.local_app_openvpn_servers_config_dir);
+            string serversPath = Path.Combine(getLocalAppDirPath(), Properties.Settings.Default.local_app_openvpn_servers_config_dir);
+
+            if (!Directory.Exists(serversPath))
+            {
+                Directory.CreateDirectory(serversPath);
+            }
+
+            return serversPath;
         }
 
         public static string localDirAppName = "\\RailRoadVPN";

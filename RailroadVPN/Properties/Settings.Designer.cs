@@ -139,5 +139,41 @@ namespace RailRoadVPN.Properties {
                 this["locale"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string device_id {
+            get {
+                return ((string)(this["device_id"]));
+            }
+            set {
+                this["device_id"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string device_uuid {
+            get {
+                return ((string)(this["device_uuid"]));
+            }
+            set {
+                this["device_uuid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string servers_json {
+            get {
+                return ((string)(this["servers_json"]));
+            }
+            set {
+                this["servers_json"] = value;
+            }
+        }
     }
 }

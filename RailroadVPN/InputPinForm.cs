@@ -36,15 +36,28 @@ namespace RailRoadVPN
 
         private ServiceAPI serviceAPI = new ServiceAPI();
 
+        private int _menuBtnStartPos;
+
         public InputPinForm()
         {
             InitializeComponent();
 
             this.ActiveControl = pin_1;
+
+            this._menuBtnStartPos = this.menuBtn.Left;
+
+            string labelText = "";
+            string[] textArr = Properties.strings.how_get_pin_text_label.Split(new[] { "\\r\\n", "\\r", "'\n" }, StringSplitOptions.None);
+            foreach (string txt in textArr)
+            {
+                labelText += txt + Environment.NewLine;
+            }
+            this.howGetPinTextLabel.Text = labelText;
         }
 
         private void pin_1_KeyPress(object sender, KeyPressEventArgs e)
         {
+            this.pin_1.ResetText();
             if (!char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -56,6 +69,7 @@ namespace RailRoadVPN
 
         private void pin_2_KeyPress(object sender, KeyPressEventArgs e)
         {
+            this.pin_2.ResetText();
             if (!char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -68,6 +82,7 @@ namespace RailRoadVPN
 
         private void pin_3_KeyPress(object sender, KeyPressEventArgs e)
         {
+            this.pin_3.ResetText();
             if (!char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -93,11 +108,13 @@ namespace RailRoadVPN
                 {
                     this.logger.log("success. create Main Form");
                     MainForm mf = FormManager.Current.CreateForm<MainForm>();
+                    mf.Location = this.Location;
                     this.logger.log("close InputPinForm and show Main Form");
                     this.Hide();
                     mf.Closed += (s, args) => this.Close();
                     mf.Show();
-                } else
+                }
+                else
                 {
                     this.logger.log("failed. something goes wrong");
                 }
@@ -116,7 +133,6 @@ namespace RailRoadVPN
                 this.logger.log("got user with email: " + user);
             } catch (RailroadException e) {
                 this.logger.log("RailroadException: " + e.Message);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.locale);
                 MessageBox.Show(Properties.strings.wrong_pin_error_message, Properties.strings.wrong_pin_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -149,14 +165,71 @@ namespace RailRoadVPN
             return true;
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void closeBtn_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void minimizeBtn_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
+        }
+
+        private int _menuStartPos = 0;      // start position of the panel
+        private int _menuEndPos = 150;      // end position of the panel
+        private int _stepSizeAnimation = 10;      // pixels to move
+
+        private void menuBtn_Click(object sender, EventArgs e)
+        {
+            menuTimer.Enabled = true;
+        }
+
+        bool hidden = true;
+        private void menuTimer_Tick(object sender, EventArgs e)
+        {
+            // if just starting, move to start location and make visible
+            if (!menuNavPanel.Visible && hidden)
+            {
+                menuNavPanel.Width = _menuStartPos;
+                menuNavPanel.Visible = true;
+            }
+
+            if (hidden)
+            {
+                // show menu
+
+                // incrementally move
+                menuNavPanel.Width += _stepSizeAnimation;
+                this.menuBtn.Left += _stepSizeAnimation;
+                // make sure we didn't over shoot
+                if (menuNavPanel.Width > _menuEndPos) menuNavPanel.Width = _menuEndPos;
+
+                // have we arrived?
+                if (menuNavPanel.Width == _menuEndPos)
+                {
+                    hidden = false;
+                    menuTimer.Enabled = false;
+                }
+            }
+            else
+            {
+                // hide menu
+                menuNavPanel.Visible = false;
+
+                // incrementally move
+                menuNavPanel.Width -= (_stepSizeAnimation);
+                this.menuBtn.Left -= (_stepSizeAnimation);
+                // make sure we didn't over shoot
+                if (menuNavPanel.Width < _menuStartPos) menuNavPanel.Width = _menuStartPos;
+                if (menuBtn.Left < _menuBtnStartPos) menuBtn.Left = _menuBtnStartPos;
+
+                // have we arrived?
+                if (menuNavPanel.Width == _menuStartPos)
+                {
+                    hidden = true;
+                    menuTimer.Enabled = false;
+                }
+            }
         }
 
         private void pin_1_KeyDown(object sender, KeyEventArgs e)
@@ -195,5 +268,10 @@ namespace RailRoadVPN
             }
         }
 
+        private void getPinCodeLabelLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string localeShort = Properties.Settings.Default.locale.Split(new char[] { '-' })[0];
+            System.Diagnostics.Process.Start("https://rroadvpn.net/" + localeShort + "/profile");
+        }
     }
 }

@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="check_internet_connect_header" xml:space="preserve">
+    <value>Проблема с интернет соединением</value>
+  </data>
+  <data name="check_internet_connect_message" xml:space="preserve">
+    <value>Видимо нет соединения с интернетом, проверьте что есть интернет</value>
+  </data>
   <data name="disconnect_while_connect_header" xml:space="preserve">
     <value>Прерывать соединение</value>
     <comment>when press semaphore while connecting state show window with this header</comment>
@@ -124,6 +130,42 @@
   <data name="disconnect_while_connect_message" xml:space="preserve">
     <value>Если вы хотите прервать подключение к VPN, нажмите на светофор еще раз</value>
     <comment>when press semaphore while connecting state show window with this message</comment>
+  </data>
+  <data name="enter_pin_label" xml:space="preserve">
+    <value>Введите PIN-CODE</value>
+  </data>
+  <data name="get_pincode_text_link" xml:space="preserve">
+    <value>Получите PIN-CODE</value>
+  </data>
+  <data name="help_1_text_label" xml:space="preserve">
+    <value>Нажмите на</value>
+  </data>
+  <data name="help_2_text_label" xml:space="preserve">
+    <value>семафор что соединиться с VPN</value>
+  </data>
+  <data name="help_green_text_label" xml:space="preserve">
+    <value>зеленый</value>
+  </data>
+  <data name="help_red_text_label" xml:space="preserve">
+    <value>красный</value>
+  </data>
+  <data name="how_get_pin_text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="how_get_pin_text_label" xml:space="preserve">
+    <value>Как получить пинкод?\r\n1. Нажмите на ссылку GET PIN-CODE \r\n2. Ваш браузер откроет сайт\r\n3. Войдите в систему\r\n4. Нажмите кнопку GENERATE PIN-CODE</value>
+  </data>
+  <data name="menu_item_logout" xml:space="preserve">
+    <value>Ввести новый пинкод</value>
+  </data>
+  <data name="menu_item_need_help" xml:space="preserve">
+    <value>Нужна помощь?</value>
+  </data>
+  <data name="menu_item_profile" xml:space="preserve">
+    <value>Мой профиль</value>
+  </data>
+  <data name="vpn_connect_status" xml:space="preserve">
+    <value>VPN статус</value>
   </data>
   <data name="wrong_pin_error_header" xml:space="preserve">
     <value>Не верный пинкод</value>

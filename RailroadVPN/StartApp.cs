@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,6 +19,7 @@ namespace RailRoadVPN
     public partial class StartAppForm : Form
     {
         static Logger logger = Logger.GetInstance();
+        private OpenVPNService openVPNService;
 
         private System.ComponentModel.BackgroundWorker initAppWorker;
 
@@ -26,6 +28,9 @@ namespace RailRoadVPN
             InitializeComponent();
             initializeWorkers();
             initAppWorker.RunWorkerAsync();
+
+            this.openVPNService = new OpenVPNService();
+
         }
 
         private void initializeWorkers()
@@ -82,6 +87,7 @@ namespace RailRoadVPN
             }
 
             Form resFo = (Form) e.Result;
+            resFo.Location = this.Location;
             this.Hide();
             resFo.Closed += (s, args) => this.Close();
             resFo.Show();
@@ -215,6 +221,8 @@ namespace RailRoadVPN
             }
 
             Thread.Sleep(500);
+
+            this.openVPNService.installTapDriver();
 
             Form form = null;
             reportProgress = 80;

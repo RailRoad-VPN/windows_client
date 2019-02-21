@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,6 +18,11 @@ namespace RailRoadVPN
         [STAThread]
         static void Main()
         {
+            var culture = new CultureInfo(Properties.Settings.Default.locale);
+
+            // Culture for any thread
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
             Application.EnableVisualStyles();

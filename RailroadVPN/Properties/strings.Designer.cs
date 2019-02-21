@@ -61,6 +61,24 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Internet connect problem.
+        /// </summary>
+        internal static string check_internet_connect_header {
+            get {
+                return ResourceManager.GetString("check_internet_connect_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seems there is no internet connection. Please check it..
+        /// </summary>
+        internal static string check_internet_connect_message {
+            get {
+                return ResourceManager.GetString("check_internet_connect_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interrupt disconnecting.
         /// </summary>
         internal static string disconnect_while_connect_header {
@@ -75,6 +93,105 @@ namespace RailRoadVPN.Properties {
         internal static string disconnect_while_connect_message {
             get {
                 return ResourceManager.GetString("disconnect_while_connect_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter PIN-CODE.
+        /// </summary>
+        internal static string enter_pin_label {
+            get {
+                return ResourceManager.GetString("enter_pin_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GET PIN-CODE.
+        /// </summary>
+        internal static string get_pincode_text_link {
+            get {
+                return ResourceManager.GetString("get_pincode_text_link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click.
+        /// </summary>
+        internal static string help_1_text_label {
+            get {
+                return ResourceManager.GetString("help_1_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to semaphore to connect VPN.
+        /// </summary>
+        internal static string help_2_text_label {
+            get {
+                return ResourceManager.GetString("help_2_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to green.
+        /// </summary>
+        internal static string help_green_text_label {
+            get {
+                return ResourceManager.GetString("help_green_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to red.
+        /// </summary>
+        internal static string help_red_text_label {
+            get {
+                return ResourceManager.GetString("help_red_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button.
+        /// </summary>
+        internal static string how_get_pin_text_label {
+            get {
+                return ResourceManager.GetString("how_get_pin_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        internal static string menu_item_logout {
+            get {
+                return ResourceManager.GetString("menu_item_logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need Help?.
+        /// </summary>
+        internal static string menu_item_need_help {
+            get {
+                return ResourceManager.GetString("menu_item_need_help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Profile.
+        /// </summary>
+        internal static string menu_item_profile {
+            get {
+                return ResourceManager.GetString("menu_item_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VPN STATUS.
+        /// </summary>
+        internal static string vpn_connect_status {
+            get {
+                return ResourceManager.GetString("vpn_connect_status", resourceCulture);
             }
         }
         

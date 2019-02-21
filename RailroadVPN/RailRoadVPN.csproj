@@ -156,6 +156,7 @@
     <Compile Include="User.cs" />
     <Compile Include="UserDevice.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="VPNServer.cs" />
     <EmbeddedResource Include="InputPinForm.resx">
       <DependentUpon>InputPinForm.cs</DependentUpon>
     </EmbeddedResource>

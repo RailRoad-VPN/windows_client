@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="check_internet_connect_header" xml:space="preserve">
+    <value>Internet connect problem</value>
+  </data>
+  <data name="check_internet_connect_message" xml:space="preserve">
+    <value>Seems there is no internet connection. Please check it.</value>
+  </data>
   <data name="disconnect_while_connect_header" xml:space="preserve">
     <value>Interrupt disconnecting</value>
     <comment>when press semaphore while connecting state show window with this header</comment>
@@ -124,6 +130,39 @@
   <data name="disconnect_while_connect_message" xml:space="preserve">
     <value>If you want to interrupt connecting to VPN, press Semaphore button again</value>
     <comment>when press semaphore while connecting state show window with this message</comment>
+  </data>
+  <data name="enter_pin_label" xml:space="preserve">
+    <value>Enter PIN-CODE</value>
+  </data>
+  <data name="get_pincode_text_link" xml:space="preserve">
+    <value>GET PIN-CODE</value>
+  </data>
+  <data name="help_1_text_label" xml:space="preserve">
+    <value>Click</value>
+  </data>
+  <data name="help_2_text_label" xml:space="preserve">
+    <value>semaphore to connect VPN</value>
+  </data>
+  <data name="help_green_text_label" xml:space="preserve">
+    <value>green</value>
+  </data>
+  <data name="help_red_text_label" xml:space="preserve">
+    <value>red</value>
+  </data>
+  <data name="how_get_pin_text_label" xml:space="preserve">
+    <value>How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button</value>
+  </data>
+  <data name="menu_item_logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="menu_item_need_help" xml:space="preserve">
+    <value>Need Help?</value>
+  </data>
+  <data name="menu_item_profile" xml:space="preserve">
+    <value>My Profile</value>
+  </data>
+  <data name="vpn_connect_status" xml:space="preserve">
+    <value>VPN STATUS</value>
   </data>
   <data name="wrong_pin_error_header" xml:space="preserve">
     <value>Wrong pincode</value>

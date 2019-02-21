@@ -28,6 +28,8 @@ namespace RailRoadVPN
 
         private Logger logger = Logger.GetInstance();
 
+        private PropertiesHelper propertiesHelper = PropertiesHelper.GetInstance();
+
         private OpenVPNService openVPNService;
         private ServiceAPI serviceAPI;
 
@@ -47,13 +49,14 @@ namespace RailRoadVPN
 
         private void menuLogoutBtn_Click(object sender, EventArgs e)
         {
-            var user_uuid = Properties.Settings.Default["user_uuid"];
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
-            user_uuid = Properties.Settings.Default["user_uuid"];
-            Properties.Settings.Default["user_uuid"] = null;
-            Properties.Settings.Default.Save();
-            user_uuid = Properties.Settings.Default["user_uuid"];
+
+            InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
+            ipf.Location = this.Location;
+            this.Hide();
+            ipf.Closed += (s, args) => this.Close();
+            ipf.Show();
         }
 
         private void MainForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -138,6 +141,33 @@ namespace RailRoadVPN
 
         private int btnPressedWhileConnecting = 1;
 
+        private void updateUserDevice(bool IsActive, string VirtualIp, string DeviceIp)
+        {
+            this.logger.log("updateUserDevice method in Form");
+
+            this.logger.log("get device uuid");
+            Guid DeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+            this.logger.log("get user uuid");
+            Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+            this.logger.log("get device id");
+            string DeviceId = Properties.Settings.Default.device_id;
+
+            // TODO user api to get geo location of device
+            this.logger.log("get culture info to set location field");
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string Location = ci.DisplayName;
+
+            try
+            {
+                this.logger.log("call update user device");
+                this.serviceAPI.updateUserDevice(DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive);
+            }
+            catch (Exception e)
+            {
+                this.logger.log("Exception when create user device: " + e.Message);
+            }
+        }
+
         private void semaphorePic_Click(object sender, EventArgs e)
         {
             this.semaphoreTimer.Enabled = true;
@@ -158,31 +188,66 @@ namespace RailRoadVPN
                        Thread.CurrentThread.IsBackground = true;
                        /* run your code here */
                        this.logger.log("set vpn status text to Get server...");
-                       this.setVPNStatusText("Get server...");
+                       this.setVPNStatusText("Detect server...");
                        this.logger.log("get random server");
                        Guid userGuid = Guid.Parse(Properties.Settings.Default.user_uuid);
                        string randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
 
-                       setVPNStatusText("Get server configuration...");
-                       this.logger.log("get server config");
-                       string configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
-                       string configPath = Utils.getBinariesDirPath() + "\\openvpn_rroad_config.ovpn";
-                       this.logger.log("server config path: " + configPath);
+                       string configPath = Utils.getServersConfigDirPath() + "\\" + randomServerUuid + ".ovpn";
 
-                       setVPNStatusText("Save server configuration...");
-                       this.logger.log("persist config to file system");
-                       System.IO.File.WriteAllText(configPath, configStr);
+                       this.logger.log("check existing configuration of this server");
+                       if (!propertiesHelper.hasVPNServer(uuid: randomServerUuid) || !File.Exists(configPath))
+                       {
+                           this.logger.log("we have not this server. get it");
+                           setVPNStatusText("Get server...");
+                           Guid userUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+                           Guid serverUuid = Guid.Parse(randomServerUuid);
 
-                       // TODO DEBUG!!! REMOVE THIS LINE!!!
-                       File.AppendAllText(configPath, "management 127.0.0.1 7505" + Environment.NewLine);
+                           VPNServer vpnServer = null;
+                           try
+                           {
+                               vpnServer = this.serviceAPI.getVPNServer(userUuid: userUuid, serverUuid: serverUuid);
+                           } catch (RailroadException ex)
+                           {
+                               this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
+                               this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                               this.semaphorePic.BackgroundImage = Properties.Resources.red;
 
-                       setVPNStatusText("Check installing driver...");
-                       this.logger.log("try to install driver");
-                       this.openVPNService.installTapDriver();
+                               this.logger.log("RailroadException: " + ex.Message);
+                               MessageBox.Show(Properties.strings.check_internet_connect_message, Properties.strings.check_internet_connect_header, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                               return;
+                           }
+                           propertiesHelper.addVPNServer(vpnServer: vpnServer);
 
-                       setVPNStatusText("Start VPN...");
+                           setVPNStatusText("Get server configuration...");
+                           this.logger.log("get server configuration file");
+
+                           string configStr;
+                           try
+                           {
+                               configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
+                           }
+                           catch (RailroadException ex)
+                           {
+                               this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
+                               this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                               this.semaphorePic.BackgroundImage = Properties.Resources.red;
+
+                               this.logger.log("RailroadException: " + ex.Message);
+                               MessageBox.Show(Properties.strings.check_internet_connect_message, Properties.strings.check_internet_connect_header, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                               return;
+                           }
+
+                           this.logger.log("save server configuration to file: " + configPath);
+                           System.IO.File.WriteAllText(configPath, configStr);
+
+                           // TODO DEBUG!!! REMOVE THIS LINE!!!
+                           File.AppendAllText(configPath, "management 127.0.0.1 7505" + Environment.NewLine);
+                       }
+
+                       setVPNStatusText("Starting VPN...");
                        this.openVPNService.startOpenVPN();
-                       setVPNStatusText("Start VPN Manager...");
+                       setVPNStatusText("Starting Manager...");
                        this.openVPNService.connectManager();
                    });
                 this.vpnConnectingThread.Start();
@@ -199,7 +264,6 @@ namespace RailRoadVPN
                     if (btnPressedWhileConnecting == 1)
                     {
                         this.logger.log("first press while connecting. show dialog");
-                        Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.locale);
                         MessageBox.Show(Properties.strings.disconnect_while_connect_message, Properties.strings.disconnect_while_connect_header, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
@@ -258,6 +322,11 @@ namespace RailRoadVPN
             }
             else if (VPN_CONNECT_STATUS == "CONNECTED")
             {
+                string virtualIp = this.getOpenVPNVirtualIP();
+                this.updateUserDevice(IsActive: false, VirtualIp: virtualIp, DeviceIp: null);
+
+                // TODO update connection
+
                 this.logger.log("vpn connected. start disconnecting process");
                 VPN_CONNECT_STATUS = "DISCONNECTING";
 
@@ -331,6 +400,24 @@ namespace RailRoadVPN
             this.logger.log("getOpenVPNStatus");
             string status = this.getOpenVPNStatus();
             this.logger.log("status:" + status);
+            if (VPN_CONNECT_STATUS == "NOT_CONNECTED")
+            {
+                // TODO check it
+                this.logger.log("VPN_CONNECT_STATUS is NOT_CONNECTED");
+                this.logger.log("disable semaphore timer");
+                this.semaphoreTimer.Enabled = false;
+                this.logger.log("disable status text timer");
+                this.statusTextTimer.Enabled = false;
+                this.logger.log("change help text green label visible false");
+                this.changeLabelVisible(this.helpTextGreenLabel, false);
+                this.logger.log("change help text red label visible true");
+                this.changeLabelVisible(this.helpTextRedLabel, true);
+                this.logger.log("change help text 2 label Left attribute to red pos");
+                this.changeLabelLeftAttr(this.helpText2Label, this.helpText2LabelLeftRedPos);
+                this.logger.log("change help text 2 label Text attibute to red text");
+                this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelRedText);
+            }
+
             if (status == "CONNECTED")
             {
                 this.logger.log("set vpn status text to Connected");
@@ -353,6 +440,11 @@ namespace RailRoadVPN
                 this.changeLabelLeftAttr(this.helpText2Label, this.helpText2LabelLeftGreenPos);
                 this.logger.log("set help text 2 label Text attribute to green text");
                 this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelGreenText);
+
+                string virtualIp = this.getOpenVPNVirtualIP();
+                this.updateUserDevice(IsActive: true, VirtualIp: virtualIp, DeviceIp: null);
+
+                this.serviceAPI.createConnection();
             }
             else if (status == "EXITING")
             {

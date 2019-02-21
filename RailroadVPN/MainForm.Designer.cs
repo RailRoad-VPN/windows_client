@@ -1,4 +1,7 @@
-﻿namespace RailRoadVPN
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace RailRoadVPN
 {
     partial class MainForm
     {
@@ -35,7 +38,7 @@
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
             this.menuNavPanel = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.menuHelpBtn = new System.Windows.Forms.Button();
             this.menuProfileBtn = new System.Windows.Forms.Button();
             this.menuTimer = new System.Windows.Forms.Timer(this.components);
             this.semaphorePic = new System.Windows.Forms.PictureBox();
@@ -57,11 +60,11 @@
             // 
             // menuLogoutBtn
             // 
-            this.menuLogoutBtn.Location = new System.Drawing.Point(12, 565);
+            this.menuLogoutBtn.Location = new System.Drawing.Point(12, 544);
             this.menuLogoutBtn.Name = "menuLogoutBtn";
             this.menuLogoutBtn.Size = new System.Drawing.Size(126, 23);
             this.menuLogoutBtn.TabIndex = 0;
-            this.menuLogoutBtn.Text = "LogOut";
+            this.menuLogoutBtn.Text = global::RailRoadVPN.Properties.strings.menu_item_logout;
             this.menuLogoutBtn.UseVisualStyleBackColor = true;
             this.menuLogoutBtn.Click += new System.EventHandler(this.menuLogoutBtn_Click);
             // 
@@ -106,7 +109,7 @@
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.White;
-            this.menuNavPanel.Controls.Add(this.button1);
+            this.menuNavPanel.Controls.Add(this.menuHelpBtn);
             this.menuNavPanel.Controls.Add(this.menuProfileBtn);
             this.menuNavPanel.Controls.Add(this.menuLogoutBtn);
             this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
@@ -114,14 +117,14 @@
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
-            // button1
+            // menuHelpBtn
             // 
-            this.button1.Location = new System.Drawing.Point(12, 536);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(126, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Need help?";
-            this.button1.UseVisualStyleBackColor = true;
+            this.menuHelpBtn.Location = new System.Drawing.Point(12, 515);
+            this.menuHelpBtn.Name = "menuHelpBtn";
+            this.menuHelpBtn.Size = new System.Drawing.Size(126, 23);
+            this.menuHelpBtn.TabIndex = 2;
+            this.menuHelpBtn.Text = global::RailRoadVPN.Properties.strings.menu_item_need_help;
+            this.menuHelpBtn.UseVisualStyleBackColor = true;
             // 
             // menuProfileBtn
             // 
@@ -129,7 +132,7 @@
             this.menuProfileBtn.Name = "menuProfileBtn";
             this.menuProfileBtn.Size = new System.Drawing.Size(126, 23);
             this.menuProfileBtn.TabIndex = 1;
-            this.menuProfileBtn.Text = "Profile";
+            this.menuProfileBtn.Text = global::RailRoadVPN.Properties.strings.menu_item_profile;
             this.menuProfileBtn.UseVisualStyleBackColor = true;
             // 
             // menuTimer
@@ -142,7 +145,7 @@
             this.semaphorePic.BackColor = System.Drawing.Color.Transparent;
             this.semaphorePic.BackgroundImage = global::RailRoadVPN.Properties.Resources.red;
             this.semaphorePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.semaphorePic.Location = new System.Drawing.Point(109, 163);
+            this.semaphorePic.Location = new System.Drawing.Point(110, 163);
             this.semaphorePic.Name = "semaphorePic";
             this.semaphorePic.Size = new System.Drawing.Size(179, 117);
             this.semaphorePic.TabIndex = 13;
@@ -151,13 +154,15 @@
             // 
             // statusLabel
             // 
+            this.statusLabel.AutoEllipsis = true;
             this.statusLabel.AutoSize = true;
+            this.statusLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
             this.statusLabel.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.Location = new System.Drawing.Point(119, 130);
+            this.statusLabel.Location = new System.Drawing.Point(142, 130);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(158, 18);
+            this.statusLabel.Size = new System.Drawing.Size(108, 18);
             this.statusLabel.TabIndex = 14;
-            this.statusLabel.Text = "VPN Status here";
+            this.statusLabel.Text = global::RailRoadVPN.Properties.strings.vpn_connect_status;
             // 
             // semaphoreTimer
             // 
@@ -182,16 +187,22 @@
             // 
             // helpText1Label
             // 
+            this.helpText1Label.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.helpText1Label.AutoSize = true;
             this.helpText1Label.Font = new System.Drawing.Font("Courier New", 9F);
             this.helpText1Label.Location = new System.Drawing.Point(78, 424);
             this.helpText1Label.Name = "helpText1Label";
             this.helpText1Label.Size = new System.Drawing.Size(42, 15);
             this.helpText1Label.TabIndex = 16;
-            this.helpText1Label.Text = "Click";
+            this.helpText1Label.Text = global::RailRoadVPN.Properties.strings.help_1_text_label;
             // 
             // helpTextRedLabel
             // 
+            this.helpTextRedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.helpTextRedLabel.AutoSize = true;
             this.helpTextRedLabel.BackColor = System.Drawing.Color.Red;
             this.helpTextRedLabel.Font = new System.Drawing.Font("Courier New", 9F);
@@ -200,20 +211,25 @@
             this.helpTextRedLabel.Name = "helpTextRedLabel";
             this.helpTextRedLabel.Size = new System.Drawing.Size(28, 15);
             this.helpTextRedLabel.TabIndex = 17;
-            this.helpTextRedLabel.Text = "red";
+            this.helpTextRedLabel.Text = global::RailRoadVPN.Properties.strings.help_red_text_label;
             // 
             // helpText2Label
             // 
+            this.helpText2Label.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.helpText2Label.AutoSize = true;
             this.helpText2Label.Font = new System.Drawing.Font("Courier New", 9F);
             this.helpText2Label.Location = new System.Drawing.Point(159, 424);
             this.helpText2Label.Name = "helpText2Label";
             this.helpText2Label.Size = new System.Drawing.Size(175, 15);
             this.helpText2Label.TabIndex = 18;
-            this.helpText2Label.Text = "semaphore to connect VPN";
+            this.helpText2Label.Text = global::RailRoadVPN.Properties.strings.help_2_text_label;
             // 
             // helpTextGreenLabel
             // 
+            this.helpTextGreenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.helpTextGreenLabel.AutoSize = true;
             this.helpTextGreenLabel.BackColor = System.Drawing.Color.DarkGreen;
             this.helpTextGreenLabel.Font = new System.Drawing.Font("Courier New", 9F);
@@ -222,7 +238,7 @@
             this.helpTextGreenLabel.Name = "helpTextGreenLabel";
             this.helpTextGreenLabel.Size = new System.Drawing.Size(42, 15);
             this.helpTextGreenLabel.TabIndex = 19;
-            this.helpTextGreenLabel.Text = "green";
+            this.helpTextGreenLabel.Text = global::RailRoadVPN.Properties.strings.help_green_text_label;
             this.helpTextGreenLabel.Visible = false;
             // 
             // MainForm
@@ -233,7 +249,6 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
-            this.Controls.Add(this.helpTextGreenLabel);
             this.Controls.Add(this.menuNavPanel);
             this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
@@ -244,12 +259,13 @@
             this.Controls.Add(this.helpText2Label);
             this.Controls.Add(this.helpTextRedLabel);
             this.Controls.Add(this.helpText1Label);
+            this.Controls.Add(this.helpTextGreenLabel);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
             this.Text = "RailroadVPN - Connect to VPN";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
@@ -272,7 +288,7 @@
         private System.Windows.Forms.Panel menuNavPanel;
         private System.Windows.Forms.Timer menuTimer;
         private System.Windows.Forms.Button menuProfileBtn;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button menuHelpBtn;
         private System.Windows.Forms.PictureBox semaphorePic;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Timer semaphoreTimer;

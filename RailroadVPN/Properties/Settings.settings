@@ -38,5 +38,14 @@
     <Setting Name="locale" Type="System.String" Scope="User">
       <Value Profile="(Default)">en-US</Value>
     </Setting>
+    <Setting Name="device_id" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="device_uuid" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="servers_json" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

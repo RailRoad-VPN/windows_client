@@ -1,4 +1,7 @@
-﻿namespace RailRoadVPN
+﻿using System;
+using System.Windows.Forms;
+
+namespace RailRoadVPN
 {
     partial class InputPinForm
     {
@@ -28,6 +31,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputPinForm));
             this.pin_1 = new System.Windows.Forms.TextBox();
             this.pin_2 = new System.Windows.Forms.TextBox();
@@ -37,9 +41,15 @@
             this.closeBtn = new System.Windows.Forms.PictureBox();
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
+            this.menuHelpBtn = new System.Windows.Forms.Button();
+            this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.howGetPinTextLabel = new System.Windows.Forms.Label();
+            this.getPinCodeLabelLink = new System.Windows.Forms.LinkLabel();
+            this.menuTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
+            this.menuNavPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // pin_1
@@ -105,11 +115,12 @@
             // 
             this.enter_pin_label.AutoSize = true;
             this.enter_pin_label.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.enter_pin_label.Location = new System.Drawing.Point(147, 139);
+            this.enter_pin_label.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.enter_pin_label.Location = new System.Drawing.Point(104, 138);
             this.enter_pin_label.Name = "enter_pin_label";
-            this.enter_pin_label.Size = new System.Drawing.Size(98, 14);
+            this.enter_pin_label.Size = new System.Drawing.Size(164, 21);
             this.enter_pin_label.TabIndex = 6;
-            this.enter_pin_label.Text = "Enter pincode";
+            this.enter_pin_label.Text = "Enter PIN-CODE";
             // 
             // closeBtn
             // 
@@ -121,7 +132,7 @@
             this.closeBtn.Size = new System.Drawing.Size(20, 20);
             this.closeBtn.TabIndex = 7;
             this.closeBtn.TabStop = false;
-            this.closeBtn.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.closeBtn.Click += new System.EventHandler(this.closeBtn_Click);
             // 
             // minimizeBtn
             // 
@@ -134,7 +145,7 @@
             this.minimizeBtn.Size = new System.Drawing.Size(40, 40);
             this.minimizeBtn.TabIndex = 8;
             this.minimizeBtn.TabStop = false;
-            this.minimizeBtn.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.minimizeBtn.Click += new System.EventHandler(this.minimizeBtn_Click);
             // 
             // menuBtn
             // 
@@ -147,6 +158,50 @@
             this.menuBtn.Size = new System.Drawing.Size(40, 40);
             this.menuBtn.TabIndex = 9;
             this.menuBtn.TabStop = false;
+            this.menuBtn.Click += new System.EventHandler(this.menuBtn_Click);
+            // 
+            // menuHelpBtn
+            // 
+            this.menuHelpBtn.Location = new System.Drawing.Point(12, 515);
+            this.menuHelpBtn.Name = "menuHelpBtn";
+            this.menuHelpBtn.Size = new System.Drawing.Size(126, 23);
+            this.menuHelpBtn.TabIndex = 2;
+            this.menuHelpBtn.Text = global::RailRoadVPN.Properties.strings.menu_item_need_help;
+            this.menuHelpBtn.UseVisualStyleBackColor = true;
+            // 
+            // menuNavPanel
+            // 
+            this.menuNavPanel.BackColor = System.Drawing.Color.White;
+            this.menuNavPanel.Controls.Add(this.menuHelpBtn);
+            this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
+            this.menuNavPanel.Name = "menuNavPanel";
+            this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
+            this.menuNavPanel.TabIndex = 12;
+            // 
+            // howGetPinTextLabel
+            // 
+            this.howGetPinTextLabel.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.howGetPinTextLabel.Location = new System.Drawing.Point(24, 352);
+            this.howGetPinTextLabel.Name = "howGetPinTextLabel";
+            this.howGetPinTextLabel.Size = new System.Drawing.Size(341, 113);
+            this.howGetPinTextLabel.TabIndex = 10;
+            // 
+            // getPinCodeLabelLink
+            // 
+            this.getPinCodeLabelLink.AutoSize = true;
+            this.getPinCodeLabelLink.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getPinCodeLabelLink.Location = new System.Drawing.Point(121, 266);
+            this.getPinCodeLabelLink.Name = "getPinCodeLabelLink";
+            this.getPinCodeLabelLink.Size = new System.Drawing.Size(128, 18);
+            this.getPinCodeLabelLink.TabIndex = 11;
+            this.getPinCodeLabelLink.TabStop = true;
+            this.getPinCodeLabelLink.Text = "GET PIN-CODE";
+            this.getPinCodeLabelLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.getPinCodeLabelLink_LinkClicked);
+            // 
+            // menuTimer
+            // 
+            this.menuTimer.Interval = 10;
+            this.menuTimer.Tick += new System.EventHandler(this.menuTimer_Tick);
             // 
             // InputPinForm
             // 
@@ -158,21 +213,26 @@
             this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
+            this.Controls.Add(this.menuNavPanel);
             this.Controls.Add(this.enter_pin_label);
             this.Controls.Add(this.pin_4);
             this.Controls.Add(this.pin_3);
             this.Controls.Add(this.pin_2);
             this.Controls.Add(this.pin_1);
+            this.Controls.Add(this.howGetPinTextLabel);
+            this.Controls.Add(this.getPinCodeLabelLink);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InputPinForm";
             this.Text = "RRoadVPN - Enter pin";
+            this.StartPosition = FormStartPosition.Manual;
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.InputPinForm_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
+            this.menuNavPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -187,6 +247,11 @@
         private System.Windows.Forms.PictureBox closeBtn;
         private System.Windows.Forms.PictureBox minimizeBtn;
         private System.Windows.Forms.PictureBox menuBtn;
+        private System.Windows.Forms.Panel menuNavPanel;
+        private System.Windows.Forms.Button menuHelpBtn;
+        private System.Windows.Forms.Label howGetPinTextLabel;
+        private System.Windows.Forms.LinkLabel getPinCodeLabelLink;
+        private System.Windows.Forms.Timer menuTimer;
     }
 }
 

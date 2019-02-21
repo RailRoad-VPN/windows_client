@@ -41,24 +41,31 @@ namespace RailRoadVPN
             this.mgmtPort = mgmtPort;
         }
 
+        public OpenVPNService()
+        {
+        }
+
         public void installTapDriver()
         {
             this.logger.log("installTapDriver");
 
             var localAppDir = Utils.getLocalAppDirPath();
-            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\tap -windows.exe  /S /D=c:\\TapWindows";
+            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\tap-windows.exe  /S /D=c:\\TapWindows";
 
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = strCmdText
+                Arguments = strCmdText,
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
             };
 
             Process process = new Process
             {
-                StartInfo = startInfo
-            };
+                StartInfo = startInfo,
+                EnableRaisingEvents = true,
+        };
             process.Start();
+            process.WaitForExit();
         }
 
         public void startOpenVPN()
@@ -67,7 +74,6 @@ namespace RailRoadVPN
 
             var localAppDir = Utils.getLocalAppDirPath();
             string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn >> " + Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.openvpn_logfile_name;
-            //string strCmdText = "/K " + localAppDir + "\\rroad_openvpn\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\rroad_openvpn\\openvpn_rroad_config.ovpn";
 
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -135,6 +141,12 @@ namespace RailRoadVPN
         public void connectManager()
         {
             this.logger.log("connectManager");
+
+            if (this.mgmtHost == null || this.mgmtPort == null)
+            {
+                this.logger.log("cant connect to mgmt interface of openvpn because no mgmthost or port were initialized");
+                throw new RailroadException("no data to connect manager");
+            }
 
             logger.log("Change MANAGER_STATUS to CONNECTING");
             MANAGER_STATUS = "CONNECTING";

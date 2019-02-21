@@ -20,6 +20,9 @@ namespace RailRoadVPN
 
     public partial class UserDevice
     {
+        [JsonProperty("uuid")]
+        public Guid Uuid { get; set; }
+
         [JsonProperty("user_uuid")]
         public Guid UserUuid { get; set; }
 
