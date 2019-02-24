@@ -22,8 +22,8 @@ namespace RailRoadVPN
         private const string GET_USER_RANDOM_SERVER_URL = "/users/{user_uuid}/servers?random";
         private const string GET_SERVER_URL = "/users/{user_uuid}/servers/{server_uuid}";
         private const string GET_USER_SERVER_CONFIGURATIONS_URL = "/users/{user_uuid}/servers/{server_uuid}/configurations?platform_id=3&vpn_type_id=1";
-        private const string CREATE_USER_SERVER_CONNECTION_URL = "";
-        private const string UPDATE_USER_SERVER_CONNECTION_URL = "";
+        private const string CREATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections";
+        private const string UPDATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections/{connection_uuid}";
 
         private RestClient client;
         private Logger logger = Logger.GetInstance();
@@ -230,7 +230,7 @@ namespace RailRoadVPN
             }
         }
 
-        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string VirtualIp, string DeviceIp, string Location, bool IsActive)
+        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string VirtualIp, string DeviceIp, string Location, bool IsActive, string ModifyReason)
         {
             this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, VirtualIp={3}, DeviceIp={4}, " +
                 "Location={5}, IsActive={6}", DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive));
@@ -252,7 +252,7 @@ namespace RailRoadVPN
                 DeviceIp = DeviceIp,
                 Location = Location,
                 IsActive = IsActive,
-                ModifyReason = "set active"
+                ModifyReason = ModifyReason
             };
 
             this.logger.log("serialize UserDevice object to JSON");
@@ -269,14 +269,106 @@ namespace RailRoadVPN
             }
         }
 
-        public void createConnection()
+        public string createConnection(Guid UserUuid, Guid ServerUuid, Guid UserDeviceUuid, string DeviceIp, string VirtualIp, long BytesI, long BytesO, bool IsConnected, string ConnectedSince)
         {
+            this.logger.log(System.String.Format("createConnection: userUuid={0}, serverUuid={1}, deviceIp={2}, virtualIp={3}, bytesI={4}, bytesO={5}, isConnected={6}, connectedSince={7}", UserUuid, ServerUuid, DeviceIp, VirtualIp, BytesI, BytesO, IsConnected, ConnectedSince));
 
+            this.logger.log("create request");
+            var request = new RestRequest(CREATE_USER_SERVER_CONNECTION_URL, Method.POST);
+            this.logger.log("add url segment user_uuid");
+            request.AddUrlSegment("user_uuid", UserUuid.ToString());
+            this.logger.log("add url segment server_uuid");
+            request.AddUrlSegment("server_uuid", ServerUuid.ToString());
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("create VPNUserServerConnection object");
+            VPNUserServerConnection userDevice = new VPNUserServerConnection()
+            {
+                UserUuid = UserUuid,
+                ServerUuid = ServerUuid,
+                UserDeviceUuid = UserDeviceUuid,
+                DeviceIp = DeviceIp,
+                VirtualIp = VirtualIp,
+                BytesI = BytesI,
+                BytesO = BytesO,
+                IsConnected = IsConnected
+            };
+
+            this.logger.log("serialize VPNUserServerConnection object to JSON");
+            var json = JsonConvert.SerializeObject(userDevice);
+            this.logger.log("JSON: " + json);
+
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.Created)
+            {
+                this.logger.log("status code is NOT 201");
+                throw new RailroadException("something wrong with API");
+            }
+            else
+            {
+                this.logger.log("status code is 201");
+
+                string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
+                string[] locationSplitted = location.Split(new char[] { '/' });
+                string connectionUuid = locationSplitted[locationSplitted.Length - 1];
+
+                return connectionUuid;
+            }
         }
 
-        public void updateConnection()
+        public void updateConnection(Guid ConnectionUuid, Guid UserUuid, Guid ServerUuid, long BytesI, long BytesO, bool IsConnected, string ModifyReason)
         {
+            //this.logger.log(System.String.Format("updateConnection: userUuid={0}, serverUuid={1}, deviceIp={2}, virtualIp={3}, bytesI={4}, bytesO={5}, isConnected={6}, connectedSince={7}, connectionUuid={8}, ModifyReason={9}", ));
+            this.logger.log(System.String.Format("updateConnection:"));
 
+            this.logger.log("create request");
+            var request = new RestRequest(UPDATE_USER_SERVER_CONNECTION_URL, Method.PUT);
+            this.logger.log("add url segment user_uuid");
+            request.AddUrlSegment("user_uuid", UserUuid.ToString());
+            this.logger.log("add url segment server_uuid");
+            request.AddUrlSegment("server_uuid", ServerUuid.ToString());
+            this.logger.log("add url segment connection_uuid");
+            request.AddUrlSegment("connection_uuid", ConnectionUuid.ToString());
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("create VPNUserServerConnection object");
+            VPNUserServerConnection userDevice = new VPNUserServerConnection()
+            {
+                Uuid = ConnectionUuid,
+                UserUuid = UserUuid,
+                ServerUuid = ServerUuid,
+                BytesI = BytesI,
+                BytesO = BytesO,
+                IsConnected = IsConnected,
+                ModifyReason = ModifyReason
+            };
+
+            this.logger.log("serialize VPNUserServerConnection object to JSON");
+            var json = JsonConvert.SerializeObject(userDevice);
+            this.logger.log("JSON: " + json);
+
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.OK)
+            {
+                this.logger.log("status code is NOT 200");
+                throw new RailroadException("something wrong with API");
+            }
         }
     }
 }

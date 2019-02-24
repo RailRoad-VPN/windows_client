@@ -64,6 +64,7 @@ namespace RailRoadVPN
             } else
             {
                 this.ActiveControl = pin_2;
+                this.checkPinEntered();
             }
         }
 
@@ -77,6 +78,7 @@ namespace RailRoadVPN
             else
             {
                 this.ActiveControl = pin_3;
+                this.checkPinEntered();
             }
         }
 
@@ -90,6 +92,7 @@ namespace RailRoadVPN
             else
             {
                 this.ActiveControl = pin_4;
+                this.checkPinEntered();
             }
         }
 
@@ -100,26 +103,35 @@ namespace RailRoadVPN
                 e.Handled = true;
             } else
             {
-                var pincode = pin_1.Text + pin_2.Text + pin_3.Text + e.KeyChar;
-                this.logger.log("entered pincode is: " + pincode);
-                this.logger.log("try to register new user by entered pincode");
-                var success = this.registerNewUser(pincode);
-                if (success)
-                {
-                    this.logger.log("success. create Main Form");
-                    MainForm mf = FormManager.Current.CreateForm<MainForm>();
-                    mf.Location = this.Location;
-                    this.logger.log("close InputPinForm and show Main Form");
-                    this.Hide();
-                    mf.Closed += (s, args) => this.Close();
-                    mf.Show();
-                }
-                else
-                {
-                    this.logger.log("failed. something goes wrong");
-                }
+                this.checkPinEntered();
             }
             
+        }
+
+        private void checkPinEntered()
+        {
+            var pincode = pin_1.Text + pin_2.Text + pin_3.Text + pin_4.Text;
+            if (pincode.Length < 4)
+            {
+                return;
+            }
+            this.logger.log("entered pincode is: " + pincode);
+            this.logger.log("try to register new user by entered pincode");
+            var success = this.registerNewUser(pincode);
+            if (success)
+            {
+                this.logger.log("success. create Main Form");
+                MainForm mf = FormManager.Current.CreateForm<MainForm>();
+                mf.Location = this.Location;
+                this.logger.log("close InputPinForm and show Main Form");
+                this.Hide();
+                mf.Closed += (s, args) => this.Close();
+                mf.Show();
+            }
+            else
+            {
+                this.logger.log("failed. something goes wrong");
+            }
         }
 
         private bool registerNewUser(string pincode)
@@ -272,6 +284,40 @@ namespace RailRoadVPN
         {
             string localeShort = Properties.Settings.Default.locale.Split(new char[] { '-' })[0];
             System.Diagnostics.Process.Start("https://rroadvpn.net/" + localeShort + "/profile");
+        }
+
+        private void pin_1_TextChanged(object sender, EventArgs e)
+        {
+            this.checkPinEntered();
+        }
+
+        private void pin_2_TextChanged(object sender, EventArgs e)
+        {
+            this.checkPinEntered();
+        }
+
+        private void pin_3_TextChanged(object sender, EventArgs e)
+        {
+            this.checkPinEntered();
+        }
+
+        private void pin_4_TextChanged(object sender, EventArgs e)
+        {
+            this.checkPinEntered();
+        }
+
+        private void enLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "en-US";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Restart application", "Change language", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ruLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "ru-RU";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

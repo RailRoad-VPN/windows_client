@@ -21,7 +21,7 @@ namespace RailRoadVPN
             var culture = new CultureInfo(Properties.Settings.Default.locale);
 
             // Culture for any thread
-            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 

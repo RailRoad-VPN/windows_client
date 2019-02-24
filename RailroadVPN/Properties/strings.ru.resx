@@ -140,17 +140,17 @@
   <data name="help_1_text_label" xml:space="preserve">
     <value>Нажмите на</value>
   </data>
+  <data name="help_2_green_text_label" xml:space="preserve">
+    <value>семафор для отключения VPN</value>
+  </data>
   <data name="help_2_text_label" xml:space="preserve">
-    <value>семафор что соединиться с VPN</value>
+    <value>семафор для подключения к VPN</value>
   </data>
   <data name="help_green_text_label" xml:space="preserve">
     <value>зеленый</value>
   </data>
   <data name="help_red_text_label" xml:space="preserve">
     <value>красный</value>
-  </data>
-  <data name="how_get_pin_text" xml:space="preserve">
-    <value />
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
     <value>Как получить пинкод?\r\n1. Нажмите на ссылку GET PIN-CODE \r\n2. Ваш браузер откроет сайт\r\n3. Войдите в систему\r\n4. Нажмите кнопку GENERATE PIN-CODE</value>

@@ -83,6 +83,16 @@ namespace RailRoadVPN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap en_lang {
+            get {
+                object obj = ResourceManager.GetObject("en_lang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap green {
             get {
                 object obj = ResourceManager.GetObject("green", resourceCulture);
@@ -157,6 +167,16 @@ namespace RailRoadVPN.Properties {
             get {
                 object obj = ResourceManager.GetObject("rroad_openvpn", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ru_lang {
+            get {
+                object obj = ResourceManager.GetObject("ru_lang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

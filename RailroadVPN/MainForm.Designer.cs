@@ -38,6 +38,8 @@ namespace RailRoadVPN
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
             this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.ruLangBtn = new System.Windows.Forms.PictureBox();
+            this.enLangBtn = new System.Windows.Forms.PictureBox();
             this.menuHelpBtn = new System.Windows.Forms.Button();
             this.menuProfileBtn = new System.Windows.Forms.Button();
             this.menuTimer = new System.Windows.Forms.Timer(this.components);
@@ -54,13 +56,15 @@ namespace RailRoadVPN
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
             this.menuNavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ruLangBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.enLangBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.helpArrowImg)).BeginInit();
             this.SuspendLayout();
             // 
             // menuLogoutBtn
             // 
-            this.menuLogoutBtn.Location = new System.Drawing.Point(12, 544);
+            this.menuLogoutBtn.Location = new System.Drawing.Point(12, 496);
             this.menuLogoutBtn.Name = "menuLogoutBtn";
             this.menuLogoutBtn.Size = new System.Drawing.Size(126, 23);
             this.menuLogoutBtn.TabIndex = 0;
@@ -109,6 +113,8 @@ namespace RailRoadVPN
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.White;
+            this.menuNavPanel.Controls.Add(this.ruLangBtn);
+            this.menuNavPanel.Controls.Add(this.enLangBtn);
             this.menuNavPanel.Controls.Add(this.menuHelpBtn);
             this.menuNavPanel.Controls.Add(this.menuProfileBtn);
             this.menuNavPanel.Controls.Add(this.menuLogoutBtn);
@@ -117,9 +123,31 @@ namespace RailRoadVPN
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
+            // ruLangBtn
+            // 
+            this.ruLangBtn.BackgroundImage = global::RailRoadVPN.Properties.Resources.ru_lang;
+            this.ruLangBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ruLangBtn.Location = new System.Drawing.Point(87, 537);
+            this.ruLangBtn.Name = "ruLangBtn";
+            this.ruLangBtn.Size = new System.Drawing.Size(25, 25);
+            this.ruLangBtn.TabIndex = 14;
+            this.ruLangBtn.TabStop = false;
+            this.ruLangBtn.Click += new System.EventHandler(this.ruLangBtn_Click);
+            // 
+            // enLangBtn
+            // 
+            this.enLangBtn.BackgroundImage = global::RailRoadVPN.Properties.Resources.en_lang;
+            this.enLangBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.enLangBtn.Location = new System.Drawing.Point(29, 537);
+            this.enLangBtn.Name = "enLangBtn";
+            this.enLangBtn.Size = new System.Drawing.Size(25, 25);
+            this.enLangBtn.TabIndex = 15;
+            this.enLangBtn.TabStop = false;
+            this.enLangBtn.Click += new System.EventHandler(this.enLangBtn_Click);
+            // 
             // menuHelpBtn
             // 
-            this.menuHelpBtn.Location = new System.Drawing.Point(12, 515);
+            this.menuHelpBtn.Location = new System.Drawing.Point(12, 467);
             this.menuHelpBtn.Name = "menuHelpBtn";
             this.menuHelpBtn.Size = new System.Drawing.Size(126, 23);
             this.menuHelpBtn.TabIndex = 2;
@@ -162,7 +190,7 @@ namespace RailRoadVPN
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(108, 18);
             this.statusLabel.TabIndex = 14;
-            this.statusLabel.Text = global::RailRoadVPN.Properties.strings.vpn_connect_status;
+            this.statusLabel.Text = "VPN STATUS";
             // 
             // semaphoreTimer
             // 
@@ -179,7 +207,7 @@ namespace RailRoadVPN
             this.helpArrowImg.BackColor = System.Drawing.Color.Transparent;
             this.helpArrowImg.BackgroundImage = global::RailRoadVPN.Properties.Resources.arrow_ye;
             this.helpArrowImg.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.helpArrowImg.Location = new System.Drawing.Point(53, 271);
+            this.helpArrowImg.Location = new System.Drawing.Point(45, 271);
             this.helpArrowImg.Name = "helpArrowImg";
             this.helpArrowImg.Size = new System.Drawing.Size(108, 150);
             this.helpArrowImg.TabIndex = 15;
@@ -192,11 +220,11 @@ namespace RailRoadVPN
             | System.Windows.Forms.AnchorStyles.Right)));
             this.helpText1Label.AutoSize = true;
             this.helpText1Label.Font = new System.Drawing.Font("Courier New", 9F);
-            this.helpText1Label.Location = new System.Drawing.Point(78, 424);
+            this.helpText1Label.Location = new System.Drawing.Point(25, 424);
             this.helpText1Label.Name = "helpText1Label";
             this.helpText1Label.Size = new System.Drawing.Size(42, 15);
             this.helpText1Label.TabIndex = 16;
-            this.helpText1Label.Text = global::RailRoadVPN.Properties.strings.help_1_text_label;
+            this.helpText1Label.Text = "Click";
             // 
             // helpTextRedLabel
             // 
@@ -207,11 +235,11 @@ namespace RailRoadVPN
             this.helpTextRedLabel.BackColor = System.Drawing.Color.Red;
             this.helpTextRedLabel.Font = new System.Drawing.Font("Courier New", 9F);
             this.helpTextRedLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.helpTextRedLabel.Location = new System.Drawing.Point(126, 424);
+            this.helpTextRedLabel.Location = new System.Drawing.Point(73, 424);
             this.helpTextRedLabel.Name = "helpTextRedLabel";
             this.helpTextRedLabel.Size = new System.Drawing.Size(28, 15);
             this.helpTextRedLabel.TabIndex = 17;
-            this.helpTextRedLabel.Text = global::RailRoadVPN.Properties.strings.help_red_text_label;
+            this.helpTextRedLabel.Text = "red";
             // 
             // helpText2Label
             // 
@@ -220,11 +248,11 @@ namespace RailRoadVPN
             | System.Windows.Forms.AnchorStyles.Right)));
             this.helpText2Label.AutoSize = true;
             this.helpText2Label.Font = new System.Drawing.Font("Courier New", 9F);
-            this.helpText2Label.Location = new System.Drawing.Point(159, 424);
+            this.helpText2Label.Location = new System.Drawing.Point(106, 424);
             this.helpText2Label.Name = "helpText2Label";
             this.helpText2Label.Size = new System.Drawing.Size(175, 15);
             this.helpText2Label.TabIndex = 18;
-            this.helpText2Label.Text = global::RailRoadVPN.Properties.strings.help_2_text_label;
+            this.helpText2Label.Text = "semaphore to connect VPN";
             // 
             // helpTextGreenLabel
             // 
@@ -234,11 +262,11 @@ namespace RailRoadVPN
             this.helpTextGreenLabel.BackColor = System.Drawing.Color.DarkGreen;
             this.helpTextGreenLabel.Font = new System.Drawing.Font("Courier New", 9F);
             this.helpTextGreenLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.helpTextGreenLabel.Location = new System.Drawing.Point(126, 424);
+            this.helpTextGreenLabel.Location = new System.Drawing.Point(73, 424);
             this.helpTextGreenLabel.Name = "helpTextGreenLabel";
             this.helpTextGreenLabel.Size = new System.Drawing.Size(42, 15);
             this.helpTextGreenLabel.TabIndex = 19;
-            this.helpTextGreenLabel.Text = global::RailRoadVPN.Properties.strings.help_green_text_label;
+            this.helpTextGreenLabel.Text = "green";
             this.helpTextGreenLabel.Visible = false;
             // 
             // MainForm
@@ -261,17 +289,20 @@ namespace RailRoadVPN
             this.Controls.Add(this.helpText1Label);
             this.Controls.Add(this.helpTextGreenLabel);
             this.Cursor = System.Windows.Forms.Cursors.Default;
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.StartPosition = FormStartPosition.Manual;
-            this.Text = "RailroadVPN - Connect to VPN";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "s";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.menuNavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ruLangBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.enLangBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.semaphorePic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.helpArrowImg)).EndInit();
             this.ResumeLayout(false);
@@ -298,5 +329,7 @@ namespace RailRoadVPN
         private System.Windows.Forms.Label helpTextRedLabel;
         private System.Windows.Forms.Label helpText2Label;
         private System.Windows.Forms.Label helpTextGreenLabel;
+        private PictureBox ruLangBtn;
+        private PictureBox enLangBtn;
     }
 }

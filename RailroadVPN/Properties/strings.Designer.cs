@@ -124,6 +124,15 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to semaphore to disconnect VPN.
+        /// </summary>
+        internal static string help_2_green_text_label {
+            get {
+                return ResourceManager.GetString("help_2_green_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to semaphore to connect VPN.
         /// </summary>
         internal static string help_2_text_label {

@@ -7,6 +7,48 @@ using System.Threading.Tasks;
 
 namespace RailRoadVPN
 {
+    public class VPNUserServerConnectionAPIModel : APIError
+    {
+        [JsonProperty("data")]
+        public VPNServer data { get; set; }
+    }
+
+    public partial class VPNUserServerConnection
+    {
+        [JsonProperty("uuid")]
+        public Guid Uuid { get; set; }
+
+        [JsonProperty("server_uuid")]
+        public Guid ServerUuid { get; set; }
+
+        [JsonProperty("user_uuid")]
+        public Guid UserUuid { get; set; }
+
+        [JsonProperty("user_device_uuid")]
+        public Guid UserDeviceUuid { get; set; }
+
+        [JsonProperty("device_ip")]
+        public string DeviceIp { get; set; }
+
+        [JsonProperty("virtual_ip")]
+        public string VirtualIp { get; set; }
+
+        [JsonProperty("bytes_i")]
+        public long BytesI { get; set; }
+
+        [JsonProperty("bytes_o")]
+        public long BytesO { get; set; }
+
+        [JsonProperty("is_connected")]
+        public bool IsConnected { get; set; }
+
+        [JsonProperty("connected_since")]
+        public DateTimeOffset ConnectedSince { get; set; }
+
+        [JsonProperty("modify_reason")]
+        public string ModifyReason { get; set; }
+    }
+
     public class VPNServerAPIModel : APIError
     {
 

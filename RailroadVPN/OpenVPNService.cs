@@ -28,7 +28,6 @@ namespace RailRoadVPN
         private string mgmtHost;
         private int mgmtPort;
         private const int bufferSize = 1024;
-        private string ovpnFileName;
         private const string eventName = "MyOpenVpnEvent";
         private readonly Process managerProcess = new Process();
         private readonly Process vpnProcess = new Process();
@@ -68,12 +67,12 @@ namespace RailRoadVPN
             process.WaitForExit();
         }
 
-        public void startOpenVPN()
+        public void startOpenVPN(string serverUuid)
         {
             this.logger.log("startOpenVPN");
 
             var localAppDir = Utils.getLocalAppDirPath();
-            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn_rroad_config.ovpn >> " + Utils.getLocalAppDirPath() + "\\" + Properties.Settings.Default.openvpn_logfile_name;
+            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_servers_config_dir + "\\" + serverUuid + ".ovpn >> " + localAppDir + "\\" + Properties.Settings.Default.openvpn_logfile_name;
 
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -170,7 +169,7 @@ namespace RailRoadVPN
                 catch (System.Net.Sockets.SocketException e)
                 {
                     logger.log("SocketException, still not ready. wait 1s");
-                    Thread.Sleep(1000);
+                    Thread.Sleep(3000);
                 }
             }
 
@@ -374,6 +373,7 @@ namespace RailRoadVPN
                 return sb.ToString();
             } catch (System.Net.Sockets.SocketException ex)
             {
+                this.logger.log("SocketException in managerSendCommand: " + ex.Message);
                 return null;
             }
         }
@@ -382,14 +382,23 @@ namespace RailRoadVPN
         {
             if (socket != null)
             {
-                if (ovpnFileName != null)
-                {
-                    SendSignal(Signal.Term);
-                }
+                SendSignal(Signal.Term);
             }
 
             socket.Dispose();
             managerProcess.Close();
+        }
+    }
+
+    class OpenVPNTrafficInfo
+    {
+        public long BytesO { get; set; }
+        public long BytesI { get; set; }
+
+        public OpenVPNTrafficInfo(long BytesI, long BytesO)
+        {
+            this.BytesI = BytesI;
+            this.BytesO = BytesO;
         }
     }
 }

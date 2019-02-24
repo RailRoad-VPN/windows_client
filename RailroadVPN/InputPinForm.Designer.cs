@@ -43,6 +43,8 @@ namespace RailRoadVPN
             this.menuBtn = new System.Windows.Forms.PictureBox();
             this.menuHelpBtn = new System.Windows.Forms.Button();
             this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.ruLangBtn = new System.Windows.Forms.PictureBox();
+            this.enLangBtn = new System.Windows.Forms.PictureBox();
             this.howGetPinTextLabel = new System.Windows.Forms.Label();
             this.getPinCodeLabelLink = new System.Windows.Forms.LinkLabel();
             this.menuTimer = new System.Windows.Forms.Timer(this.components);
@@ -50,6 +52,8 @@ namespace RailRoadVPN
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
             this.menuNavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ruLangBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.enLangBtn)).BeginInit();
             this.SuspendLayout();
             // 
             // pin_1
@@ -66,6 +70,7 @@ namespace RailRoadVPN
             this.pin_1.Size = new System.Drawing.Size(50, 49);
             this.pin_1.TabIndex = 2;
             this.pin_1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_1.TextChanged += new System.EventHandler(this.pin_1_TextChanged);
             this.pin_1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_1_KeyDown);
             this.pin_1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_1_KeyPress);
             // 
@@ -80,6 +85,7 @@ namespace RailRoadVPN
             this.pin_2.Size = new System.Drawing.Size(50, 49);
             this.pin_2.TabIndex = 3;
             this.pin_2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_2.TextChanged += new System.EventHandler(this.pin_2_TextChanged);
             this.pin_2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_2_KeyDown);
             this.pin_2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_2_KeyPress);
             // 
@@ -94,6 +100,7 @@ namespace RailRoadVPN
             this.pin_3.Size = new System.Drawing.Size(50, 49);
             this.pin_3.TabIndex = 4;
             this.pin_3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_3.TextChanged += new System.EventHandler(this.pin_3_TextChanged);
             this.pin_3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_3_KeyDown);
             this.pin_3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_3_KeyPress);
             // 
@@ -108,19 +115,20 @@ namespace RailRoadVPN
             this.pin_4.Size = new System.Drawing.Size(50, 49);
             this.pin_4.TabIndex = 5;
             this.pin_4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.pin_4.TextChanged += new System.EventHandler(this.pin_4_TextChanged);
             this.pin_4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pin_4_KeyDown);
             this.pin_4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pin_4_KeyPress);
             // 
             // enter_pin_label
             // 
             this.enter_pin_label.AutoSize = true;
-            this.enter_pin_label.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.enter_pin_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
             this.enter_pin_label.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.enter_pin_label.Location = new System.Drawing.Point(104, 138);
             this.enter_pin_label.Name = "enter_pin_label";
             this.enter_pin_label.Size = new System.Drawing.Size(164, 21);
             this.enter_pin_label.TabIndex = 6;
-            this.enter_pin_label.Text = "Enter PIN-CODE";
+            this.enter_pin_label.Text = global::RailRoadVPN.Properties.strings.enter_pin_label;
             // 
             // closeBtn
             // 
@@ -172,14 +180,39 @@ namespace RailRoadVPN
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.White;
+            this.menuNavPanel.Controls.Add(this.ruLangBtn);
+            this.menuNavPanel.Controls.Add(this.enLangBtn);
             this.menuNavPanel.Controls.Add(this.menuHelpBtn);
             this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
             this.menuNavPanel.Name = "menuNavPanel";
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
+            // ruLangBtn
+            // 
+            this.ruLangBtn.BackgroundImage = global::RailRoadVPN.Properties.Resources.ru_lang;
+            this.ruLangBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ruLangBtn.Location = new System.Drawing.Point(89, 562);
+            this.ruLangBtn.Name = "ruLangBtn";
+            this.ruLangBtn.Size = new System.Drawing.Size(25, 25);
+            this.ruLangBtn.TabIndex = 13;
+            this.ruLangBtn.TabStop = false;
+            this.ruLangBtn.Click += new System.EventHandler(this.ruLangBtn_Click);
+            // 
+            // enLangBtn
+            // 
+            this.enLangBtn.BackgroundImage = global::RailRoadVPN.Properties.Resources.en_lang;
+            this.enLangBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.enLangBtn.Location = new System.Drawing.Point(31, 562);
+            this.enLangBtn.Name = "enLangBtn";
+            this.enLangBtn.Size = new System.Drawing.Size(25, 25);
+            this.enLangBtn.TabIndex = 13;
+            this.enLangBtn.TabStop = false;
+            this.enLangBtn.Click += new System.EventHandler(this.enLangBtn_Click);
+            // 
             // howGetPinTextLabel
             // 
+            this.howGetPinTextLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
             this.howGetPinTextLabel.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.howGetPinTextLabel.Location = new System.Drawing.Point(24, 352);
             this.howGetPinTextLabel.Name = "howGetPinTextLabel";
@@ -195,7 +228,7 @@ namespace RailRoadVPN
             this.getPinCodeLabelLink.Size = new System.Drawing.Size(128, 18);
             this.getPinCodeLabelLink.TabIndex = 11;
             this.getPinCodeLabelLink.TabStop = true;
-            this.getPinCodeLabelLink.Text = "GET PIN-CODE";
+            this.getPinCodeLabelLink.Text = global::RailRoadVPN.Properties.strings.get_pincode_text_link;
             this.getPinCodeLabelLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.getPinCodeLabelLink_LinkClicked);
             // 
             // menuTimer
@@ -208,9 +241,9 @@ namespace RailRoadVPN
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
-            this.Controls.Add(this.menuBtn);
             this.Controls.Add(this.minimizeBtn);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.menuNavPanel);
@@ -221,18 +254,22 @@ namespace RailRoadVPN
             this.Controls.Add(this.pin_1);
             this.Controls.Add(this.howGetPinTextLabel);
             this.Controls.Add(this.getPinCodeLabelLink);
+            this.Controls.Add(this.menuBtn);
             this.Cursor = System.Windows.Forms.Cursors.Default;
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InputPinForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "RRoadVPN - Enter pin";
-            this.StartPosition = FormStartPosition.Manual;
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.InputPinForm_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.menuNavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ruLangBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.enLangBtn)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,6 +289,8 @@ namespace RailRoadVPN
         private System.Windows.Forms.Label howGetPinTextLabel;
         private System.Windows.Forms.LinkLabel getPinCodeLabelLink;
         private System.Windows.Forms.Timer menuTimer;
+        private PictureBox enLangBtn;
+        private PictureBox ruLangBtn;
     }
 }
 

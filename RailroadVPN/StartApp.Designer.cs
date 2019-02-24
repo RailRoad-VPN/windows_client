@@ -33,10 +33,10 @@
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.logoImg = new System.Windows.Forms.PictureBox();
             this.loadingBar = new System.Windows.Forms.ProgressBar();
+            this.initAppWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoImg)).BeginInit();
-            this.initAppWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // closeBtn
@@ -81,9 +81,9 @@
             this.loadingBar.Name = "loadingBar";
             this.loadingBar.Size = new System.Drawing.Size(391, 10);
             this.loadingBar.TabIndex = 10;
-            //
+            // 
             // initAppWorker
-            //
+            // 
             this.initAppWorker.WorkerReportsProgress = true;
             this.initAppWorker.WorkerSupportsCancellation = true;
             // 
@@ -103,7 +103,7 @@
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "RailroadVPN";
+            this.Name = "StartAppForm";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RailroadVPN";

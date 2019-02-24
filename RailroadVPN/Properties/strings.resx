@@ -140,6 +140,9 @@
   <data name="help_1_text_label" xml:space="preserve">
     <value>Click</value>
   </data>
+  <data name="help_2_green_text_label" xml:space="preserve">
+    <value>semaphore to disconnect VPN</value>
+  </data>
   <data name="help_2_text_label" xml:space="preserve">
     <value>semaphore to connect VPN</value>
   </data>

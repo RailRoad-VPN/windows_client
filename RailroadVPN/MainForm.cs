@@ -33,6 +33,9 @@ namespace RailRoadVPN
         private OpenVPNService openVPNService;
         private ServiceAPI serviceAPI;
 
+        private string connectionUuid;
+        private string ConnectedSince;
+
         private int _menuBtnStartPos;
 
         public MainForm()
@@ -45,6 +48,44 @@ namespace RailRoadVPN
 
             this.serviceAPI = new ServiceAPI();
             this._menuBtnStartPos = this.menuBtn.Left;
+
+            this.statusLabel.Text = Properties.strings.vpn_connect_status;
+            this.helpText1Label.Text = Properties.strings.help_1_text_label;
+            this.helpTextRedLabel.Text = Properties.strings.help_red_text_label;
+            this.helpText2Label.Text = Properties.strings.help_2_text_label;
+            this.helpTextGreenLabel.Text = Properties.strings.help_green_text_label;
+
+            this.updateHelpTextUI();
+        }
+
+        delegate void UpdateHelpTextUICallback();
+
+        private void updateHelpTextUI()
+        {
+            if (this.statusLabel.InvokeRequired)
+            {
+                UpdateHelpTextUICallback d = new UpdateHelpTextUICallback(updateHelpTextUI);
+                this.Invoke(d);
+            }
+            else
+            {
+                this.statusLabel.Refresh();
+                this.helpText1Label.Refresh();
+                this.helpTextRedLabel.Refresh();
+                this.helpText2Label.Refresh();
+                this.helpTextGreenLabel.Refresh();
+
+                if (VPN_CONNECT_STATUS == "CONNECTED")
+                {
+                    this.helpTextGreenLabel.Location = new Point(this.helpText1Label.Location.X + this.helpText1Label.Size.Width + 5, this.helpText1Label.Location.Y);
+                    this.helpText2Label.Location = new Point(this.helpTextGreenLabel.Location.X + this.helpTextGreenLabel.Size.Width + 5, this.helpTextGreenLabel.Location.Y);
+                }
+                else
+                {
+                    this.helpTextRedLabel.Location = new Point(this.helpText1Label.Location.X + this.helpText1Label.Size.Width + 5, this.helpText1Label.Location.Y);
+                    this.helpText2Label.Location = new Point(this.helpTextRedLabel.Location.X + this.helpTextRedLabel.Size.Width + 5, this.helpTextRedLabel.Location.Y);
+                }
+            }
         }
 
         private void menuLogoutBtn_Click(object sender, EventArgs e)
@@ -116,9 +157,6 @@ namespace RailRoadVPN
             }
             else
             {
-                // hide menu
-                menuNavPanel.Visible = false;
-
                 // incrementally move
                 menuNavPanel.Width -= (_stepSizeAnimation);
                 this.menuBtn.Left -= (_stepSizeAnimation);
@@ -141,7 +179,7 @@ namespace RailRoadVPN
 
         private int btnPressedWhileConnecting = 1;
 
-        private void updateUserDevice(bool IsActive, string VirtualIp, string DeviceIp)
+        private void updateUserDevice(bool IsActive, string VirtualIp, string DeviceIp, string ModifyReason)
         {
             this.logger.log("updateUserDevice method in Form");
 
@@ -160,7 +198,7 @@ namespace RailRoadVPN
             try
             {
                 this.logger.log("call update user device");
-                this.serviceAPI.updateUserDevice(DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive);
+                this.serviceAPI.updateUserDevice(DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive, ModifyReason);
             }
             catch (Exception e)
             {
@@ -170,8 +208,6 @@ namespace RailRoadVPN
 
         private void semaphorePic_Click(object sender, EventArgs e)
         {
-            this.semaphoreTimer.Enabled = true;
-            this.statusTextTimer.Enabled = true;
 
             if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
             {
@@ -192,6 +228,8 @@ namespace RailRoadVPN
                        this.logger.log("get random server");
                        Guid userGuid = Guid.Parse(Properties.Settings.Default.user_uuid);
                        string randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
+
+                       Properties.Settings.Default.server_uuid = randomServerUuid;
 
                        string configPath = Utils.getServersConfigDirPath() + "\\" + randomServerUuid + ".ovpn";
 
@@ -246,14 +284,19 @@ namespace RailRoadVPN
                        }
 
                        setVPNStatusText("Starting VPN...");
-                       this.openVPNService.startOpenVPN();
+                       this.openVPNService.startOpenVPN(serverUuid: randomServerUuid);
+                       Thread.Sleep(2000);
                        setVPNStatusText("Starting Manager...");
                        this.openVPNService.connectManager();
                    });
+                this.semaphoreTimer.Enabled = true;
+                this.statusTextTimer.Enabled = true;
                 this.vpnConnectingThread.Start();
             }
             else if (VPN_CONNECT_STATUS == "CONNECTING")
             {
+                this.semaphoreTimer.Enabled = true;
+                this.statusTextTimer.Enabled = true;
                 this.logger.log("VPN CONNECT STATUS is CONNECTING");
 
                 this.logger.log("check count of button pressed");
@@ -315,6 +358,7 @@ namespace RailRoadVPN
                     this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
                     this.logger.log("disconnecting vpn thread: set semaphore picture to red");
                     this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                    this.updateHelpTextUI();
                 });
 
                 this.logger.log("start vpn disconnecting thread");
@@ -322,10 +366,7 @@ namespace RailRoadVPN
             }
             else if (VPN_CONNECT_STATUS == "CONNECTED")
             {
-                string virtualIp = this.getOpenVPNVirtualIP();
-                this.updateUserDevice(IsActive: false, VirtualIp: virtualIp, DeviceIp: null);
-
-                // TODO update connection
+                string statusRaw = this.getOpenVPNStatus();
 
                 this.logger.log("vpn connected. start disconnecting process");
                 VPN_CONNECT_STATUS = "DISCONNECTING";
@@ -335,6 +376,9 @@ namespace RailRoadVPN
 
                 this.logger.log("set semaphore picture to yellow");
                 this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
+
+                this.semaphoreTimer.Enabled = true;
+                this.statusTextTimer.Enabled = true;
 
                 this.logger.log("create vpn disconnecting thread");
                 this.vpnDisconnectingThread = new Thread(() =>
@@ -360,7 +404,11 @@ namespace RailRoadVPN
                     this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
                     this.logger.log("disconnecting vpn thread: set semaphore picture to red");
                     this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                    this.updateHelpTextUI();
                 });
+
+                bool IsConnected = false;
+                this.updateConnection(IsConnected: IsConnected, ConnectedSince: this.ConnectedSince);
 
                 this.logger.log("start vpn disconnecting thread");
                 this.vpnDisconnectingThread.Start();
@@ -390,8 +438,8 @@ namespace RailRoadVPN
 
         private int helpText2LabelLeftRedPos = 159;
         private int helpText2LabelLeftGreenPos = 174;
-        private string helpText2LabelRedText = "semaphore to connect VPN";
-        private string helpText2LabelGreenText = "semaphore to disconnect VPN";
+        private string helpText2LabelRedText = Properties.strings.help_2_text_label;
+        private string helpText2LabelGreenText = Properties.strings.help_2_green_text_label;
 
         private void statusTextTimer_Tick(object sender, EventArgs e)
         {
@@ -441,10 +489,34 @@ namespace RailRoadVPN
                 this.logger.log("set help text 2 label Text attribute to green text");
                 this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelGreenText);
 
-                string virtualIp = this.getOpenVPNVirtualIP();
-                this.updateUserDevice(IsActive: true, VirtualIp: virtualIp, DeviceIp: null);
+                if (VPN_CONNECT_STATUS != "NOT_CCONNECTED")
+                {
+                    Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+                    Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
+                    Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+                    string DeviceIp = null;
 
-                this.serviceAPI.createConnection();
+                    OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
+                    string VirtualIp = this.getOpenVPNVirtualIP();
+
+                    while (VirtualIp == "")
+                    {
+                        VirtualIp = this.getOpenVPNVirtualIP();
+                    }
+
+                    long BytesI = 0;
+                    long BytesO = 0;
+                    if (tafficInfo != null)
+                    {
+                        BytesI = tafficInfo.BytesI;
+                        BytesO = tafficInfo.BytesO;
+                    }
+                    bool IsConnected = true;
+                    this.ConnectedSince = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK");
+                    this.connectionUuid = this.serviceAPI.createConnection(UserUuid: UserUuid, ServerUuid: ServerUuid, UserDeviceUuid: UserDeviceUuid, DeviceIp: DeviceIp,
+                        VirtualIp: VirtualIp, BytesI: BytesI, BytesO: BytesO, IsConnected: IsConnected, ConnectedSince: ConnectedSince);
+                    this.logger.log("Connection created with uuid: " + this.connectionUuid);
+                }
             }
             else if (status == "EXITING")
             {
@@ -468,6 +540,33 @@ namespace RailRoadVPN
                 this.logger.log("change help text 2 label Text attibute to red text");
                 this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelRedText);
             }
+
+            this.updateHelpTextUI();
+        }
+
+        private void updateConnection(bool IsConnected, string ConnectedSince)
+        {
+            this.logger.log("updateConnection method from Form");
+
+            this.logger.log("getOpenVPNTrafficInfo");
+            OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
+
+            this.logger.log("get user_uuid");
+            Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+
+            this.logger.log("get server_uuid");
+            Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
+
+            this.logger.log("get user_device_uuid");
+            Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+            string DeviceIp = null;
+
+            this.logger.log("get openVPN virtual IP");
+            string VirtualIp = this.getOpenVPNVirtualIP();
+            long BytesI = tafficInfo.BytesI;
+            long BytesO = tafficInfo.BytesO;
+
+            this.serviceAPI.updateConnection(ConnectionUuid: Guid.Parse(this.connectionUuid), UserUuid: UserUuid, ServerUuid: ServerUuid, BytesI: BytesI, BytesO: BytesO, IsConnected: IsConnected, ModifyReason: "update connection");
         }
 
         /*
@@ -503,7 +602,6 @@ EXITING       -- A graceful exit is in progress.
             return statusText;
         }
 
-        // TODO
         private string getOpenVPNVirtualIP()
         {
             String state = this.openVPNService.GetState();
@@ -517,14 +615,13 @@ EXITING       -- A graceful exit is in progress.
             return virtIp;
         }
 
-        // TODO
-        private string getTrafficInfo()
+        private OpenVPNTrafficInfo getOpenVPNTrafficInfo()
         {
             string statusRaw = this.openVPNService.GetStatus();
             if (statusRaw == null)
             {
                 // TODO
-                return "";
+                return null;
             }
 
             string[] statusArr = statusRaw.Split(
@@ -532,21 +629,23 @@ EXITING       -- A graceful exit is in progress.
                 StringSplitOptions.None
             );
 
-            string read_bytes = "";
-            string write_bytes = "";
+            long read_bytes = 0;
+            long write_bytes = 0;
             foreach (string statusTxt in statusArr)
             {
                 if (statusTxt.StartsWith("TCP/UDP read"))
                 {
-                    read_bytes = statusTxt.Split(new char[] { ',' })[1];
+                    read_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
                 }
                 else if (statusTxt.StartsWith("TCP/UDP write"))
                 {
-                    write_bytes = statusTxt.Split(new char[] { ',' })[1];
+                    write_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
                 }
             }
 
-            return "";
+            OpenVPNTrafficInfo trafficInfo = new OpenVPNTrafficInfo(BytesI: read_bytes, BytesO: write_bytes);
+
+            return trafficInfo;
         }
 
         delegate void SetVPNStatusTextCallback(string text);
@@ -607,6 +706,20 @@ EXITING       -- A graceful exit is in progress.
             {
                 label.Text = text;
             }
+        }
+
+        private void enLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "en-US";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Restart application", "Change language", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ruLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "ru-RU";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

@@ -175,5 +175,17 @@ namespace RailRoadVPN.Properties {
                 this["servers_json"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string server_uuid {
+            get {
+                return ((string)(this["server_uuid"]));
+            }
+            set {
+                this["server_uuid"] = value;
+            }
+        }
     }
 }
