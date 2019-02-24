@@ -319,5 +319,15 @@ namespace RailRoadVPN
             Properties.Settings.Default.Save();
             MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void menuHelpBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

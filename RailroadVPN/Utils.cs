@@ -97,7 +97,6 @@ namespace RailRoadVPN
             for (int i = 0; i < files.Count; i++)
             {
                 string file = files[i];
-                logger.log("work with file:" + file);
 
                 // hash path
                 string relativePath = file.Substring(path.Length + 1);

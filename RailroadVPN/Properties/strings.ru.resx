@@ -164,6 +164,15 @@
   <data name="menu_item_profile" xml:space="preserve">
     <value>Мой профиль</value>
   </data>
+  <data name="menu_logout_text_label" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="menu_myprofile_text_label" xml:space="preserve">
+    <value>Аккаунт</value>
+  </data>
+  <data name="menu_needhelp_text_label" xml:space="preserve">
+    <value>Помощь?</value>
+  </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN статус</value>
   </data>

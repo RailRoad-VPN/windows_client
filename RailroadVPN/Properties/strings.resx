@@ -164,6 +164,15 @@
   <data name="menu_item_profile" xml:space="preserve">
     <value>My Profile</value>
   </data>
+  <data name="menu_logout_text_label" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="menu_myprofile_text_label" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="menu_needhelp_text_label" xml:space="preserve">
+    <value>Need Help?</value>
+  </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN STATUS</value>
   </data>

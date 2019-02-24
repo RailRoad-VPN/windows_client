@@ -196,6 +196,33 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        internal static string menu_logout_text_label {
+            get {
+                return ResourceManager.GetString("menu_logout_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        internal static string menu_myprofile_text_label {
+            get {
+                return ResourceManager.GetString("menu_myprofile_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need Help?.
+        /// </summary>
+        internal static string menu_needhelp_text_label {
+            get {
+                return ResourceManager.GetString("menu_needhelp_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VPN STATUS.
         /// </summary>
         internal static string vpn_connect_status {

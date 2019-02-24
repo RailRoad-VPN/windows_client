@@ -81,9 +81,10 @@ namespace RailRoadVPN
 
         private void initAppWorkder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error != null)
+            if (e.Error != null || e.Result == null)
             {
                 MessageBox.Show(e.Error.Message);
+                return;
             }
 
             Form resFo = (Form) e.Result;
@@ -98,10 +99,27 @@ namespace RailRoadVPN
             this.loadingBar.Value = e.ProgressPercentage;
         }
 
+        delegate void setProgressLabelTextCallback(string text);
+
+        private void setProgressLabelText(string text)
+        {
+            if (this.startProgressLabel.InvokeRequired)
+            {
+                setProgressLabelTextCallback d = new setProgressLabelTextCallback(setProgressLabelText);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.startProgressLabel.Text = text;
+            }
+        }
+
         private Form prepareApplicationToStart(BackgroundWorker worker, DoWorkEventArgs e)
         {
+            setProgressLabelText("Kill all previous applications..");
             Utils.killAllOpenVPNProcesses();
 
+            setProgressLabelText("Read properties..");
             string user_uuid = null;
             int reportProgress = 3;
             worker.ReportProgress(reportProgress);
@@ -118,21 +136,24 @@ namespace RailRoadVPN
             {
                 logger.log("Configuration Exception");
                 logger.log(ex.BareMessage);
-                throw new SystemException("bad news with configuration");
+                setProgressLabelText("Error code: 01. Write to support..");
+                return null;
             }
 
             logger.log("user_uuid: " + user_uuid);
             reportProgress = 15;
             worker.ReportProgress(reportProgress);
 
+            setProgressLabelText("Setting up user language..");
             logger.log("get user language");
             CultureInfo ci = CultureInfo.InstalledUICulture;
             string locale = ci.ToString();
             logger.log("user locale: " + locale);
-
+            // TODO need to persist or not?
             logger.log("persist to settings");
             Properties.Settings.Default.locale = locale;
 
+            setProgressLabelText("Check binaries..");
             logger.log("get binaries path");
             string binaries_path = Utils.getBinariesDirPath();
             logger.log("binaries path: " + binaries_path);
@@ -145,6 +166,7 @@ namespace RailRoadVPN
             logger.log("check binaries dir exist");
             if (Directory.Exists(binaries_path))
             {
+                setProgressLabelText("Calculating checksum of binaries..");
                 logger.log("binaries dir exist. get checksum of it");
                 string checksum = Utils.CreateMd5ForFolder(binaries_path);
                 logger.log("checksum: " + checksum);
@@ -157,6 +179,7 @@ namespace RailRoadVPN
                     worker.ReportProgress(reportProgress);
                     logger.log("checksum does not equal, need to re-extract");
                     need_extract = true;
+                    setProgressLabelText("Delete binaries..");
                     logger.log("delete exist dir");
                     Directory.Delete(binaries_path, true);
                     reportProgress = 30;
@@ -170,6 +193,7 @@ namespace RailRoadVPN
 
             if (need_extract)
             {
+                setProgressLabelText("Extracting binaries..");
                 reportProgress = 31;
                 worker.ReportProgress(reportProgress);
                 logger.log("extract zip file from resource to Local AppData folder");
@@ -222,7 +246,12 @@ namespace RailRoadVPN
 
             Thread.Sleep(500);
 
+            setProgressLabelText("Checking installed driver..");
             this.openVPNService.installTapDriver();
+
+            // TODO check driver was installed
+
+            setProgressLabelText("Loading..");
 
             Form form = null;
             reportProgress = 80;

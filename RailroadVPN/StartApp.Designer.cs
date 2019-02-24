@@ -34,6 +34,7 @@
             this.logoImg = new System.Windows.Forms.PictureBox();
             this.loadingBar = new System.Windows.Forms.ProgressBar();
             this.initAppWorker = new System.ComponentModel.BackgroundWorker();
+            this.startProgressLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoImg)).BeginInit();
@@ -87,6 +88,18 @@
             this.initAppWorker.WorkerReportsProgress = true;
             this.initAppWorker.WorkerSupportsCancellation = true;
             // 
+            // startProgressLabel
+            // 
+            this.startProgressLabel.AutoSize = true;
+            this.startProgressLabel.BackColor = System.Drawing.Color.Black;
+            this.startProgressLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startProgressLabel.ForeColor = System.Drawing.Color.White;
+            this.startProgressLabel.Location = new System.Drawing.Point(77, 562);
+            this.startProgressLabel.Name = "startProgressLabel";
+            this.startProgressLabel.Size = new System.Drawing.Size(69, 17);
+            this.startProgressLabel.TabIndex = 11;
+            this.startProgressLabel.Text = "Starting...";
+            // 
             // StartAppForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -95,6 +108,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(391, 600);
             this.ControlBox = false;
+            this.Controls.Add(this.startProgressLabel);
             this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.logoImg);
             this.Controls.Add(this.minimizeBtn);
@@ -113,6 +127,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoImg)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -122,5 +137,6 @@
         private System.Windows.Forms.PictureBox minimizeBtn;
         private System.Windows.Forms.PictureBox logoImg;
         private System.Windows.Forms.ProgressBar loadingBar;
+        private System.Windows.Forms.Label startProgressLabel;
     }
 }

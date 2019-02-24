@@ -41,13 +41,13 @@ namespace RailRoadVPN
             this.closeBtn = new System.Windows.Forms.PictureBox();
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
-            this.menuHelpBtn = new System.Windows.Forms.Button();
             this.menuNavPanel = new System.Windows.Forms.Panel();
             this.ruLangBtn = new System.Windows.Forms.PictureBox();
             this.enLangBtn = new System.Windows.Forms.PictureBox();
             this.howGetPinTextLabel = new System.Windows.Forms.Label();
             this.getPinCodeLabelLink = new System.Windows.Forms.LinkLabel();
             this.menuTimer = new System.Windows.Forms.Timer(this.components);
+            this.needHelpBtnLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
@@ -128,7 +128,7 @@ namespace RailRoadVPN
             this.enter_pin_label.Name = "enter_pin_label";
             this.enter_pin_label.Size = new System.Drawing.Size(164, 21);
             this.enter_pin_label.TabIndex = 6;
-            this.enter_pin_label.Text = global::RailRoadVPN.Properties.strings.enter_pin_label;
+            this.enter_pin_label.Text = "Enter PIN-CODE";
             // 
             // closeBtn
             // 
@@ -168,24 +168,15 @@ namespace RailRoadVPN
             this.menuBtn.TabStop = false;
             this.menuBtn.Click += new System.EventHandler(this.menuBtn_Click);
             // 
-            // menuHelpBtn
-            // 
-            this.menuHelpBtn.Location = new System.Drawing.Point(12, 515);
-            this.menuHelpBtn.Name = "menuHelpBtn";
-            this.menuHelpBtn.Size = new System.Drawing.Size(126, 23);
-            this.menuHelpBtn.TabIndex = 2;
-            this.menuHelpBtn.Text = global::RailRoadVPN.Properties.strings.menu_item_need_help;
-            this.menuHelpBtn.UseVisualStyleBackColor = true;
-            // 
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.White;
+            this.menuNavPanel.Controls.Add(this.needHelpBtnLabel);
             this.menuNavPanel.Controls.Add(this.ruLangBtn);
             this.menuNavPanel.Controls.Add(this.enLangBtn);
-            this.menuNavPanel.Controls.Add(this.menuHelpBtn);
             this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
             this.menuNavPanel.Name = "menuNavPanel";
-            this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
+            this.menuNavPanel.Size = new System.Drawing.Size(150, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
             // ruLangBtn
@@ -228,13 +219,24 @@ namespace RailRoadVPN
             this.getPinCodeLabelLink.Size = new System.Drawing.Size(128, 18);
             this.getPinCodeLabelLink.TabIndex = 11;
             this.getPinCodeLabelLink.TabStop = true;
-            this.getPinCodeLabelLink.Text = global::RailRoadVPN.Properties.strings.get_pincode_text_link;
+            this.getPinCodeLabelLink.Text = "GET PIN-CODE";
             this.getPinCodeLabelLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.getPinCodeLabelLink_LinkClicked);
             // 
             // menuTimer
             // 
             this.menuTimer.Interval = 10;
             this.menuTimer.Tick += new System.EventHandler(this.menuTimer_Tick);
+            // 
+            // needHelpBtnLabel
+            // 
+            this.needHelpBtnLabel.AutoSize = true;
+            this.needHelpBtnLabel.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.needHelpBtnLabel.Location = new System.Drawing.Point(12, 524);
+            this.needHelpBtnLabel.Name = "needHelpBtnLabel";
+            this.needHelpBtnLabel.Size = new System.Drawing.Size(120, 22);
+            this.needHelpBtnLabel.TabIndex = 13;
+            this.needHelpBtnLabel.Text = "Need Help?";
+            this.needHelpBtnLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // InputPinForm
             // 
@@ -268,6 +270,7 @@ namespace RailRoadVPN
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).EndInit();
             this.menuNavPanel.ResumeLayout(false);
+            this.menuNavPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ruLangBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.enLangBtn)).EndInit();
             this.ResumeLayout(false);
@@ -285,12 +288,12 @@ namespace RailRoadVPN
         private System.Windows.Forms.PictureBox minimizeBtn;
         private System.Windows.Forms.PictureBox menuBtn;
         private System.Windows.Forms.Panel menuNavPanel;
-        private System.Windows.Forms.Button menuHelpBtn;
         private System.Windows.Forms.Label howGetPinTextLabel;
         private System.Windows.Forms.LinkLabel getPinCodeLabelLink;
         private System.Windows.Forms.Timer menuTimer;
         private PictureBox enLangBtn;
         private PictureBox ruLangBtn;
+        private Label needHelpBtnLabel;
     }
 }
 

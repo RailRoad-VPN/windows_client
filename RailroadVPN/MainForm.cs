@@ -55,6 +55,11 @@ namespace RailRoadVPN
             this.helpText2Label.Text = Properties.strings.help_2_text_label;
             this.helpTextGreenLabel.Text = Properties.strings.help_green_text_label;
 
+            this.menuLogoutLabel.Text = Properties.strings.menu_logout_text_label;
+            this.menuNeedHelpLabel.Text = Properties.strings.menu_needhelp_text_label;
+            this.menuMyProfileLabel.Text = Properties.strings.menu_myprofile_text_label;
+
+
             this.updateHelpTextUI();
         }
 
@@ -720,6 +725,54 @@ EXITING       -- A graceful exit is in progress.
             Properties.Settings.Default.locale = "ru-RU";
             Properties.Settings.Default.Save();
             MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void menuLogoutLabel_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Reset();
+            Properties.Settings.Default.Save();
+
+            InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
+            ipf.Location = this.Location;
+            this.Hide();
+            ipf.Closed += (s, args) => this.Close();
+            ipf.Show();
+        }
+
+        private void menuMyProfileLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.White;
+            this.menuMyProfileLabel.Refresh();
+        }
+
+        private void menuMyProfileLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuMyProfileLabel.Refresh();
+        }
+
+        private void menuLogoutLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuLogoutLabel.ForeColor = System.Drawing.Color.White;
+            this.menuLogoutLabel.Refresh();
+        }
+
+        private void menuLogoutLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuLogoutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuLogoutLabel.Refresh();
+        }
+
+        private void menuNeedHelpLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.White;
+            this.menuNeedHelpLabel.Refresh();
+        }
+
+        private void menuNeedHelpLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuNeedHelpLabel.Refresh();
         }
     }
 }
