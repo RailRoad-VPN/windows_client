@@ -116,7 +116,7 @@ namespace RailRoadVPN
 
         private Form prepareApplicationToStart(BackgroundWorker worker, DoWorkEventArgs e)
         {
-            setProgressLabelText("Kill all previous applications..");
+            setProgressLabelText("Cleanup application processes..");
             Utils.killAllOpenVPNProcesses();
 
             setProgressLabelText("Read properties..");
@@ -128,7 +128,7 @@ namespace RailRoadVPN
             worker.ReportProgress(reportProgress);
             try
             {
-                user_uuid = (string)Properties.Settings.Default.user_uuid;
+                user_uuid = Properties.Settings.Default.user_uuid;
                 reportProgress = 9;
                 worker.ReportProgress(reportProgress);
             }
@@ -250,6 +250,23 @@ namespace RailRoadVPN
             this.openVPNService.installTapDriver();
 
             // TODO check driver was installed
+
+            string todayLog = DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.app_logfile_name;
+            setProgressLabelText("Cleaning old log files..");
+            List<FileInfo> logFiles = Utils.getLogFiles();
+            foreach (FileInfo logFile in logFiles)
+            {
+                string fileName = logFile.Name;
+                if (fileName == todayLog || fileName == Properties.Settings.Default.openvpn_logfile_name)
+                {
+                    logger.log("today log or openvpn log file. log file name: " + fileName);
+                    continue;
+                } else
+                {
+                    logger.log("delete log file with name: " + fileName);
+                    logFile.Delete();
+                }
+            }
 
             setProgressLabelText("Loading..");
 

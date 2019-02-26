@@ -155,6 +155,11 @@ namespace RailRoadVPN
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + localDirAppName;
         }
 
+        public static string getLogsDir()
+        {
+            return Path.Combine(Utils.getLocalAppDirPath(), Properties.Settings.Default.local_app_logs_dir);
+        }
+
         public static void killAllMyProcesses()
         {
             killAllOpenVPNProcesses();
@@ -177,7 +182,7 @@ namespace RailRoadVPN
         private static void killAllProcessessByName(string name_exe)
         {
             logger.log("kill all processes " + name_exe);
-            string strCmdText = "/K taskkill /F /IM " + name_exe;
+            string strCmdText = "/C taskkill /F /IM " + name_exe;
             Process process = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -187,6 +192,19 @@ namespace RailRoadVPN
             };
             process.StartInfo = startInfo;
             process.Start();
+            process.WaitForExit(5000);
+            try
+            {
+                process.Kill();
+            } catch (System.InvalidOperationException) { }
+        }
+
+        public static List<FileInfo> getLogFiles()
+        {
+            string logDir = Utils.getLogsDir();
+            DirectoryInfo d = new DirectoryInfo(logDir);
+            FileInfo[] Files = d.GetFiles("*.log");
+            return Files.ToList();
         }
     }
 }

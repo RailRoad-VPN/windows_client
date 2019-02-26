@@ -176,7 +176,7 @@ namespace RailRoadVPN
             this.menuNavPanel.Controls.Add(this.enLangBtn);
             this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
             this.menuNavPanel.Name = "menuNavPanel";
-            this.menuNavPanel.Size = new System.Drawing.Size(150, 600);
+            this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
             // ruLangBtn

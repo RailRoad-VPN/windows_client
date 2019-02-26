@@ -9,6 +9,7 @@ using RestSharp;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Linq;
+using System.IO.Compression;
 
 namespace RailRoadVPN
 {
@@ -16,14 +17,20 @@ namespace RailRoadVPN
     public class ServiceAPI
     {
         private const string URL = "https://api.rroadvpn.net/api/v1";
+
         private const string GET_USER_BY_PINCODE_URL = "/users/pincode/{pincode}";
+
         private const string CREATE_USER_DEVICE_URL = "/users/{user_uuid}/devices";
         private const string UPDATE_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
+
         private const string GET_USER_RANDOM_SERVER_URL = "/users/{user_uuid}/servers?random";
         private const string GET_SERVER_URL = "/users/{user_uuid}/servers/{server_uuid}";
+
         private const string GET_USER_SERVER_CONFIGURATIONS_URL = "/users/{user_uuid}/servers/{server_uuid}/configurations?platform_id=3&vpn_type_id=1";
         private const string CREATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections";
         private const string UPDATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections/{connection_uuid}";
+
+        private const string CREATE_USER_TICKET_URL = "/users/{user_uuid}/tickets";
 
         private RestClient client;
         private Logger logger = Logger.GetInstance();
@@ -368,6 +375,55 @@ namespace RailRoadVPN
             {
                 this.logger.log("status code is NOT 200");
                 throw new RailroadException("something wrong with API");
+            }
+        }
+
+        public int createTicket(Guid UserUuid, string ContactEmail, string Description, byte[] ZipFileBytesArr)
+        {
+            this.logger.log(System.String.Format("createTicket: userUuid={0}, ContactEmail={1}, Description={2}", UserUuid, ContactEmail, Description));
+
+            this.logger.log("create request");
+            var request = new RestRequest(CREATE_USER_TICKET_URL, Method.POST);
+            this.logger.log("add url segment user_uuid");
+            request.AddUrlSegment("user_uuid", UserUuid.ToString());
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("create UserTicket object");
+            UserTicket userDevice = new UserTicket()
+            {
+                UserUuid = UserUuid,
+                ContactEmail = ContactEmail,
+                Description = Description,
+                ZipFileBytesArr = ZipFileBytesArr
+            };
+
+            this.logger.log("serialize UserTicket object to JSON");
+            var json = JsonConvert.SerializeObject(userDevice);
+            this.logger.log("JSON: " + json);
+
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.Created)
+            {
+                this.logger.log("status code is NOT 201");
+                throw new RailroadException("something wrong with API");
+            }
+            else
+            {
+                this.logger.log("status code is 201");
+
+                string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
+                string[] locationSplitted = location.Split(new char[] { '/' });
+                int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
+
+                return ticketNumber;
             }
         }
     }

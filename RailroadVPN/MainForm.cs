@@ -774,5 +774,18 @@ EXITING       -- A graceful exit is in progress.
             this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
             this.menuNeedHelpLabel.Refresh();
         }
+
+        private void menuNeedHelpLabel_Click(object sender, EventArgs e)
+        {
+            NeedHelpForm nhf = new NeedHelpForm();
+
+            int parent_left = this.Left;
+            int parent_top = this.Top;
+            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
+            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
+
+            nhf.Location = new Point(parent_left, parent_top);
+            nhf.ShowDialog();
+        }
     }
 }

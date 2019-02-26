@@ -119,6 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Error.cs" />
+    <Compile Include="NeedHelpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NeedHelpForm.Designer.cs">
+      <DependentUpon>NeedHelpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -155,8 +161,12 @@
     </Compile>
     <Compile Include="User.cs" />
     <Compile Include="UserDevice.cs" />
+    <Compile Include="UserTicket.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VPNServer.cs" />
+    <EmbeddedResource Include="NeedHelpForm.resx">
+      <DependentUpon>NeedHelpForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InputPinForm.resx">
       <DependentUpon>InputPinForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -50,5 +50,8 @@
     <Setting Name="server_uuid" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="local_app_logs_dir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">logs</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

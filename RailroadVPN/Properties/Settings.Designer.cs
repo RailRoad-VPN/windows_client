@@ -187,5 +187,14 @@ namespace RailRoadVPN.Properties {
                 this["server_uuid"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("logs")]
+        public string local_app_logs_dir {
+            get {
+                return ((string)(this["local_app_logs_dir"]));
+            }
+        }
     }
 }

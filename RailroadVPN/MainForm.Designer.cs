@@ -37,6 +37,8 @@ namespace RailRoadVPN
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
             this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuLogoImg = new System.Windows.Forms.PictureBox();
             this.menuLogoutLabel = new System.Windows.Forms.Label();
             this.menuNeedHelpLabel = new System.Windows.Forms.Label();
@@ -53,6 +55,8 @@ namespace RailRoadVPN
             this.helpTextRedLabel = new System.Windows.Forms.Label();
             this.helpText2Label = new System.Windows.Forms.Label();
             this.helpTextGreenLabel = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
@@ -105,6 +109,10 @@ namespace RailRoadVPN
             // menuNavPanel
             // 
             this.menuNavPanel.BackColor = System.Drawing.Color.Black;
+            this.menuNavPanel.Controls.Add(this.panel4);
+            this.menuNavPanel.Controls.Add(this.panel3);
+            this.menuNavPanel.Controls.Add(this.panel2);
+            this.menuNavPanel.Controls.Add(this.panel1);
             this.menuNavPanel.Controls.Add(this.menuLogoImg);
             this.menuNavPanel.Controls.Add(this.menuLogoutLabel);
             this.menuNavPanel.Controls.Add(this.menuNeedHelpLabel);
@@ -115,6 +123,22 @@ namespace RailRoadVPN
             this.menuNavPanel.Name = "menuNavPanel";
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.White;
+            this.panel2.Location = new System.Drawing.Point(8, 129);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(133, 1);
+            this.panel2.TabIndex = 21;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Location = new System.Drawing.Point(8, 94);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(133, 1);
+            this.panel1.TabIndex = 20;
             // 
             // menuLogoImg
             // 
@@ -148,11 +172,12 @@ namespace RailRoadVPN
             this.menuNeedHelpLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.menuNeedHelpLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
             this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
-            this.menuNeedHelpLabel.Location = new System.Drawing.Point(25, 105);
+            this.menuNeedHelpLabel.Location = new System.Drawing.Point(12, 106);
             this.menuNeedHelpLabel.Name = "menuNeedHelpLabel";
             this.menuNeedHelpLabel.Size = new System.Drawing.Size(71, 13);
             this.menuNeedHelpLabel.TabIndex = 20;
             this.menuNeedHelpLabel.Text = "NEED HELP?";
+            this.menuNeedHelpLabel.Click += new System.EventHandler(this.menuNeedHelpLabel_Click);
             this.menuNeedHelpLabel.MouseLeave += new System.EventHandler(this.menuNeedHelpLabel_MouseLeave);
             this.menuNeedHelpLabel.MouseHover += new System.EventHandler(this.menuNeedHelpLabel_MouseHover);
             // 
@@ -162,7 +187,7 @@ namespace RailRoadVPN
             this.menuMyProfileLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.menuMyProfileLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuMyProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
-            this.menuMyProfileLabel.Location = new System.Drawing.Point(25, 73);
+            this.menuMyProfileLabel.Location = new System.Drawing.Point(12, 70);
             this.menuMyProfileLabel.Name = "menuMyProfileLabel";
             this.menuMyProfileLabel.Size = new System.Drawing.Size(71, 13);
             this.menuMyProfileLabel.TabIndex = 16;
@@ -300,6 +325,22 @@ namespace RailRoadVPN
             this.helpTextGreenLabel.Text = "green";
             this.helpTextGreenLabel.Visible = false;
             // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.White;
+            this.panel3.Location = new System.Drawing.Point(0, 521);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(149, 1);
+            this.panel3.TabIndex = 21;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.White;
+            this.panel4.Location = new System.Drawing.Point(8, 59);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(133, 1);
+            this.panel4.TabIndex = 21;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -364,5 +405,9 @@ namespace RailRoadVPN
         private Label menuNeedHelpLabel;
         private Label menuLogoutLabel;
         private PictureBox menuLogoImg;
+        private Panel panel1;
+        private Panel panel2;
+        private Panel panel3;
+        private Panel panel4;
     }
 }
