@@ -42,7 +42,7 @@ namespace RailRoadVPN
 
         private RestRequest prepareRequest(RestRequest request)
         {
-            this.logger.log("prepare request");
+            //this.logger.log("prepare request");
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("X-Auth-Token", "7d@qjf-hK:qwQuQqH]Pq+xJNseU<Gh]:A0A=AY\\PJKjNnQOP#YA'lXADW[k7FzGE");
@@ -334,22 +334,22 @@ namespace RailRoadVPN
         public void updateConnection(Guid ConnectionUuid, Guid UserUuid, Guid ServerUuid, long BytesI, long BytesO, bool IsConnected, string ModifyReason)
         {
             //this.logger.log(System.String.Format("updateConnection: userUuid={0}, serverUuid={1}, deviceIp={2}, virtualIp={3}, bytesI={4}, bytesO={5}, isConnected={6}, connectedSince={7}, connectionUuid={8}, ModifyReason={9}", ));
-            this.logger.log(System.String.Format("updateConnection:"));
+            //this.logger.log(System.String.Format("updateConnection:"));
 
-            this.logger.log("create request");
+            //this.logger.log("create request");
             var request = new RestRequest(UPDATE_USER_SERVER_CONNECTION_URL, Method.PUT);
-            this.logger.log("add url segment user_uuid");
+            //this.logger.log("add url segment user_uuid");
             request.AddUrlSegment("user_uuid", UserUuid.ToString());
-            this.logger.log("add url segment server_uuid");
+            //this.logger.log("add url segment server_uuid");
             request.AddUrlSegment("server_uuid", ServerUuid.ToString());
-            this.logger.log("add url segment connection_uuid");
+            //this.logger.log("add url segment connection_uuid");
             request.AddUrlSegment("connection_uuid", ConnectionUuid.ToString());
-            this.logger.log("add request header X-Device-Token");
+            //this.logger.log("add request header X-Device-Token");
             request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
 
             request = this.prepareRequest(request);
 
-            this.logger.log("create VPNUserServerConnection object");
+            //this.logger.log("create VPNUserServerConnection object");
             VPNUserServerConnection userDevice = new VPNUserServerConnection()
             {
                 Uuid = ConnectionUuid,
@@ -361,19 +361,19 @@ namespace RailRoadVPN
                 ModifyReason = ModifyReason
             };
 
-            this.logger.log("serialize VPNUserServerConnection object to JSON");
+            //this.logger.log("serialize VPNUserServerConnection object to JSON");
             var json = JsonConvert.SerializeObject(userDevice);
-            this.logger.log("JSON: " + json);
+            //this.logger.log("JSON: " + json);
 
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
 
-            this.logger.log("execute request");
+            //this.logger.log("execute request");
             var response = this.client.Execute(request);
             var statusCode = response.StatusCode;
-            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            //this.logger.log(System.String.Format("response status code: {0}", statusCode));
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
-                this.logger.log("status code is NOT 200");
+                //this.logger.log("status code is NOT 200");
                 throw new RailroadException("something wrong with API");
             }
         }

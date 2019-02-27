@@ -135,6 +135,7 @@ namespace RailRoadVPN
                 catch (Exception e)
                 {
                     // Process already exited.
+                    this.logger.log("Exception when killprocessandchildren: " + e.Message);
                 }
             }
         }
@@ -143,7 +144,7 @@ namespace RailRoadVPN
         {
             this.logger.log("connectManager");
 
-            if (this.mgmtHost == null || this.mgmtPort == null)
+            if (this.mgmtHost == null)
             {
                 this.logger.log("cant connect to mgmt interface of openvpn because no mgmthost or port were initialized");
                 throw new RailroadException("no data to connect manager");
@@ -168,7 +169,7 @@ namespace RailRoadVPN
                     logger.log("Change MANAGER_STATUS to CONNECTED");
                     MANAGER_STATUS = "CONNECTED";
                 }
-                catch (System.Net.Sockets.SocketException e)
+                catch (System.Net.Sockets.SocketException)
                 {
                     logger.log("SocketException, still not ready. wait 5s");
                     Thread.Sleep(5000);
@@ -312,7 +313,7 @@ namespace RailRoadVPN
                 {
                     throw new SocketException();
                 }
-            } catch (System.Net.Sockets.SocketException e)
+            } catch (System.Net.Sockets.SocketException)
             {
                 this.logger.log("SocketException");
             }
@@ -321,12 +322,12 @@ namespace RailRoadVPN
 
         private string managerSendCommand(String cmd)
         {
-            this.logger.log(string.Format("managerSendCommand: cmd={0}", cmd));
+            //this.logger.log(string.Format("managerSendCommand: cmd={0}", cmd));
 
-            this.logger.log("Check manager status, socket and socket status");
+            //this.logger.log("Check manager status, socket and socket status");
             if (this.MANAGER_STATUS != "CONNECTED" || socket == null || socket.Connected == false)
             {
-                this.logger.log("something bad with manager connect");
+                //this.logger.log("something bad with manager connect");
                 return null;
             }
             try

@@ -35,8 +35,13 @@ namespace RailRoadVPN
 
         private string connectionUuid;
         private string ConnectedSince;
+        private string VirtualIp;
+        private long BytesI;
+        private long BytesO;
 
         private int _menuBtnStartPos;
+
+        private Thread handleConnectionThread;
 
         public MainForm()
         {
@@ -60,6 +65,108 @@ namespace RailRoadVPN
             this.menuMyProfileLabel.Text = Properties.strings.menu_myprofile_text_label;
 
             this.updateHelpTextUI();
+
+            this.handleConnectionThread = new Thread(() => {
+                Thread.CurrentThread.IsBackground = true;
+
+                bool connectionCreated = false;
+                while(true)
+                {
+                    string status = this.getOpenVPNStatus();
+
+                    //if (status == "CONNECTED")
+                    //{
+                    //    logger.log("status is connected, and VPN_CONNECT_STATUS is " + VPN_CONNECT_STATUS);
+                    //}
+
+                    if (status == "CONNECTED" && connectionCreated == false)
+                    {
+                        this.logger.log("create connection");
+                        // CREATE CONNECTION
+                        try
+                        {
+                            Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+                            Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
+                            Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+
+                            OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
+                            string virtualIp = this.getOpenVPNVirtualIP();
+
+                            int cnt = 0;
+                            while (virtualIp == "" || cnt != 5)
+                            {
+                                virtualIp = this.getOpenVPNVirtualIP();
+                                cnt += 1;
+                            }
+
+                            if (virtualIp == "")
+                            {
+                                this.logger.log("we can't get virtual IP after connect. skip create connection");
+                                return;
+                            }
+
+                            long bytesI = 0;
+                            long bytesO = 0;
+                            if (tafficInfo != null)
+                            {
+                                bytesI = tafficInfo.BytesI;
+                                bytesO = tafficInfo.BytesO;
+                            }
+                            else
+                            {
+                                this.logger.log("we can't get information about traffic after connect. skip create connection");
+                                return;
+                            }
+                            bool IsConnected = true;
+                            this.ConnectedSince = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK");
+                            this.connectionUuid = this.serviceAPI.createConnection(UserUuid: UserUuid, ServerUuid: ServerUuid, UserDeviceUuid: UserDeviceUuid, DeviceIp: null,
+                                VirtualIp: virtualIp, BytesI: bytesI, BytesO: bytesO, IsConnected: IsConnected, ConnectedSince: ConnectedSince);
+                            this.logger.log("Connection created with uuid: " + this.connectionUuid);
+                            connectionCreated = true;
+                            this.BytesI = bytesI;
+                            this.BytesO = bytesO;
+                            this.VirtualIp = virtualIp;
+                        }
+                        catch (Exception ex)
+                        {
+                            this.logger.log("Exception when create connection: " + ex.Message);
+                        }
+                    }
+                    else if (status == "CONNECTED" && connectionCreated == true)
+                    {
+                        //this.logger.log("update connection");
+                        // UPDATE CONNECTION
+                        try
+                        {
+                            this.updateConnection(IsConnected: true, ConnectedSince: this.ConnectedSince);
+                            Thread.Sleep(10000);
+                        }
+                        catch (Exception ex)
+                        {
+                            this.logger.log("Exception when update connection while connected to VPN: " + ex.Message);
+                        }
+                    } else if (status == "NOT_CONNECTED" && connectionCreated == true)
+                    {
+                        this.logger.log("update connection after disconnect");
+                        connectionCreated = false;
+                        // UPDATE CONNECTION when disconnect from VPN
+                        try
+                        {
+                            this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince);
+                            Thread.Sleep(10000);
+                        }
+                        catch (Exception ex)
+                        {
+                            this.logger.log("Exception when update connection while disconnect to VPN: " + ex.Message);
+                        }
+                    } else
+                    {
+                        Thread.Sleep(10000);
+                    }
+                }
+            });
+
+            handleConnectionThread.Start();
         }
 
         delegate void UpdateHelpTextUICallback();
@@ -94,6 +201,18 @@ namespace RailRoadVPN
 
         private void menuLogoutBtn_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince);
+                Thread.Sleep(10000);
+            }
+            catch (Exception ex)
+            {
+                this.logger.log("Exception when update connection while logout: " + ex.Message);
+            }
+            this.openVPNService.stopOpenVPN();
+            try { this.handleConnectionThread.Abort(); this.vpnConnectingThread.Abort(); } catch (Exception) { }
+
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
 
@@ -115,6 +234,17 @@ namespace RailRoadVPN
 
         private void closeBtn_Click(object sender, EventArgs e)
         {
+            this.logger.log("close btn click");
+            try {
+                this.logger.log("abort handleconnection thread");
+                this.handleConnectionThread.Abort();
+                this.logger.log("stop vpn");
+                this.openVPNService.stopOpenVPN();
+            } catch (Exception) { }
+
+            this.logger.log("update connection (disconnect)");
+            try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception) { }
+
             this.Close();
         }
 
@@ -215,30 +345,6 @@ namespace RailRoadVPN
 
         private void semaphorePic_Click(object sender, EventArgs e)
         {
-            this.updateVPNConnectionThread = new Thread(() => {
-                Thread.CurrentThread.IsBackground = true;
-                /* run your code here */
-
-                while (true)
-                {
-                    if (VPN_CONNECT_STATUS != "CONNECTED")
-                    {
-                        Thread.Sleep(10000);
-                        continue;
-                    }
-
-                    try
-                    {
-                        this.updateConnection(IsConnected: true, ConnectedSince: this.ConnectedSince);
-                        Thread.Sleep(10000);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.log("Exception when update connection in thread: " + ex.Message);
-                    }
-                }
-            });
-
             if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
             {
                 this.setVPNStatusText("Checking driver...");
@@ -299,7 +405,6 @@ namespace RailRoadVPN
                            this.VPN_CONNECT_STATUS = "INTERUPTED";
                            this.setVPNStatusText(Properties.strings.check_internet_connect_header);
                            this.semaphorePic.BackgroundImage = Properties.Resources.red;
-
                            MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                            return;
 
@@ -478,8 +583,6 @@ namespace RailRoadVPN
             }
             else if (VPN_CONNECT_STATUS == "CONNECTED")
             {
-                string statusRaw = this.getOpenVPNStatus();
-
                 this.logger.log("vpn connected. start disconnecting process");
                 VPN_CONNECT_STATUS = "DISCONNECTING";
 
@@ -489,9 +592,6 @@ namespace RailRoadVPN
                 this.logger.log("set semaphore picture to yellow");
                 this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
 
-                this.semaphoreTimer.Enabled = true;
-                this.statusTextTimer.Enabled = true;
-
                 this.logger.log("create vpn disconnecting thread");
                 this.vpnDisconnectingThread = new Thread(() =>
                 {
@@ -500,8 +600,9 @@ namespace RailRoadVPN
                     /* run your code here */
                     this.logger.log("disconnecting vpn thread: stop openvpn");
                     this.openVPNService.stopOpenVPN();
-                    // this.logger.log("disconnecting vpn thread: disable status text timer");
-                    // this.statusTextTimer.Enabled = false;
+                    this.logger.log("disconnecting vpn thread: disable status text timer");
+                    this.semaphoreTimer.Enabled = false;
+                    this.statusTextTimer.Enabled = false;
                     this.logger.log("disconnecting vpn thread: set help text green label visible false");
                     this.changeLabelVisible(this.helpTextGreenLabel, false);
                     this.logger.log("disconnecting vpn thread: set help text red label visible true");
@@ -519,31 +620,31 @@ namespace RailRoadVPN
                     this.updateHelpTextUI();
                     Properties.Settings.Default.vpn_status = "disconnected";
 
-                    try
-                    {
-                        this.logger.log("check update vpn connection thread");
-                        if (this.updateVPNConnectionThread.IsAlive)
-                        {
-                            this.logger.log("update vpn connection thread is alive. aborting...");
-                            this.updateVPNConnectionThread.Abort();
-                            this.updateVPNConnectionThread = null;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.log("Exception: " + ex.Message);
-                    }
+                    //try
+                    //{
+                    //    this.logger.log("check update vpn connection thread");
+                    //    if (this.updateVPNConnectionThread.IsAlive)
+                    //    {
+                    //        this.logger.log("update vpn connection thread is alive. aborting...");
+                    //        this.updateVPNConnectionThread.Abort();
+                    //        this.updateVPNConnectionThread = null;
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    this.logger.log("Exception: " + ex.Message);
+                    //}
                 });
 
-                bool IsConnected = false;
+                //bool IsConnected = false;
 
-                try
-                {
-                    this.updateConnection(IsConnected: IsConnected, ConnectedSince: this.ConnectedSince);
-                } catch (Exception ex)
-                {
-                    this.logger.log("Exception when check update connection: " + ex.Message);
-                }
+                //try
+                //{
+                //    this.updateConnection(IsConnected: IsConnected, ConnectedSince: this.ConnectedSince);
+                //} catch (Exception ex)
+                //{
+                //    this.logger.log("Exception when check update connection: " + ex.Message);
+                //}
 
                 this.logger.log("start vpn disconnecting thread");
                 this.vpnDisconnectingThread.Start();
@@ -579,18 +680,14 @@ namespace RailRoadVPN
 
         private void statusTextTimer_Tick(object sender, EventArgs e)
         {
-            if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED" || this.VPN_CONNECT_STATUS == "CONNECTED")
-            {
-                return;
-            }
-
             string status = this.getOpenVPNStatus();
-            this.logger.log("status: " + status);
+            //this.logger.log("OpenVPN status: " + status);
 
-            if (status == "NOT_CONNECTED")
+            if ((this.VPN_CONNECT_STATUS == "NOT_CONNECTED" && status == "NOT_CONNECTED") || (this.VPN_CONNECT_STATUS == "CONNECTED" && status == "CONNECTED"))
             {
                 return;
             }
+
             this.VPN_CONNECT_STATUS = status;
 
             if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED" || this.VPN_CONNECT_STATUS == "INTERUPTED")
@@ -601,8 +698,8 @@ namespace RailRoadVPN
                 this.logger.log("disable semaphore timer");
                 this.semaphoreTimer.Enabled = false;
                 this.isLeftYellow = true;
-                //this.logger.log("disable status text timer");
-                //this.statusTextTimer.Enabled = false;
+                this.logger.log("disable status text timer");
+                this.statusTextTimer.Enabled = false;
                 this.logger.log("change help text green label visible false");
                 this.changeLabelVisible(this.helpTextGreenLabel, false);
                 this.logger.log("change help text red label visible true");
@@ -618,8 +715,8 @@ namespace RailRoadVPN
                 this.logger.log("disable semaphore timer");
                 this.semaphoreTimer.Enabled = false;
                 this.isLeftYellow = true;
-                //this.logger.log("disable status text timer");
-                //this.statusTextTimer.Enabled = false;
+                this.logger.log("disable status text timer");
+                this.statusTextTimer.Enabled = false;
                 this.logger.log("set semaphore picture to green");
                 this.semaphorePic.BackgroundImage = Properties.Resources.green;
                 this.logger.log("set help text green label visible true");
@@ -632,13 +729,14 @@ namespace RailRoadVPN
                 this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelGreenText);
             } else if (this.VPN_CONNECT_STATUS == "EXITING")
             {
+                this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
                 this.logger.log("set vpn status text to Disconnected");
                 this.setVPNStatusText("Disconnected");
                 this.logger.log("disable semaphore timer");
                 this.semaphoreTimer.Enabled = false;
                 this.isLeftYellow = true;
-                // this.logger.log("disable status text timer");
-                // this.statusTextTimer.Enabled = false;
+                this.logger.log("disable status text timer");
+                this.statusTextTimer.Enabled = false;
                 this.logger.log("set semaphore picture to red");
                 this.semaphorePic.BackgroundImage = Properties.Resources.red;
                 this.logger.log("change help text green label visible false");
@@ -654,65 +752,61 @@ namespace RailRoadVPN
             this.updateHelpTextUI();
         }
 
-        private void createConnection()
-        {
-            this.logger.log("create connection from Form");
-            Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
-            Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
-            Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
-            string DeviceIp = null;
+        //private void createConnection()
+        //{
+        //    this.logger.log("create connection from Form");
+        //    Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+        //    Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
+        //    Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+        //    string DeviceIp = null;
 
-            try
-            {
-                this.logger.log("try to get VPNTrafficInfo");
-                OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
-                this.logger.log("try to get openvpnvirutal ip");
-                string VirtualIp = this.getOpenVPNVirtualIP();
+        //    try
+        //    {
+        //        this.logger.log("try to get VPNTrafficInfo");
+        //        OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
+        //        this.logger.log("try to get openvpnvirutal ip");
+        //        this.VirtualIp = this.getOpenVPNVirtualIP();
 
-                long BytesI = 0;
-                long BytesO = 0;
-                if (tafficInfo != null)
-                {
-                    BytesI = tafficInfo.BytesI;
-                    BytesO = tafficInfo.BytesO;
-                }
-                bool IsConnected = true;
-                this.ConnectedSince = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK");
-                this.connectionUuid = this.serviceAPI.createConnection(UserUuid: UserUuid, ServerUuid: ServerUuid, UserDeviceUuid: UserDeviceUuid, DeviceIp: DeviceIp,
-                    VirtualIp: VirtualIp, BytesI: BytesI, BytesO: BytesO, IsConnected: IsConnected, ConnectedSince: ConnectedSince);
-                this.logger.log("Connection created with uuid: " + this.connectionUuid);
-            }
-            catch (Exception ex)
-            {
-                this.logger.log("Exception when create connection: " + ex.Message);
-            }
-        }
+        //        long BytesI = 0;
+        //        long BytesO = 0;
+        //        if (tafficInfo != null)
+        //        {
+        //            BytesI = tafficInfo.BytesI;
+        //            BytesO = tafficInfo.BytesO;
+        //        }
+        //        bool IsConnected = true;
+        //        this.ConnectedSince = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK");
+        //        this.connectionUuid = this.serviceAPI.createConnection(UserUuid: UserUuid, ServerUuid: ServerUuid, UserDeviceUuid: UserDeviceUuid, DeviceIp: DeviceIp,
+        //            VirtualIp: VirtualIp, BytesI: BytesI, BytesO: BytesO, IsConnected: IsConnected, ConnectedSince: ConnectedSince);
+        //        this.logger.log("Connection created with uuid: " + this.connectionUuid);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.logger.log("Exception when create connection: " + ex.Message);
+        //    }
+        //}
 
         private void updateConnection(bool IsConnected, string ConnectedSince)
         {
-            this.logger.log("updateConnection method from Form");
-
-            this.logger.log("getOpenVPNTrafficInfo");
             OpenVPNTrafficInfo tafficInfo = this.getOpenVPNTrafficInfo();
-
-            this.logger.log("get user_uuid");
             Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
-
-            this.logger.log("get server_uuid");
             Guid ServerUuid = Guid.Parse(Properties.Settings.Default.server_uuid);
-
-            this.logger.log("get user_device_uuid");
             Guid UserDeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
-            string DeviceIp = null;
 
             try
             {
-                this.logger.log("get openVPN virtual IP");
-                string VirtualIp = this.getOpenVPNVirtualIP();
-                long BytesI = tafficInfo.BytesI;
-                long BytesO = tafficInfo.BytesO;
-
-                this.serviceAPI.updateConnection(ConnectionUuid: Guid.Parse(this.connectionUuid), UserUuid: UserUuid, ServerUuid: ServerUuid, BytesI: BytesI, BytesO: BytesO, IsConnected: IsConnected, ModifyReason: "update connection");
+                long bytesI = this.BytesI;
+                long bytesO = this.BytesO;
+                if (tafficInfo != null)
+                {
+                    bytesI = tafficInfo.BytesI;
+                    bytesO = tafficInfo.BytesO;
+                }
+                this.serviceAPI.updateConnection(ConnectionUuid: Guid.Parse(this.connectionUuid), UserUuid: UserUuid, 
+                    ServerUuid: ServerUuid, BytesI: bytesI, BytesO: bytesO, IsConnected: IsConnected, 
+                    ModifyReason: "update connection");
+                this.BytesI = bytesI;
+                this.BytesO = bytesO;
             } catch (Exception ex)
             {
                 this.logger.log("Exception when update connection: " + ex.Message);
@@ -734,31 +828,31 @@ RECONNECTING  -- A restart has occurred.
 EXITING       -- A graceful exit is in progress.
          */
         private string getOpenVPNStatus() {
-            this.logger.log("getOpenVPNStatus");
+            //this.logger.log("getOpenVPNStatus");
 
-            this.logger.log("get state");
+            //this.logger.log("get state");
             String stateRaw = this.openVPNService.GetState();
-            this.logger.log("stateRaw: " + stateRaw);
-            if (stateRaw == null)
+            //this.logger.log("stateRaw: " + stateRaw);
+            if (stateRaw == null || this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
             {
-                this.logger.log("stateRaw is null. vpn not connected");
-                return "NOT_CONNECTED";
+                //this.logger.log("stateRaw is null. vpn not connected");
+                return this.VPN_CONNECT_STATUS;
             }
-            this.logger.log("split state with comma");
+            //this.logger.log("split state with comma");
             string[] stateArr = stateRaw.Split(new char[] { ',' });
-            this.logger.log("get 1 element");
+            //this.logger.log("get 1 element");
             string statusText = stateArr[1]; // CONNECTED
-            this.logger.log("statusText is " + statusText);
+            //this.logger.log("statusText is " + statusText);
             return statusText;
         }
 
         private string getOpenVPNVirtualIP()
         {
-            this.logger.log("getOpenVPNVirutalIP");
+            //this.logger.log("getOpenVPNVirutalIP");
             String state = this.openVPNService.GetState();
             if (state == null)
             {
-                this.logger.log("state is null");
+                this.logger.log("getOpenVPNVirtualIP state is null");
                 return null;
             }
             string[] stateArr = state.Split(new char[] { ',' });
@@ -875,11 +969,18 @@ EXITING       -- A graceful exit is in progress.
 
         private void menuLogoutLabel_Click(object sender, EventArgs e)
         {
-            if (this.VPN_CONNECT_STATUS == "CONNECTED" || Properties.Settings.Default.vpn_status == "connected" || Utils.isTapDriverBusy())
+            this.logger.log("logout menu click");
+            try
             {
-                MessageBox.Show(Properties.strings.disconnect_vpn_first, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                this.logger.log("abort handleconnection thread");
+                this.handleConnectionThread.Abort();
+                this.logger.log("stop vpn");
+                this.openVPNService.stopOpenVPN();
             }
+            catch (Exception) { }
+
+            this.logger.log("update connection (disconnect)");
+            try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception) { }
 
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();

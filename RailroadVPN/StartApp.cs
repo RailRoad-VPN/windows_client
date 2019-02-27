@@ -143,14 +143,12 @@ namespace RailRoadVPN
             reportProgress = 15;
             worker.ReportProgress(reportProgress);
 
-            setProgressLabelText("Setting up user language..");
-            logger.log("get user language");
-            CultureInfo ci = CultureInfo.InstalledUICulture;
-            string locale = ci.ToString();
-            logger.log("user locale: " + locale);
-            // TODO need to persist or not?
-            logger.log("persist to settings");
-            Properties.Settings.Default.locale = locale;
+            string locale = Properties.Settings.Default.locale;
+            logger.log("User locale: " + locale);
+            logger.log("create culture info");
+            var culture = new CultureInfo(locale);
+            logger.log("setup culture to any UI thread");
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
 
             setProgressLabelText("Check binaries..");
             logger.log("get binaries path");

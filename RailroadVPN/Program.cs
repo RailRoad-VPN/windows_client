@@ -18,8 +18,9 @@ namespace RailRoadVPN
         [STAThread]
         static void Main()
         {
-            var culture = new CultureInfo(Properties.Settings.Default.locale);
-
+            string locale = Properties.Settings.Default.locale;
+            logger.log("User locale: " + locale);
+            var culture = new CultureInfo(locale);
             // Culture for any thread
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 

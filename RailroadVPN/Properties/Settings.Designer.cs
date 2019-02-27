@@ -208,5 +208,14 @@ namespace RailRoadVPN.Properties {
                 this["vpn_status"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.0a")]
+        public string app_version {
+            get {
+                return ((string)(this["app_version"]));
+            }
+        }
     }
 }

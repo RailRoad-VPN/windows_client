@@ -45,7 +45,7 @@ namespace RailRoadVPN
             }
             catch (Exception ex)
             {
-                
+                Console.WriteLine(ex.Message);
             }
         }
     }
