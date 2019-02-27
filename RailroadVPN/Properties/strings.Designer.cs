@@ -79,6 +79,15 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disconnect VPN first.
+        /// </summary>
+        internal static string disconnect_vpn_first {
+            get {
+                return ResourceManager.GetString("disconnect_vpn_first", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interrupt disconnecting.
         /// </summary>
         internal static string disconnect_while_connect_header {
@@ -142,6 +151,69 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thank you for your submit. We will answer you by email as soon as possible. Your ticket number:.
+        /// </summary>
+        internal static string help_form_anonym_thank_message {
+            get {
+                return ResourceManager.GetString("help_form_anonym_thank_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill required fields.
+        /// </summary>
+        internal static string help_form_bad_data_header {
+            get {
+                return ResourceManager.GetString("help_form_bad_data_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter problem description to help us to resolve it as soon as possible.
+        /// </summary>
+        internal static string help_form_empty_description_message {
+            get {
+                return ResourceManager.GetString("help_form_empty_description_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your email, we will send an email updating information about your problem.
+        /// </summary>
+        internal static string help_form_empty_email_message {
+            get {
+                return ResourceManager.GetString("help_form_empty_email_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Why don&apos;t want send us log files?.
+        /// </summary>
+        internal static string help_form_logfilescheckbox_notchecked_header {
+            get {
+                return ResourceManager.GetString("help_form_logfilescheckbox_notchecked_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log files will help us very strong and we can be sure to hlep you as soon as possible. Log file it is file with events during application RailRoadVPN work process and no information about your personal data. Are you sure you don&apos;t want send us log file and improve time of solving your problem? If you have change your mind - press No and check checkbox on help form..
+        /// </summary>
+        internal static string help_form_logfilescheckbox_notchecked_message {
+            get {
+                return ResourceManager.GetString("help_form_logfilescheckbox_notchecked_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:.
+        /// </summary>
+        internal static string help_form_thank_message {
+            get {
+                return ResourceManager.GetString("help_form_thank_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to green.
         /// </summary>
         internal static string help_green_text_label {
@@ -165,6 +237,33 @@ namespace RailRoadVPN.Properties {
         internal static string how_get_pin_text_label {
             get {
                 return ResourceManager.GetString("how_get_pin_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t connect to VPN.
+        /// </summary>
+        internal static string main_form_tap_adapter_busy_header {
+            get {
+                return ResourceManager.GetString("main_form_tap_adapter_busy_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It seems you are connected to VPN. Disconnect first, than press Connect Semaphore again..
+        /// </summary>
+        internal static string main_form_tap_adapter_busy_message {
+            get {
+                return ResourceManager.GetString("main_form_tap_adapter_busy_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For propery work VPN you have to install driver. Please relaunch application and try again..
+        /// </summary>
+        internal static string main_form_tap_adapter_not_installed_message {
+            get {
+                return ResourceManager.GetString("main_form_tap_adapter_not_installed_message", resourceCulture);
             }
         }
         
@@ -219,6 +318,24 @@ namespace RailRoadVPN.Properties {
         internal static string menu_needhelp_text_label {
             get {
                 return ResourceManager.GetString("menu_needhelp_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown system error.
+        /// </summary>
+        internal static string unknown_system_error_header {
+            get {
+                return ResourceManager.GetString("unknown_system_error_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check your internet connection - if problem still exist - please try again later or use feedback form from menu, or wirte us about your problem by email: support@rroadvpn.net.
+        /// </summary>
+        internal static string unknown_system_error_message {
+            get {
+                return ResourceManager.GetString("unknown_system_error_message", resourceCulture);
             }
         }
         

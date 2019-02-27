@@ -163,7 +163,7 @@ namespace RailRoadVPN
             this.logger.log("get culture info to set location field");
             CultureInfo ci = CultureInfo.InstalledUICulture;
             string Location = ci.DisplayName; 
-            bool IsActive = false;
+            bool IsActive = true;
 
             try
             {

@@ -31,6 +31,9 @@ namespace RailRoadVPN
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [JsonProperty("extra_info")]
+        public string ExtraInfo { get; set; }
+
         [JsonProperty("zipfile")]
         public byte[] ZipFileBytesArr { get; set; }
     }

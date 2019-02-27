@@ -72,7 +72,7 @@ namespace RailRoadVPN
             this.logger.log("startOpenVPN");
 
             var localAppDir = Utils.getLocalAppDirPath();
-            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_servers_config_dir + "\\" + serverUuid + ".ovpn >> " + localAppDir + "\\" + Properties.Settings.Default.openvpn_logfile_name;
+            string strCmdText = "/C " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_binaries_dir + "\\openvpn\\rroad_openvpn.exe --config " + localAppDir + "\\" + Properties.Settings.Default.local_app_openvpn_servers_config_dir + "\\" + serverUuid + ".ovpn >> " + Utils.getLogsDir() + "\\" + DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.openvpn_logfile_name;
 
             ProcessStartInfo startInfo = new ProcessStartInfo
             {

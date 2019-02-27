@@ -123,6 +123,9 @@
   <data name="check_internet_connect_message" xml:space="preserve">
     <value>Seems there is no internet connection. Please check it.</value>
   </data>
+  <data name="disconnect_vpn_first" xml:space="preserve">
+    <value>Disconnect VPN first</value>
+  </data>
   <data name="disconnect_while_connect_header" xml:space="preserve">
     <value>Interrupt disconnecting</value>
     <comment>when press semaphore while connecting state show window with this header</comment>
@@ -146,6 +149,27 @@
   <data name="help_2_text_label" xml:space="preserve">
     <value>semaphore to connect VPN</value>
   </data>
+  <data name="help_form_anonym_thank_message" xml:space="preserve">
+    <value>Thank you for your submit. We will answer you by email as soon as possible. Your ticket number:</value>
+  </data>
+  <data name="help_form_bad_data_header" xml:space="preserve">
+    <value>Fill required fields</value>
+  </data>
+  <data name="help_form_empty_description_message" xml:space="preserve">
+    <value>Enter problem description to help us to resolve it as soon as possible</value>
+  </data>
+  <data name="help_form_empty_email_message" xml:space="preserve">
+    <value>Enter your email, we will send an email updating information about your problem</value>
+  </data>
+  <data name="help_form_logfilescheckbox_notchecked_header" xml:space="preserve">
+    <value>Why don't want send us log files?</value>
+  </data>
+  <data name="help_form_logfilescheckbox_notchecked_message" xml:space="preserve">
+    <value>Log files will help us very strong and we can be sure to hlep you as soon as possible. Log file it is file with events during application RailRoadVPN work process and no information about your personal data. Are you sure you don't want send us log file and improve time of solving your problem? If you have change your mind - press No and check checkbox on help form.</value>
+  </data>
+  <data name="help_form_thank_message" xml:space="preserve">
+    <value>Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:</value>
+  </data>
   <data name="help_green_text_label" xml:space="preserve">
     <value>green</value>
   </data>
@@ -154,6 +178,15 @@
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
     <value>How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button</value>
+  </data>
+  <data name="main_form_tap_adapter_busy_header" xml:space="preserve">
+    <value>Can't connect to VPN</value>
+  </data>
+  <data name="main_form_tap_adapter_busy_message" xml:space="preserve">
+    <value>It seems you are connected to VPN. Disconnect first, than press Connect Semaphore again.</value>
+  </data>
+  <data name="main_form_tap_adapter_not_installed_message" xml:space="preserve">
+    <value>For propery work VPN you have to install driver. Please relaunch application and try again.</value>
   </data>
   <data name="menu_item_logout" xml:space="preserve">
     <value>Logout</value>
@@ -172,6 +205,12 @@
   </data>
   <data name="menu_needhelp_text_label" xml:space="preserve">
     <value>Need Help?</value>
+  </data>
+  <data name="unknown_system_error_header" xml:space="preserve">
+    <value>Unknown system error</value>
+  </data>
+  <data name="unknown_system_error_message" xml:space="preserve">
+    <value>Check your internet connection - if problem still exist - please try again later or use feedback form from menu, or wirte us about your problem by email: support@rroadvpn.net</value>
   </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN STATUS</value>

@@ -35,7 +35,6 @@
             this.problemDescriptionTextBox = new System.Windows.Forms.TextBox();
             this.sendBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
-            this.sendLogsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -68,7 +67,7 @@
             this.problemDescriptionTextBox.Location = new System.Drawing.Point(42, 103);
             this.problemDescriptionTextBox.Multiline = true;
             this.problemDescriptionTextBox.Name = "problemDescriptionTextBox";
-            this.problemDescriptionTextBox.Size = new System.Drawing.Size(289, 83);
+            this.problemDescriptionTextBox.Size = new System.Drawing.Size(289, 114);
             this.problemDescriptionTextBox.TabIndex = 3;
             // 
             // sendBtn
@@ -91,23 +90,12 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
-            // sendLogsCheckBox
-            // 
-            this.sendLogsCheckBox.AutoSize = true;
-            this.sendLogsCheckBox.Location = new System.Drawing.Point(84, 204);
-            this.sendLogsCheckBox.Name = "sendLogsCheckBox";
-            this.sendLogsCheckBox.Size = new System.Drawing.Size(208, 18);
-            this.sendLogsCheckBox.TabIndex = 6;
-            this.sendLogsCheckBox.Text = "Send log file with problem";
-            this.sendLogsCheckBox.UseVisualStyleBackColor = true;
-            // 
             // NeedHelpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(372, 277);
             this.ControlBox = false;
-            this.Controls.Add(this.sendLogsCheckBox);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.sendBtn);
             this.Controls.Add(this.problemDescriptionTextBox);
@@ -121,7 +109,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NeedHelpForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.TopMost = true;
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.NeedHelpForm_MouseDown);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -136,6 +123,5 @@
         private System.Windows.Forms.TextBox problemDescriptionTextBox;
         private System.Windows.Forms.Button sendBtn;
         private System.Windows.Forms.Button cancelBtn;
-        private System.Windows.Forms.CheckBox sendLogsCheckBox;
     }
 }

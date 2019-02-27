@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -110,15 +112,17 @@ namespace RailRoadVPN
                 else
                     md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
             }
-            try {
+            try
+            {
                 logger.log("generate MD5 hash");
                 byte[] hash = md5.Hash;
                 return BitConverter.ToString(hash).Replace("-", "").ToLower();
-            } catch (System.NullReferenceException e)
+            }
+            catch (System.NullReferenceException e)
             {
                 logger.log("exception while gen md5 hash, error:" + e.Message);
                 return "";
-            } 
+            }
         }
 
         public static string getBinariesDirPath()
@@ -196,7 +200,8 @@ namespace RailRoadVPN
             try
             {
                 process.Kill();
-            } catch (System.InvalidOperationException) { }
+            }
+            catch (System.InvalidOperationException) { }
         }
 
         public static List<FileInfo> getLogFiles()
@@ -205,6 +210,251 @@ namespace RailRoadVPN
             DirectoryInfo d = new DirectoryInfo(logDir);
             FileInfo[] Files = d.GetFiles("*.log");
             return Files.ToList();
+        }
+
+        public static ExtraSystemInformation getSystemInformation()
+        {
+            string osName = Utils.getOSName();
+            string osBit = Utils.getOSBit();
+
+            OSInfo oSInfo = new OSInfo() {
+                Name = osName,
+                Bit = osBit
+            };
+
+            List<NetworkAdapterInfo> nicList = Utils.getNetworkInformation();
+
+            ExtraSystemInformation esi = new ExtraSystemInformation()
+            {
+                OsInfo = oSInfo,
+                NetworkAdapterInfoList = nicList
+            };
+
+            return esi;
+        } 
+
+        // Return the OS name.
+        public static string getOSName()
+        {
+            var name = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
+                        select x.GetPropertyValue("Caption")).FirstOrDefault();
+            return name != null ? name.ToString() : "Unknown";
+        }
+
+        public static string getOSBit()
+        {
+            string OStype = "";
+            if (Environment.Is64BitOperatingSystem) { OStype = "64-Bit"; } else { OStype = "32-Bit"; }
+            return OStype;
+        }
+
+        public static bool isTapDriverInstalled(List<NetworkAdapterInfo> networkAdapterList)
+        {
+            foreach (NetworkAdapterInfo nic in networkAdapterList)
+            {
+                if (nic.Name.StartsWith("TAP-Windows"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isTapDriverBusy()
+        {
+            List<NetworkAdapterInfo> networkAdapterList = Utils.getNetworkInformation();
+            foreach (NetworkAdapterInfo nic in networkAdapterList)
+            {
+                if (nic.Name.StartsWith("TAP-Windows"))
+                {
+                    return nic.IsUp;
+                }
+            }
+            return false;
+        }
+
+        public static bool isTapDriverBusy(List<NetworkAdapterInfo> networkAdapterList)
+        {
+            foreach (NetworkAdapterInfo nic in networkAdapterList)
+            {
+                if (nic.Name.StartsWith("TAP-Windows"))
+                {
+                    return nic.IsUp;
+                }
+            }
+            return false;
+        }
+
+        public static List<NetworkAdapterInfo> getNetworkInformation()
+        {
+            string hostname, domainname;
+            int nicCount;
+
+            IPGlobalProperties computerProperties = IPGlobalProperties.GetIPGlobalProperties();
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+
+            hostname = computerProperties.HostName;
+            domainname = computerProperties.DomainName;
+
+            List<NetworkAdapterInfo> nicInfoList = new List<NetworkAdapterInfo>();
+
+            if (nics == null || nics.Length < 1)
+            {
+                nicCount = 0;
+            } else
+            {
+                nicCount = nics.Length;
+
+                foreach (NetworkInterface adapter in nics)
+                {
+                    NetworkAdapterInfo nicInfo;
+
+                    IPInterfaceProperties properties = adapter.GetIPProperties();
+                    string name = adapter.Description;
+                    string type = adapter.NetworkInterfaceType.ToString();
+                    string physicalAddress = adapter.GetPhysicalAddress().ToString();
+                    bool isUp = adapter.OperationalStatus.ToString() == "Up";
+                    List<string> versions = new List<string>(); ;
+
+                    if (adapter.Supports(NetworkInterfaceComponent.IPv4))
+                    {
+                        versions.Add("IPv4");
+                    }
+                    if (adapter.Supports(NetworkInterfaceComponent.IPv6))
+                    {
+                        versions.Add("IPv6");
+                    }
+
+                    // The following information is useless for loopback adapter
+                    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback)
+                    {
+                        nicInfo = new NetworkAdapterInfo()
+                        {
+                            Name = name,
+                            Type = type,
+                            PhysicalAddress = physicalAddress,
+                            IsUp = isUp,
+                            Versions = versions
+
+                        };
+                        nicInfoList.Add(nicInfo);
+                        continue;
+                    }
+
+                    string dnsSuffix, mtu = null;
+                    bool isDNSEnabled, isDynamicDNSEnabled, isRecieveOnly, isSupportsMulticast;
+
+                    if (adapter.Supports(NetworkInterfaceComponent.IPv4))
+                    {
+                        IPv4InterfaceProperties ipv4 = properties.GetIPv4Properties();
+                        mtu = ipv4.Mtu.ToString();
+                        // TODO may be WINS Servers need someday... ?
+                    }
+
+                    dnsSuffix = properties.DnsSuffix;
+                    isDNSEnabled = properties.IsDnsEnabled;
+                    isDynamicDNSEnabled = properties.IsDynamicDnsEnabled;
+                    isRecieveOnly = adapter.IsReceiveOnly;
+                    isSupportsMulticast = adapter.SupportsMulticast;
+
+                    nicInfo = new NetworkAdapterInfo()
+                    {
+                        Name = name,
+                        Type = type,
+                        PhysicalAddress = physicalAddress,
+                        IsUp = isUp,
+                        Versions = versions,
+                        DnsSuffix = dnsSuffix,
+                        mtu = mtu,
+                        IsDNSEnabled = isDNSEnabled,
+                        IsDynamicDNSEnabled = isDynamicDNSEnabled,
+                        IsRecieveOnly = isRecieveOnly,
+                        IsSupportsMulticast = isSupportsMulticast
+                    };
+
+                    nicInfoList.Add(nicInfo);
+                }
+            }
+
+            return nicInfoList;
+        }
+
+        public static void ShowNetworkInterfaces()
+        {
+            IPGlobalProperties computerProperties = IPGlobalProperties.GetIPGlobalProperties();
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            Console.WriteLine("Interface information for {0}.{1}     ",
+                    computerProperties.HostName, computerProperties.DomainName);
+            if (nics == null || nics.Length < 1)
+            {
+                Console.WriteLine("  No network interfaces found.");
+                return;
+            }
+
+            Console.WriteLine("  Number of interfaces .................... : {0}", nics.Length);
+            foreach (NetworkInterface adapter in nics)
+            {
+                IPInterfaceProperties properties = adapter.GetIPProperties();
+                Console.WriteLine();
+                Console.WriteLine(adapter.Description);
+                Console.WriteLine(String.Empty.PadLeft(adapter.Description.Length, '='));
+                Console.WriteLine("  Interface type .......................... : {0}", adapter.NetworkInterfaceType);
+                Console.WriteLine("  Physical Address ........................ : {0}",
+                           adapter.GetPhysicalAddress().ToString());
+                Console.WriteLine("  Operational status ...................... : {0}",
+                    adapter.OperationalStatus);
+                string versions = "";
+
+                // Create a display string for the supported IP versions. 
+                if (adapter.Supports(NetworkInterfaceComponent.IPv4))
+                {
+                    versions = "IPv4";
+                }
+                if (adapter.Supports(NetworkInterfaceComponent.IPv6))
+                {
+                    if (versions.Length > 0)
+                    {
+                        versions += " ";
+                    }
+                    versions += "IPv6";
+                }
+                Console.WriteLine("  IP version .............................. : {0}", versions);
+
+                // The following information is not useful for loopback adapters. 
+                if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback)
+                {
+                    continue;
+                }
+                Console.WriteLine("  DNS suffix .............................. : {0}",
+                    properties.DnsSuffix);
+
+                string label;
+                if (adapter.Supports(NetworkInterfaceComponent.IPv4))
+                {
+                    IPv4InterfaceProperties ipv4 = properties.GetIPv4Properties();
+                    Console.WriteLine("  MTU...................................... : {0}", ipv4.Mtu);
+                    if (ipv4.UsesWins)
+                    {
+
+                        IPAddressCollection winsServers = properties.WinsServersAddresses;
+                        if (winsServers.Count > 0)
+                        {
+                            label = "  WINS Servers ............................ :";
+                        }
+                    }
+                }
+
+                Console.WriteLine("  DNS enabled ............................. : {0}",
+                    properties.IsDnsEnabled);
+                Console.WriteLine("  Dynamically configured DNS .............. : {0}",
+                    properties.IsDynamicDnsEnabled);
+                Console.WriteLine("  Receive Only ............................ : {0}",
+                    adapter.IsReceiveOnly);
+                Console.WriteLine("  Multicast ............................... : {0}",
+                    adapter.SupportsMulticast);
+
+                Console.WriteLine();
+            }
         }
     }
 }

@@ -30,7 +30,6 @@ namespace RailRoadVPN
             initAppWorker.RunWorkerAsync();
 
             this.openVPNService = new OpenVPNService();
-
         }
 
         private void initializeWorkers()
@@ -247,19 +246,27 @@ namespace RailRoadVPN
             Thread.Sleep(500);
 
             setProgressLabelText("Checking installed driver..");
-            this.openVPNService.installTapDriver();
 
-            // TODO check driver was installed
+            ExtraSystemInformation esi = Utils.getSystemInformation();
+            List<NetworkAdapterInfo> nicList = esi.NetworkAdapterInfoList;
+            bool isTapDriverInstalled = Utils.isTapDriverInstalled(nicList);
+            if (!isTapDriverInstalled)
+            {
+                setProgressLabelText("Driver is not installed. Installing...");
+                Thread.Sleep(2000);
+                this.openVPNService.installTapDriver();
+            }
 
             string todayLog = DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.app_logfile_name;
+            string todayVPNLog = DateTime.UtcNow.Date.ToString("yyyyMMdd") + "_" + Properties.Settings.Default.openvpn_logfile_name;
             setProgressLabelText("Cleaning old log files..");
             List<FileInfo> logFiles = Utils.getLogFiles();
             foreach (FileInfo logFile in logFiles)
             {
                 string fileName = logFile.Name;
-                if (fileName == todayLog || fileName == Properties.Settings.Default.openvpn_logfile_name)
+                if (fileName == todayLog || fileName == todayVPNLog)
                 {
-                    logger.log("today log or openvpn log file. log file name: " + fileName);
+                    logger.log("today log or today openvpn log file. log file name: " + fileName);
                     continue;
                 } else
                 {

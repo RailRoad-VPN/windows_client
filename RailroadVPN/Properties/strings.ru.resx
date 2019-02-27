@@ -123,6 +123,9 @@
   <data name="check_internet_connect_message" xml:space="preserve">
     <value>Видимо нет соединения с интернетом, проверьте что есть интернет</value>
   </data>
+  <data name="disconnect_vpn_first" xml:space="preserve">
+    <value>Отключите от VPN</value>
+  </data>
   <data name="disconnect_while_connect_header" xml:space="preserve">
     <value>Прерывать соединение</value>
     <comment>when press semaphore while connecting state show window with this header</comment>
@@ -146,6 +149,27 @@
   <data name="help_2_text_label" xml:space="preserve">
     <value>семафор для подключения к VPN</value>
   </data>
+  <data name="help_form_anonym_thank_message" xml:space="preserve">
+    <value>Спасибо за обращение. Мы ответим вам по email в ближайшее время. Номер вашего обращения: </value>
+  </data>
+  <data name="help_form_bad_data_header" xml:space="preserve">
+    <value>Заполните обязательные поля</value>
+  </data>
+  <data name="help_form_empty_description_message" xml:space="preserve">
+    <value>Опишите Вашу проблему, чтобы мы могли понять, из-за чего могла возникнуть ошибка </value>
+  </data>
+  <data name="help_form_empty_email_message" xml:space="preserve">
+    <value>Введите email чтобы мы могли с вами связаться для решения вашей проблемы</value>
+  </data>
+  <data name="help_form_logfilescheckbox_notchecked_header" xml:space="preserve">
+    <value>Почему вы не хотите отправлять нам журналы о ходе работы приложения?</value>
+  </data>
+  <data name="help_form_logfilescheckbox_notchecked_message" xml:space="preserve">
+    <value>Файлы с журналом работы приложения очень сильно нам помогут как можно быстрее решить вашу проблему с приложением. Файлы содержат в себе информацию только о ходе работы приложения и не содержат ваших личных данных. Вы уврене что хотите продолжить и не отправлять нам журнал работы приложения? Если вы передумали, нажмите No и отметье чекбокс на форме.</value>
+  </data>
+  <data name="help_form_thank_message" xml:space="preserve">
+    <value>Спасибо за обращение. Мы ответим вам по email в ближайшее время. Также вы можете отслеживать статус вашего обращения на сайте в личном кабинете. Номер вашего обращения:</value>
+  </data>
   <data name="help_green_text_label" xml:space="preserve">
     <value>зеленый</value>
   </data>
@@ -154,6 +178,15 @@
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
     <value>Как получить пинкод?\r\n1. Нажмите на ссылку GET PIN-CODE \r\n2. Ваш браузер откроет сайт\r\n3. Войдите в систему\r\n4. Нажмите кнопку GENERATE PIN-CODE</value>
+  </data>
+  <data name="main_form_tap_adapter_busy_header" xml:space="preserve">
+    <value>Не может подключиться к VPN</value>
+  </data>
+  <data name="main_form_tap_adapter_busy_message" xml:space="preserve">
+    <value>Нам кажется, что вы сейчас подключены к другому VPN, отключитесь сначала пожалуйста и нажмите еще раз на Красный Семафор чтобы подключиться к Railroad VPN Network</value>
+  </data>
+  <data name="main_form_tap_adapter_not_installed_message" xml:space="preserve">
+    <value>Для корректной работы необходимо установить драйвер. Перезапустите приложение или напишите нам через пункт меню Помощь?</value>
   </data>
   <data name="menu_item_logout" xml:space="preserve">
     <value>Ввести новый пинкод</value>
@@ -172,6 +205,12 @@
   </data>
   <data name="menu_needhelp_text_label" xml:space="preserve">
     <value>Помощь?</value>
+  </data>
+  <data name="unknown_system_error_header" xml:space="preserve">
+    <value>Неизвестная ошибка приложени</value>
+  </data>
+  <data name="unknown_system_error_message" xml:space="preserve">
+    <value>Проверьте ваше интернет соединение, если ошибка повторяется - пожалуйста повторите операции позднее или воспользуйтесь формой помощи из меню, или напишите нам в поддержку на почту: support@rroadvpn.net</value>
   </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN статус</value>

@@ -53,5 +53,8 @@
     <Setting Name="local_app_logs_dir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">logs</Value>
     </Setting>
+    <Setting Name="vpn_status" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

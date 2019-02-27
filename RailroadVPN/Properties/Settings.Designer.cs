@@ -196,5 +196,17 @@ namespace RailRoadVPN.Properties {
                 return ((string)(this["local_app_logs_dir"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string vpn_status {
+            get {
+                return ((string)(this["vpn_status"]));
+            }
+            set {
+                this["vpn_status"] = value;
+            }
+        }
     }
 }

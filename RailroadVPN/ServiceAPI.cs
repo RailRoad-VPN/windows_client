@@ -378,9 +378,9 @@ namespace RailRoadVPN
             }
         }
 
-        public int createTicket(Guid UserUuid, string ContactEmail, string Description, byte[] ZipFileBytesArr)
+        public int createTicket(Guid UserUuid, string ContactEmail, string Description, string ExtraInfo, byte[] ZipFileBytesArr)
         {
-            this.logger.log(System.String.Format("createTicket: userUuid={0}, ContactEmail={1}, Description={2}", UserUuid, ContactEmail, Description));
+            this.logger.log(System.String.Format("createTicket: userUuid={0}, ContactEmail={1}, Description={2}, ExtraInfo={3}", UserUuid, ContactEmail, Description, ExtraInfo));
 
             this.logger.log("create request");
             var request = new RestRequest(CREATE_USER_TICKET_URL, Method.POST);
@@ -397,12 +397,58 @@ namespace RailRoadVPN
                 UserUuid = UserUuid,
                 ContactEmail = ContactEmail,
                 Description = Description,
+                ExtraInfo = ExtraInfo,
+                ZipFileBytesArr = ZipFileBytesArr
+            };
+            // when i serialize it to JSON, byte array become as base64 string, so in other side you have to decode base64 to get bytes
+            this.logger.log("serialize UserTicket object to JSON");
+            var json = JsonConvert.SerializeObject(userDevice);
+
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.Created)
+            {
+                this.logger.log("status code is NOT 201");
+                throw new RailroadException("something wrong with API");
+            }
+            else
+            {
+                this.logger.log("status code is 201");
+
+                string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
+                string[] locationSplitted = location.Split(new char[] { '/' });
+                int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
+
+                return ticketNumber;
+            }
+        }
+
+        public int createAnonymousTicket(string ContactEmail, string Description, string ExtraInfo, byte[] ZipFileBytesArr)
+        {
+            this.logger.log(System.String.Format("createAnonymousTicket: ContactEmail={0}, Description={1}, ExtraInfo={2}", ContactEmail, Description, ExtraInfo));
+
+            this.logger.log("create request");
+            var request = new RestRequest(CREATE_USER_TICKET_URL, Method.POST);
+            this.logger.log("add url segment user_uuid");
+            request.AddUrlSegment("user_uuid", "anonymous");
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("create UserTicket object");
+            UserTicket userDevice = new UserTicket()
+            {
+                ContactEmail = ContactEmail,
+                Description = Description,
+                ExtraInfo = ExtraInfo,
                 ZipFileBytesArr = ZipFileBytesArr
             };
 
             this.logger.log("serialize UserTicket object to JSON");
             var json = JsonConvert.SerializeObject(userDevice);
-            this.logger.log("JSON: " + json);
 
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
 
