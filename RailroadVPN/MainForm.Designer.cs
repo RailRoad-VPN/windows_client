@@ -37,6 +37,8 @@ namespace RailRoadVPN
             this.minimizeBtn = new System.Windows.Forms.PictureBox();
             this.menuBtn = new System.Windows.Forms.PictureBox();
             this.menuNavPanel = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.menuLogoImg = new System.Windows.Forms.PictureBox();
@@ -55,8 +57,6 @@ namespace RailRoadVPN
             this.helpTextRedLabel = new System.Windows.Forms.Label();
             this.helpText2Label = new System.Windows.Forms.Label();
             this.helpTextGreenLabel = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.menuBtn)).BeginInit();
@@ -123,6 +123,22 @@ namespace RailRoadVPN
             this.menuNavPanel.Name = "menuNavPanel";
             this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
             this.menuNavPanel.TabIndex = 12;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.White;
+            this.panel4.Location = new System.Drawing.Point(8, 59);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(133, 1);
+            this.panel4.TabIndex = 21;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.White;
+            this.panel3.Location = new System.Drawing.Point(0, 521);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(149, 1);
+            this.panel3.TabIndex = 21;
             // 
             // panel2
             // 
@@ -255,7 +271,7 @@ namespace RailRoadVPN
             // 
             // statusTextTimer
             // 
-            this.statusTextTimer.Interval = 500;
+            this.statusTextTimer.Interval = 1000;
             this.statusTextTimer.Tick += new System.EventHandler(this.statusTextTimer_Tick);
             // 
             // helpArrowImg
@@ -324,22 +340,6 @@ namespace RailRoadVPN
             this.helpTextGreenLabel.TabIndex = 19;
             this.helpTextGreenLabel.Text = "green";
             this.helpTextGreenLabel.Visible = false;
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.White;
-            this.panel3.Location = new System.Drawing.Point(0, 521);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(149, 1);
-            this.panel3.TabIndex = 21;
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.Color.White;
-            this.panel4.Location = new System.Drawing.Point(8, 59);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(133, 1);
-            this.panel4.TabIndex = 21;
             // 
             // MainForm
             // 

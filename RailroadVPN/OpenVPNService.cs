@@ -102,6 +102,7 @@ namespace RailRoadVPN
                     KillProcessAndChildren(vpnProcess.Id);
                 }
             } else {
+                this.logger.log("MANAGER_STATUS is not CONNECTED. MANAGER_STATUS: " + MANAGER_STATUS);
                 KillProcessAndChildren(vpnProcess.Id);
             }
 
@@ -109,9 +110,10 @@ namespace RailRoadVPN
             {
                 this.logger.log("cancel manager connecting");
                 this.cancelManagerConnect();
+            } else
+            {
+                MANAGER_STATUS = "NOT_CONNECTED";
             }
-
-            MANAGER_STATUS = "NOT_CONNECTED";
         }
 
         public void KillProcessAndChildren(int pid)
@@ -168,8 +170,8 @@ namespace RailRoadVPN
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
-                    logger.log("SocketException, still not ready. wait 1s");
-                    Thread.Sleep(3000);
+                    logger.log("SocketException, still not ready. wait 5s");
+                    Thread.Sleep(5000);
                 }
             }
 

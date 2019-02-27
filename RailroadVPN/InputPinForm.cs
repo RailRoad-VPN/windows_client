@@ -53,6 +53,8 @@ namespace RailRoadVPN
                 labelText += txt + Environment.NewLine;
             }
             this.howGetPinTextLabel.Text = labelText;
+            this.menuNeedHelpLabel.Text = Properties.strings.menu_needhelp_text_label;
+            this.enter_pin_label.Text = Properties.strings.enter_pin_label;
         }
 
         private void pin_1_KeyPress(object sender, KeyPressEventArgs e)
@@ -320,14 +322,29 @@ namespace RailRoadVPN
             MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void menuHelpBtn_Click(object sender, EventArgs e)
+        private void menuNeedHelpLabel_MouseHover(object sender, EventArgs e)
         {
-
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.White;
+            this.menuNeedHelpLabel.Refresh();
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void menuNeedHelpLabel_MouseLeave(object sender, EventArgs e)
         {
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuNeedHelpLabel.Refresh();
+        }
 
+        private void menuNeedHelpLabel_Click(object sender, EventArgs e)
+        {
+            NeedHelpForm nhf = new NeedHelpForm();
+
+            int parent_left = this.Left;
+            int parent_top = this.Top;
+            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
+            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
+
+            nhf.Location = new Point(parent_left, parent_top);
+            nhf.ShowDialog();
         }
     }
 }
