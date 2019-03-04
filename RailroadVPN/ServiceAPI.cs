@@ -105,15 +105,15 @@ namespace RailRoadVPN
             this.logger.log(System.String.Format("response status code: {0}", statusCode));
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
-                this.logger.log("status code is NOT 200");
+                this.logger.log("status code IS NOT 200");
                 this.logger.log("status code is: " + statusCode);
                 this.logger.log("Response error code: " + response.Data.Errors[0].Code);
                 this.logger.log("Response error developer message: " + response.Data.Errors[0].DeveloperMessage);
-                throw new RailroadException("you have entered wrong pincode");
+                throw new RailroadException("we cant get user by pincode");
             } else
             {
                 this.logger.log("status code is 200");
-                this.logger.log("Got user with email: " + response.Data.data.email);
+                this.logger.log("user with email: " + response.Data.data.email);
 
                 return response.Data.data;
             }
@@ -135,15 +135,14 @@ namespace RailRoadVPN
             this.logger.log(System.String.Format("response status code: {0}", statusCode));
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
-                this.logger.log("status code is NOT 200");
-                this.logger.log("Response error code: " + response.Data.Errors[0].Code);
-                this.logger.log("Response error developer message: " + response.Data.Errors[0].DeveloperMessage);
-                throw new RailroadException("you have entered wrong pincode");
+                this.logger.log("status code IS NOT 200");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get user by uuid");
             }
             else
             {
                 this.logger.log("status code is 200");
-                this.logger.log("Got user with email: " + response.Data.data.email);
+                this.logger.log("user email: " + response.Data.data.email);
 
                 return response.Data.data;
             }
@@ -183,23 +182,40 @@ namespace RailRoadVPN
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
 
             var response = this.client.Execute<UserDeviceAPIModel>(request);
-            if (response.StatusCode != System.Net.HttpStatusCode.Created)
+            var statusCode = response.StatusCode;
+            if (statusCode != System.Net.HttpStatusCode.Created)
             {
-                this.logger.log(response.Data.Errors[0].Code);
-                this.logger.log(response.Data.Errors[0].DeveloperMessage);
-                throw new RailroadException("не получилось создать user device");
+                this.logger.log("status code IS NOT 201");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant create user device");
             }
             else
             {
+                this.logger.log("status code is 201");
+
+                this.logger.log("get X-Device-Token header");
                 string xDeviceToken = response.Headers.ToList().Find(x => x.Name == "X-Device-Token").Value.ToString();
+                this.logger.log("userdevice X-Device-Token: " + xDeviceToken);
+
+                this.logger.log("get Location header");
                 string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
-                this.logger.log("Got userdevice X-Device-Token: " + xDeviceToken);
                 this.logger.log("Location: " + location);
 
+                this.logger.log("save user_uuid to preferences");
                 Properties.Settings.Default.user_uuid = UserUuid.ToString();
+                this.logger.log("save x-device-token to preferences");
                 Properties.Settings.Default.x_device_token = xDeviceToken;
+                this.logger.log("save device_id to preferences");
                 Properties.Settings.Default.device_id = DeviceId;
-                Properties.Settings.Default.device_uuid = location.Split(new char[] { '/' })[location.Split(new char[] { '/' }).Length - 1];
+
+                this.logger.log("location split and get devide_uuid");
+                string device_uuid = location.Split(new char[] { '/' })[location.Split(new char[] { '/' }).Length - 1];
+                this.logger.log("devide_uuid: " + device_uuid);
+
+                this.logger.log("save device_uuid to preferences");
+                Properties.Settings.Default.device_uuid = device_uuid;
+
+                this.logger.log("save preferences to disk");
                 Properties.Settings.Default.Save();
             }
         }
@@ -212,6 +228,9 @@ namespace RailRoadVPN
             var request = new RestRequest(GET_USER_RANDOM_SERVER_URL, Method.GET);
             request.AddUrlSegment("user_uuid", UserUuid.ToString());
 
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
             request = this.prepareRequest(request);
 
             this.logger.log("execute request");
@@ -221,7 +240,8 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get user random server");
             }
             else
             {
@@ -259,7 +279,8 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get vpn server");
             }
             else
             {
@@ -290,7 +311,8 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get user vpn server configuration");
             }
             else
             {
@@ -301,7 +323,9 @@ namespace RailRoadVPN
                 this.logger.log("get data section and uuid field from JObject");
                 string configurationBase64 = (string)o["data"]["configuration"];
 
+                this.logger.log("convert base64 to byte array");
                 byte[] data = Convert.FromBase64String(configurationBase64);
+                this.logger.log("convert byte array to string");
                 string configurationStr = Encoding.UTF8.GetString(data);
 
                 return configurationStr;
@@ -317,6 +341,9 @@ namespace RailRoadVPN
             var request = new RestRequest(UPDATE_USER_DEVICE_URL, Method.PUT);
             request.AddUrlSegment("user_uuid", UserUuid.ToString());
             request.AddUrlSegment("device_uuid", DeviceUuid.ToString());
+
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
 
             request = this.prepareRequest(request);
 
@@ -343,7 +370,33 @@ namespace RailRoadVPN
             var statusCode = response.StatusCode;
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new RailroadException("не получилось обновить user device");
+                this.logger.log("status code IS NOT 200");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant update user device");
+            }
+        }
+
+        public void deleteUserDevice(Guid DeviceUuid, Guid UserUuid)
+        {
+            this.logger.log(System.String.Format("deleteUserDevice: deviceUuid={0}, userUuid={1}", DeviceUuid.ToString(), UserUuid.ToString()));
+
+            this.logger.log("create request");
+            var request = new RestRequest(UPDATE_USER_DEVICE_URL, Method.DELETE);
+            request.AddUrlSegment("user_uuid", UserUuid.ToString());
+            request.AddUrlSegment("device_uuid", DeviceUuid.ToString());
+
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
+            request = this.prepareRequest(request);
+            
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            if (statusCode != System.Net.HttpStatusCode.OK)
+            {
+                this.logger.log("status code is NOT 200");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant delete user device");
             }
         }
 
@@ -388,12 +441,14 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.Created)
             {
                 this.logger.log("status code is NOT 201");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant update connection");
             }
             else
             {
                 this.logger.log("status code is 201");
 
+                this.logger.log("split location to get connection uuid");
                 string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
                 string[] locationSplitted = location.Split(new char[] { '/' });
                 string connectionUuid = locationSplitted[locationSplitted.Length - 1];
@@ -444,8 +499,9 @@ namespace RailRoadVPN
             //this.logger.log(System.String.Format("response status code: {0}", statusCode));
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
-                //this.logger.log("status code is NOT 200");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is NOT 200");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant update user connection");
             }
         }
 
@@ -484,12 +540,14 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.Created)
             {
                 this.logger.log("status code is NOT 201");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant create user ticket");
             }
             else
             {
                 this.logger.log("status code is 201");
 
+                this.logger.log("split location to get ticket number");
                 string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
                 string[] locationSplitted = location.Split(new char[] { '/' });
                 int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
@@ -530,12 +588,14 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.Created)
             {
                 this.logger.log("status code is NOT 201");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant create anonymous ticket");
             }
             else
             {
                 this.logger.log("status code is 201");
 
+                this.logger.log("split location to get ticket number");
                 string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
                 string[] locationSplitted = location.Split(new char[] { '/' });
                 int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
@@ -560,17 +620,18 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
-                throw new RailroadException("something wrong with API");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get app version");
             }
             else
             {
+                this.logger.log("status code is 200");
+
                 this.logger.log("create JObject");
                 JObject o = JObject.Parse(response.Content);
                 this.logger.log("get data section and uuid field from JObject");
                 string server_uuid = (string)o["data"]["version"];
                 this.logger.log("server uuid: " + server_uuid);
-
-                this.logger.log("status code is 200");
 
                 return server_uuid;
             }
