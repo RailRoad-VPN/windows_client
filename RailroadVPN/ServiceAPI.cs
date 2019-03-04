@@ -19,7 +19,7 @@ namespace RailRoadVPN
         private const string URL = "https://api.rroadvpn.net/api/v1";
 
         private const string GET_USER_BY_PINCODE_URL = "/users/pincode/{pincode}";
-        private const string GET_USER_BY_UUID_URL = "/users/pincode/{user_uuid}";
+        private const string GET_USER_BY_UUID_URL = "/users/uuid/{user_uuid}";
 
         private const string CREATE_USER_DEVICE_URL = "/users/{user_uuid}/devices";
         private const string UPDATE_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";

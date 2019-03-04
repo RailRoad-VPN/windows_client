@@ -399,9 +399,9 @@ namespace RailRoadVPN
                        try
                        {
                            randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
-                       } catch (RailroadException ex)
+                       } catch (Exception ex)
                        {
-                           this.logger.log("RailroadException when get random server uuid: " + ex.Message);
+                           this.logger.log("Exception when get random server uuid: " + ex.Message);
                            this.VPN_CONNECT_STATUS = "INTERUPTED";
                            this.setVPNStatusText(Properties.strings.check_internet_connect_header);
                            this.semaphorePic.BackgroundImage = Properties.Resources.red;
@@ -426,13 +426,13 @@ namespace RailRoadVPN
                            try
                            {
                                vpnServer = this.serviceAPI.getVPNServer(userUuid: userUuid, serverUuid: serverUuid);
-                           } catch (RailroadException ex)
+                           } catch (Exception ex)
                            {
                                this.VPN_CONNECT_STATUS = "INTERUPTED";
                                this.setVPNStatusText(Properties.strings.check_internet_connect_header);
                                this.semaphorePic.BackgroundImage = Properties.Resources.red;
 
-                               this.logger.log("RailroadException: " + ex.Message);
+                               this.logger.log("Exception: " + ex.Message);
                                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                return;
                            }
@@ -446,13 +446,13 @@ namespace RailRoadVPN
                            {
                                configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
                            }
-                           catch (RailroadException ex)
+                           catch (Exception ex)
                            {
                                this.VPN_CONNECT_STATUS = "INTERUPTED";
                                this.setVPNStatusText(Properties.strings.check_internet_connect_header);
                                this.semaphorePic.BackgroundImage = Properties.Resources.red;
 
-                               this.logger.log("RailroadException: " + ex.Message);
+                               this.logger.log("Exception: " + ex.Message);
                                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                return;
                            }
@@ -476,7 +476,13 @@ namespace RailRoadVPN
                        this.openVPNService.startOpenVPN(serverUuid: randomServerUuid);
                        Thread.Sleep(2000);
                        setVPNStatusText("Starting Manager...");
-                       this.openVPNService.connectManager();
+                       try
+                       {
+                           this.openVPNService.connectManager();
+                       } catch (Exception ex)
+                       {
+                           logger.log("exception when connec to manager: " + ex.Message);
+                       }
                        Thread.Sleep(2000);
 
                        Properties.Settings.Default.vpn_status = "connected";

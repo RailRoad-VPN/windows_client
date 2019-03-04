@@ -230,6 +230,21 @@
   <data name="unknown_system_error_message" xml:space="preserve">
     <value>Проверьте ваше интернет соединение, если ошибка повторяется - пожалуйста повторите операции позднее или воспользуйтесь формой помощи из меню, или напишите нам в поддержку на почту: support@rroadvpn.net</value>
   </data>
+  <data name="user_bad_header" xml:space="preserve">
+    <value>Проблема с аккаунтом</value>
+  </data>
+  <data name="user_disabled_message" xml:space="preserve">
+    <value>Ваш аккаунт отключен. Пожалуйста свяжитесь с нами по электронной почте support@rroadvpn.net</value>
+  </data>
+  <data name="user_expired_message" xml:space="preserve">
+    <value>Для вашего аккаунта истек срок действия. Пожалуйста свяжитесь с нами по электронной почте support@rroadvpn.net</value>
+  </data>
+  <data name="user_locked_message" xml:space="preserve">
+    <value>Ваш аккаунт заблокирован. Пожалуйста свяжитесь с нами по электронной почте support@rroadvpn.net</value>
+  </data>
+  <data name="user_password_expired_message" xml:space="preserve">
+    <value>Внимание! Срок действия вашего пароля истек. Найдите пожалуйста время и измените пароль в личном кабинете на сайте https://rroadvpn.net/ чтобы исправить это.</value>
+  </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN статус</value>
   </data>

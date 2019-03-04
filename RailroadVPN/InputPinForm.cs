@@ -151,8 +151,8 @@ namespace RailRoadVPN
                 this.logger.log("call get user by pincode");
                 user = this.serviceAPI.getUserByPincode(pincode);
                 this.logger.log("got user with email: " + user);
-            } catch (RailroadException e) {
-                this.logger.log("RailroadException: " + e.Message);
+            } catch (Exception e) {
+                this.logger.log("Exception: " + e.Message);
                 MessageBox.Show(Properties.strings.wrong_pin_error_message, Properties.strings.wrong_pin_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

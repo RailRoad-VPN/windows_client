@@ -147,7 +147,7 @@ namespace RailRoadVPN
             if (this.mgmtHost == null)
             {
                 this.logger.log("cant connect to mgmt interface of openvpn because no mgmthost or port were initialized");
-                throw new RailroadException("no data to connect manager");
+                throw new Exception("no data to connect manager");
             }
 
             logger.log("Change MANAGER_STATUS to CONNECTING");

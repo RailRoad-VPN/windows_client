@@ -394,6 +394,51 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account problem.
+        /// </summary>
+        internal static string user_bad_header {
+            get {
+                return ResourceManager.GetString("user_bad_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You account was disabled. Please contact us by email support@rroadvpn.net.
+        /// </summary>
+        internal static string user_disabled_message {
+            get {
+                return ResourceManager.GetString("user_disabled_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You account was expired. Please contact us by email support@rroadvpn.net.
+        /// </summary>
+        internal static string user_expired_message {
+            get {
+                return ResourceManager.GetString("user_expired_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You account was locked. Please contact us by email support@rroadvpn.net.
+        /// </summary>
+        internal static string user_locked_message {
+            get {
+                return ResourceManager.GetString("user_locked_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attention! Your password was expired. Please change your password in Profile to fix this issue..
+        /// </summary>
+        internal static string user_password_expired_message {
+            get {
+                return ResourceManager.GetString("user_password_expired_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VPN STATUS.
         /// </summary>
         internal static string vpn_connect_status {

@@ -119,6 +119,7 @@
   </resheader>
   <data name="check_internet_connect_header" xml:space="preserve">
     <value>Internet connect problem</value>
+    <comment>VPN форма. При соединении с VPN если проблема с API - то скорее всего проблема с интернетом.</comment>
   </data>
   <data name="check_internet_connect_message" xml:space="preserve">
     <value>Seems there is no internet connection. Please check it.</value>
@@ -136,107 +137,162 @@
   </data>
   <data name="enter_pin_label" xml:space="preserve">
     <value>Enter PIN-CODE</value>
+    <comment>Форма пин-кода.</comment>
   </data>
   <data name="get_pincode_text_link" xml:space="preserve">
     <value>GET PIN-CODE</value>
+    <comment>Форма пин-кода.</comment>
   </data>
   <data name="help_1_text_label" xml:space="preserve">
     <value>Click</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="help_2_green_text_label" xml:space="preserve">
     <value>semaphore to disconnect VPN</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="help_2_text_label" xml:space="preserve">
     <value>semaphore to connect VPN</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="help_form_anonym_thank_message" xml:space="preserve">
     <value>Thank you for your submit. We will answer you by email as soon as possible. Your ticket number:</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_bad_data_header" xml:space="preserve">
     <value>Fill required fields</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_cancel_btn" xml:space="preserve">
     <value>Cancel</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_description_label" xml:space="preserve">
     <value>Describe your problem</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_email_label" xml:space="preserve">
     <value>Email</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_empty_description_message" xml:space="preserve">
     <value>Enter problem description to help us to resolve it as soon as possible</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_empty_email_message" xml:space="preserve">
     <value>Enter your email, we will send an email updating information about your problem</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_logfilescheckbox_notchecked_header" xml:space="preserve">
     <value>Why don't want send us log files?</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_logfilescheckbox_notchecked_message" xml:space="preserve">
     <value>Log files will help us very strong and we can be sure to hlep you as soon as possible. Log file it is file with events during application RailRoadVPN work process and no information about your personal data. Are you sure you don't want send us log file and improve time of solving your problem? If you have change your mind - press No and check checkbox on help form.</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_send_btn" xml:space="preserve">
     <value>Send</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_thank_message" xml:space="preserve">
     <value>Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:</value>
+    <comment>Feedback форма.</comment>
   </data>
   <data name="help_green_text_label" xml:space="preserve">
     <value>green</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="help_red_text_label" xml:space="preserve">
     <value>red</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
     <value>How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button</value>
+    <comment>Форма пин-кода.</comment>
   </data>
   <data name="main_form_tap_adapter_busy_header" xml:space="preserve">
     <value>Can't connect to VPN</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="main_form_tap_adapter_busy_message" xml:space="preserve">
     <value>It seems you are connected to VPN. Disconnect first, than press Connect Semaphore again.</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="main_form_tap_adapter_not_installed_message" xml:space="preserve">
     <value>For propery work VPN you have to install driver. Please relaunch application and try again.</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="menu_item_logout" xml:space="preserve">
     <value>Logout</value>
+    <comment>Menu.</comment>
   </data>
   <data name="menu_item_need_help" xml:space="preserve">
     <value>Need Help?</value>
+    <comment>Menu.</comment>
   </data>
   <data name="menu_item_profile" xml:space="preserve">
     <value>My Profile</value>
+    <comment>Menu.</comment>
   </data>
   <data name="menu_logout_text_label" xml:space="preserve">
     <value>Logout</value>
+    <comment>Menu.</comment>
   </data>
   <data name="menu_myprofile_text_label" xml:space="preserve">
     <value>Account</value>
+    <comment>Menu.</comment>
   </data>
   <data name="menu_needhelp_text_label" xml:space="preserve">
     <value>Need Help?</value>
+    <comment>Menu.</comment>
   </data>
   <data name="new_version_header" xml:space="preserve">
     <value>Update required</value>
+    <comment>StartApp</comment>
   </data>
   <data name="new_version_message" xml:space="preserve">
     <value>There is a new version of application. You have to download new version to continue. Open downloads page in your browser?</value>
+    <comment>StartApp</comment>
   </data>
   <data name="unknown_system_error_header" xml:space="preserve">
     <value>Unknown system error</value>
+    <comment>common</comment>
   </data>
   <data name="unknown_system_error_message" xml:space="preserve">
     <value>Check your internet connection - if problem still exist - please try again later or use feedback form from menu, or wirte us about your problem by email: support@rroadvpn.net</value>
+    <comment>common</comment>
+  </data>
+  <data name="user_bad_header" xml:space="preserve">
+    <value>Account problem</value>
+    <comment>StartApp</comment>
+  </data>
+  <data name="user_disabled_message" xml:space="preserve">
+    <value>You account was disabled. Please contact us by email support@rroadvpn.net</value>
+    <comment>StartApp</comment>
+  </data>
+  <data name="user_expired_message" xml:space="preserve">
+    <value>You account was expired. Please contact us by email support@rroadvpn.net</value>
+    <comment>StartApp</comment>
+  </data>
+  <data name="user_locked_message" xml:space="preserve">
+    <value>You account was locked. Please contact us by email support@rroadvpn.net</value>
+    <comment>StartApp</comment>
+  </data>
+  <data name="user_password_expired_message" xml:space="preserve">
+    <value>Attention! Your password was expired. Please change your password in Profile to fix this issue.</value>
+    <comment>StartApp</comment>
   </data>
   <data name="vpn_connect_status" xml:space="preserve">
     <value>VPN STATUS</value>
+    <comment>VPN форма.</comment>
   </data>
   <data name="wrong_pin_error_header" xml:space="preserve">
     <value>Wrong pincode</value>
+    <comment>Форма пин-кода.</comment>
   </data>
   <data name="wrong_pin_error_message" xml:space="preserve">
     <value>You have entered wrong pincode, please check it or generate new one at profile page</value>
+    <comment>Форма пин-кода.</comment>
   </data>
 </root>

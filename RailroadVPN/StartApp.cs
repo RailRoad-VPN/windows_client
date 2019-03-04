@@ -155,13 +155,36 @@ namespace RailRoadVPN
             setProgressLabelText("Check permissions...");
             string userUuidStr = Properties.Settings.Default.user_uuid;
 
-            try
+            if (userUuidStr != "")
             {
-                User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(userUuidStr));
-                // TODO some checks
-            } catch (Exception ex)
-            {
-                logger.log("Exception when get user by uuid: " + ex.Message);
+                logger.log("user uuid is empty. no user check needed");
+                try
+                {
+                    User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(userUuidStr));
+                    if (!user.enabled)
+                    {
+                        MessageBox.Show(Properties.strings.user_disabled_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+                    else if (user.is_locked)
+                    {
+                        MessageBox.Show(Properties.strings.user_locked_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+                    else if (user.is_expired)
+                    {
+                        MessageBox.Show(Properties.strings.user_expired_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+                    else if (user.is_password_expired)
+                    {
+                        MessageBox.Show(Properties.strings.user_password_expired_message, "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.log("Exception when get user by uuid: " + ex.Message);
+                }
             }
 
             setProgressLabelText("Read properties..");

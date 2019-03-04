@@ -135,9 +135,9 @@ namespace RailRoadVPN
                 try
                 {
                     ticketNumber = this.serviceAPI.createTicket(UserUuid: userUuid, ContactEmail: email, Description: description, ExtraInfo: esiJson, ZipFileBytesArr: zipBytesArr);
-                } catch (RailroadException ex)
+                } catch (Exception ex)
                 {
-                    this.logger.log("RailroadException when create ticket: " + ex.Message);
+                    this.logger.log("Exception when create ticket: " + ex.Message);
                     MessageBox.Show(Properties.strings.unknown_system_error_message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.logger.log("enable controls");
                     this.sendBtn.Enabled = true;
@@ -152,9 +152,9 @@ namespace RailRoadVPN
                 try
                 {
                     ticketNumber = this.serviceAPI.createAnonymousTicket(ContactEmail: email, Description: description, ExtraInfo: esiJson, ZipFileBytesArr: zipBytesArr);
-                } catch (RailroadException ex)
+                } catch (Exception ex)
                 {
-                    this.logger.log("RailroadException when create anonymous ticket: " + ex.Message);
+                    this.logger.log("Exception when create anonymous ticket: " + ex.Message);
                     MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.logger.log("enable controls");
                     this.sendBtn.Enabled = true;
