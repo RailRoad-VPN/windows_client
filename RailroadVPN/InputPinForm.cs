@@ -151,9 +151,14 @@ namespace RailRoadVPN
                 this.logger.log("call get user by pincode");
                 user = this.serviceAPI.getUserByPincode(pincode);
                 this.logger.log("got user with email: " + user);
-            } catch (Exception e) {
-                this.logger.log("Exception: " + e.Message);
+            } catch (RailroadException e) {
+                this.logger.log("RailroadException when register new user: " + e.Message);
                 MessageBox.Show(Properties.strings.wrong_pin_error_message, Properties.strings.wrong_pin_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            } catch (Exception e)
+            {
+                this.logger.log("Exception when register new user: " + e.Message);
+                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -180,6 +185,8 @@ namespace RailRoadVPN
             } catch (Exception e)
             {
                 this.logger.log("Exception when create user device: " + e.Message);
+                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
             return true;
@@ -290,8 +297,7 @@ namespace RailRoadVPN
 
         private void getPinCodeLabelLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string localeShort = Properties.Settings.Default.locale.Split(new char[] { '-' })[0];
-            System.Diagnostics.Process.Start("https://rroadvpn.net/" + localeShort + "/profile");
+            System.Diagnostics.Process.Start("https://rroadvpn.net/profile");
         }
 
         private void pin_1_TextChanged(object sender, EventArgs e)

@@ -66,6 +66,17 @@ namespace RailRoadVPN
 
             this.updateHelpTextUI();
 
+            string userUuidStr = Properties.Settings.Default.user_uuid;
+            if (userUuidStr == "")
+            {
+                propertiesHelper.clearProperties();
+                InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
+                ipf.Location = this.Location;
+                this.Hide();
+                ipf.Closed += (s, args) => this.Close();
+                ipf.Show();
+            }
+
             this.handleConnectionThread = new Thread(() => {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -199,30 +210,6 @@ namespace RailRoadVPN
             }
         }
 
-        private void menuLogoutBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince);
-                Thread.Sleep(10000);
-            }
-            catch (Exception ex)
-            {
-                this.logger.log("Exception when update connection while logout: " + ex.Message);
-            }
-            this.openVPNService.stopOpenVPN();
-            try { this.handleConnectionThread.Abort(); this.vpnConnectingThread.Abort(); } catch (Exception) { }
-
-            Properties.Settings.Default.Reset();
-            Properties.Settings.Default.Save();
-
-            InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
-            ipf.Location = this.Location;
-            this.Hide();
-            ipf.Closed += (s, args) => this.Close();
-            ipf.Show();
-        }
-
         private void MainForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -314,34 +301,32 @@ namespace RailRoadVPN
 
         private int btnPressedWhileConnecting = 1;
 
-        //private void updateUserDevice(bool IsActive, string VirtualIp, string DeviceIp, string ModifyReason)
-        //{
-        //    this.logger.log("updateUserDevice method in Form");
+        private void updateUserDevice(bool IsActive, string VirtualIp, string ModifyReason, string DeviceIp = null)
+        {
+            this.logger.log("updateUserDevice method in Form");
 
-        //    this.logger.log("get device uuid");
-        //    Guid DeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
-        //    this.logger.log("get user uuid");
-        //    Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
-        //    this.logger.log("get device id");
-        //    string DeviceId = Properties.Settings.Default.device_id;
+            this.logger.log("get device uuid");
+            Guid DeviceUuid = Guid.Parse(Properties.Settings.Default.device_uuid);
+            this.logger.log("get user uuid");
+            Guid UserUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+            this.logger.log("get device id");
+            string DeviceId = Properties.Settings.Default.device_id;
 
-        //    TODO user api to get geo location of device
-        //    this.logger.log("get culture info to set location field");
-        //    CultureInfo ci = CultureInfo.InstalledUICulture;
-        //    string Location = ci.DisplayName;
+            // TODO user api to get geo location of device
+            this.logger.log("get culture info to set location field");
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string Location = ci.DisplayName;
 
-        //    try
-        //    {
-        //        this.logger.log("call update user device");
-        //        this.serviceAPI.updateUserDevice(DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive, ModifyReason);
-        //    }
-        //    catch (RailroadException e)
-        //    {
-        //        this.logger.log("RailroadException when create user device: " + e.Message);
-        //        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        return;
-        //    }
-        //}
+            try
+            {
+                this.logger.log("call update user device");
+                this.serviceAPI.updateUserDevice(DeviceUuid: DeviceUuid, UserUuid: UserUuid, DeviceId: DeviceId, VirtualIp: this.VirtualIp, Location: Location, IsActive: IsActive, ModifyReason: ModifyReason);
+            }
+            catch (Exception e)
+            {
+                this.logger.log("RailroadException when update device: " + e.Message);
+            }
+        }
 
         private void semaphorePic_Click(object sender, EventArgs e)
         {
@@ -972,21 +957,20 @@ EXITING       -- A graceful exit is in progress.
 
         private void menuLogoutLabel_Click(object sender, EventArgs e)
         {
-            this.logger.log("logout menu click");
-            try
+            logger.log("logout menu click");
+            if (VPN_CONNECT_STATUS == "CONNECTED")
             {
-                this.logger.log("abort handleconnection thread");
-                this.handleConnectionThread.Abort();
-                this.logger.log("stop vpn");
-                this.openVPNService.stopOpenVPN();
+                this.logger.log("update connection (disconnect)");
+                try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception ex) {this.logger.log("Exception when update connection while logout: " + ex.Message); }
+                try { this.openVPNService.stopOpenVPN(); } catch (Exception) { }
+                try { this.handleConnectionThread.Abort(); } catch (Exception) { }
+                try { this.vpnConnectingThread.Abort(); } catch (Exception) { }
             }
-            catch (Exception) { }
 
-            this.logger.log("update connection (disconnect)");
-            try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception) { }
+            this.logger.log("update user device (logout)");
+            try { this.updateUserDevice(IsActive: false, VirtualIp: this.VirtualIp, ModifyReason: "logout action"); } catch (Exception ex) { this.logger.log("Exception when update user device while logout: " + ex.Message); }
 
-            Properties.Settings.Default.Reset();
-            Properties.Settings.Default.Save();
+            propertiesHelper.clearProperties();
 
             InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
             ipf.Location = this.Location;

@@ -77,6 +77,12 @@ namespace RailRoadVPN
         {
             return this.vpnServersDict.ContainsKey(uuid);
         }
+
+        public void clearProperties()
+        {
+            Properties.Settings.Default.Reset();
+            Properties.Settings.Default.Save();
+        }
     }
 
     class Utils

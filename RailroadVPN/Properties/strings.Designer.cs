@@ -241,7 +241,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:.
+        ///   Looks up a localized string similar to Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/profile. Your ticket number:.
         /// </summary>
         internal static string help_form_thank_message {
             get {

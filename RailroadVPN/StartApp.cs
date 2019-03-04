@@ -128,21 +128,24 @@ namespace RailRoadVPN
 
             setProgressLabelText("Check updates...");
             string currentAppVersion = Properties.Settings.Default.app_version;
-
+            logger.log("Current application version: " + currentAppVersion);
             try
             {
                 string version = serviceAPI.getAppVersion();
+                logger.log("New application version: " + version);
                 if (currentAppVersion != version)
                 {
+                    logger.log("Versions are no equal. Ask to update");
                     DialogResult dialogResult = MessageBox.Show(Properties.strings.new_version_message, Properties.strings.new_version_header, MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        string localeShort = Properties.Settings.Default.locale.Split(new char[] { '-' })[0];
-                        System.Diagnostics.Process.Start("https://rroadvpn.net/" + localeShort + "/downloads");
+                        logger.log("Dialog Yes");
+                        System.Diagnostics.Process.Start("https://rroadvpn.net/download");
                         return null;
                     }
                     else if (dialogResult == DialogResult.No)
                     {
+                        logger.log("Dialog No");
                         return null;
                     }
                 }

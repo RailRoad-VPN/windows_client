@@ -196,7 +196,7 @@
     <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_thank_message" xml:space="preserve">
-    <value>Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:</value>
+    <value>Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/profile. Your ticket number:</value>
     <comment>Feedback форма.</comment>
   </data>
   <data name="help_green_text_label" xml:space="preserve">

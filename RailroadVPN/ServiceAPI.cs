@@ -45,11 +45,48 @@ namespace RailRoadVPN
 
         private RestRequest prepareRequest(RestRequest request)
         {
-            //this.logger.log("prepare request");
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-Auth-Token", "7d@qjf-hK:qwQuQqH]Pq+xJNseU<Gh]:A0A=AY\\PJKjNnQOP#YA'lXADW[k7FzGE");
+            string sec_token = this.generateSecurityToken();
+            request.AddHeader("X-Auth-Token", sec_token);
             return request;
+        }
+
+        private string generateSecurityToken()
+        {
+            string token = "";
+
+            string ruuid = Guid.NewGuid().ToString();
+            ruuid = ruuid.Replace("-", "");
+            int ruuid_len = ruuid.Length;
+            int rnd_num = new Random().Next(1, ruuid_len);
+
+            token += ruuid;
+
+            TimeSpan epochTicks = new TimeSpan(new DateTime(1970, 1, 1).Ticks);
+            TimeSpan unixTicks = new TimeSpan(DateTime.UtcNow.Ticks) - epochTicks;
+            double unixtime = unixTicks.TotalSeconds;
+            double unixtime_divided = unixtime / rnd_num;
+            double unixtime_divided_round = Math.Round(unixtime_divided, 10);
+            string unixtime_divided_round_str = unixtime_divided_round.ToString();
+            int unixtime_divided_round_len = unixtime_divided_round_str.Length;
+            string unixtime_divided_round_len_str = unixtime_divided_round_len.ToString();
+
+            string left_token = token.Substring(0, rnd_num);
+            string center_token = unixtime_divided_round.ToString();
+            string right_token = token.Substring(rnd_num);
+
+            token = String.Format("{0}{1}{2}", left_token, center_token, right_token);
+
+            string rnd_num_str = rnd_num.ToString();
+            if (rnd_num_str.Length == 1)
+            {
+                rnd_num_str = String.Format("{0}{1}", "0", rnd_num_str);
+            }
+
+            token = String.Format("{0}{1}{2}", rnd_num_str, unixtime_divided_round_len_str, token);
+
+            return token;
         }
 
         public User getUserByPincode(string pincode)
@@ -69,6 +106,7 @@ namespace RailRoadVPN
             if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
+                this.logger.log("status code is: " + statusCode);
                 this.logger.log("Response error code: " + response.Data.Errors[0].Code);
                 this.logger.log("Response error developer message: " + response.Data.Errors[0].DeveloperMessage);
                 throw new RailroadException("you have entered wrong pincode");
@@ -270,7 +308,7 @@ namespace RailRoadVPN
             }
         }
 
-        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string VirtualIp, string DeviceIp, string Location, bool IsActive, string ModifyReason)
+        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string VirtualIp, string Location, bool IsActive, string ModifyReason, string DeviceIp = null)
         {
             this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, VirtualIp={3}, DeviceIp={4}, " +
                 "Location={5}, IsActive={6}", DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive));
@@ -282,7 +320,7 @@ namespace RailRoadVPN
 
             request = this.prepareRequest(request);
 
-            this.logger.log("create UserDevice object");
+            this.logger.log("UserDevice object");
             UserDevice userDevice = new UserDevice()
             {
                 Uuid = DeviceUuid,

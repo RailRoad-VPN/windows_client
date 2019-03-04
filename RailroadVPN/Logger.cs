@@ -39,7 +39,7 @@ namespace RailRoadVPN
             try
            {
                 sw = System.IO.File.AppendText(logFile);
-                string logLine = System.String.Format("{0:G}: {1}.", System.DateTime.Now, msg);
+                string logLine = System.String.Format("{0:G}: {1}", System.DateTime.Now, msg);
                 sw.WriteLine(logLine);
                 sw.Close();
             }
