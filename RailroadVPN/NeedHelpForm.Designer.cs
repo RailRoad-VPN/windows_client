@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NeedHelpForm));
-            this.label1 = new System.Windows.Forms.Label();
+            this.emailTextBoxLabel = new System.Windows.Forms.Label();
             this.emailTextBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.descriptionTextBoxLabel = new System.Windows.Forms.Label();
             this.problemDescriptionTextBox = new System.Windows.Forms.TextBox();
             this.sendBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // label1
+            // emailTextBoxLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(39, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 14);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Email:";
+            this.emailTextBoxLabel.AutoSize = true;
+            this.emailTextBoxLabel.Location = new System.Drawing.Point(39, 24);
+            this.emailTextBoxLabel.Name = "emailTextBoxLabel";
+            this.emailTextBoxLabel.Size = new System.Drawing.Size(49, 14);
+            this.emailTextBoxLabel.TabIndex = 0;
+            this.emailTextBoxLabel.Text = "Email:";
             // 
             // emailTextBox
             // 
@@ -53,14 +53,14 @@
             this.emailTextBox.Size = new System.Drawing.Size(289, 20);
             this.emailTextBox.TabIndex = 1;
             // 
-            // label2
+            // descriptionTextBoxLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(39, 86);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(161, 14);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Describe your problem:";
+            this.descriptionTextBoxLabel.AutoSize = true;
+            this.descriptionTextBoxLabel.Location = new System.Drawing.Point(39, 86);
+            this.descriptionTextBoxLabel.Name = "descriptionTextBoxLabel";
+            this.descriptionTextBoxLabel.Size = new System.Drawing.Size(161, 14);
+            this.descriptionTextBoxLabel.TabIndex = 2;
+            this.descriptionTextBoxLabel.Text = "Describe your problem:";
             // 
             // problemDescriptionTextBox
             // 
@@ -74,7 +74,7 @@
             // 
             this.sendBtn.Location = new System.Drawing.Point(66, 242);
             this.sendBtn.Name = "sendBtn";
-            this.sendBtn.Size = new System.Drawing.Size(75, 23);
+            this.sendBtn.Size = new System.Drawing.Size(81, 23);
             this.sendBtn.TabIndex = 4;
             this.sendBtn.Text = "Send";
             this.sendBtn.UseVisualStyleBackColor = true;
@@ -99,9 +99,9 @@
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.sendBtn);
             this.Controls.Add(this.problemDescriptionTextBox);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.descriptionTextBoxLabel);
             this.Controls.Add(this.emailTextBox);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.emailTextBoxLabel);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -117,9 +117,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label emailTextBoxLabel;
         private System.Windows.Forms.TextBox emailTextBox;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label descriptionTextBoxLabel;
         private System.Windows.Forms.TextBox problemDescriptionTextBox;
         private System.Windows.Forms.Button sendBtn;
         private System.Windows.Forms.Button cancelBtn;

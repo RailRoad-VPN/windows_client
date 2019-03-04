@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RailRoadVPN")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("This is VPN application let you connect to other network")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Railroad Services")]
 [assembly: AssemblyProduct("RailRoadVPN")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]

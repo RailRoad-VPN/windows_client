@@ -138,7 +138,7 @@
     <value>Введите PIN-CODE</value>
   </data>
   <data name="get_pincode_text_link" xml:space="preserve">
-    <value>Получите PIN-CODE</value>
+    <value>Получить PIN-CODE</value>
   </data>
   <data name="help_1_text_label" xml:space="preserve">
     <value>Нажмите на</value>
@@ -155,6 +155,15 @@
   <data name="help_form_bad_data_header" xml:space="preserve">
     <value>Заполните обязательные поля</value>
   </data>
+  <data name="help_form_cancel_btn" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="help_form_description_label" xml:space="preserve">
+    <value>Опишите вашу проблему</value>
+  </data>
+  <data name="help_form_email_label" xml:space="preserve">
+    <value>Электронная почта</value>
+  </data>
   <data name="help_form_empty_description_message" xml:space="preserve">
     <value>Опишите Вашу проблему, чтобы мы могли понять, из-за чего могла возникнуть ошибка </value>
   </data>
@@ -166,6 +175,9 @@
   </data>
   <data name="help_form_logfilescheckbox_notchecked_message" xml:space="preserve">
     <value>Файлы с журналом работы приложения очень сильно нам помогут как можно быстрее решить вашу проблему с приложением. Файлы содержат в себе информацию только о ходе работы приложения и не содержат ваших личных данных. Вы уврене что хотите продолжить и не отправлять нам журнал работы приложения? Если вы передумали, нажмите No и отметье чекбокс на форме.</value>
+  </data>
+  <data name="help_form_send_btn" xml:space="preserve">
+    <value>Отправить</value>
   </data>
   <data name="help_form_thank_message" xml:space="preserve">
     <value>Спасибо за обращение. Мы ответим вам по email в ближайшее время. Также вы можете отслеживать статус вашего обращения на сайте в личном кабинете. Номер вашего обращения:</value>
@@ -205,6 +217,12 @@
   </data>
   <data name="menu_needhelp_text_label" xml:space="preserve">
     <value>Помощь?</value>
+  </data>
+  <data name="new_version_header" xml:space="preserve">
+    <value>Необходимо обновление</value>
+  </data>
+  <data name="new_version_message" xml:space="preserve">
+    <value>Доступна новая версия приложения. Необходимо скачать новую версию, чтобы продолжить работу. Открыть сайт для скачивания?</value>
   </data>
   <data name="unknown_system_error_header" xml:space="preserve">
     <value>Неизвестная ошибка приложени</value>

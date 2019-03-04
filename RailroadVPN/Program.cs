@@ -20,6 +20,11 @@ namespace RailRoadVPN
         {
             string locale = Properties.Settings.Default.locale;
             logger.log("User locale: " + locale);
+            if (locale == null || locale == "")
+            {
+                CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
+                Properties.Settings.Default.locale = currentCulture.ToString();
+            }
             var culture = new CultureInfo(locale);
             // Culture for any thread
             CultureInfo.DefaultThreadCurrentUICulture = culture;

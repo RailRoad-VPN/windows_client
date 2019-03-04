@@ -34,6 +34,11 @@ namespace RailRoadVPN
             InitializeComponent();
 
             this.serviceAPI = new ServiceAPI();
+
+            this.emailTextBoxLabel.Text = Properties.strings.help_form_email_label;
+            this.descriptionTextBoxLabel.Text = Properties.strings.help_form_description_label;
+            this.sendBtn.Text = Properties.strings.help_form_send_btn;
+            this.cancelBtn.Text = Properties.strings.help_form_cancel_btn;
         }
 
         private void NeedHelpForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

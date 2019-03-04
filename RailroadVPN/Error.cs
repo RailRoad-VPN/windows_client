@@ -7,6 +7,7 @@ using System.Globalization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Runtime.Serialization;
 
 namespace RailRoadVPN
 {
@@ -31,7 +32,7 @@ namespace RailRoadVPN
         public string DeveloperMessage { get; set; }
     }
 
-    public class RailroadException : Exception
+    public class RailroadException : Exception, ISerializable
     {
         public RailroadException(string message) : base(message)
         {

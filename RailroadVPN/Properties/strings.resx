@@ -155,6 +155,15 @@
   <data name="help_form_bad_data_header" xml:space="preserve">
     <value>Fill required fields</value>
   </data>
+  <data name="help_form_cancel_btn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="help_form_description_label" xml:space="preserve">
+    <value>Describe your problem</value>
+  </data>
+  <data name="help_form_email_label" xml:space="preserve">
+    <value>Email</value>
+  </data>
   <data name="help_form_empty_description_message" xml:space="preserve">
     <value>Enter problem description to help us to resolve it as soon as possible</value>
   </data>
@@ -166,6 +175,9 @@
   </data>
   <data name="help_form_logfilescheckbox_notchecked_message" xml:space="preserve">
     <value>Log files will help us very strong and we can be sure to hlep you as soon as possible. Log file it is file with events during application RailRoadVPN work process and no information about your personal data. Are you sure you don't want send us log file and improve time of solving your problem? If you have change your mind - press No and check checkbox on help form.</value>
+  </data>
+  <data name="help_form_send_btn" xml:space="preserve">
+    <value>Send</value>
   </data>
   <data name="help_form_thank_message" xml:space="preserve">
     <value>Thank you for your submit. We will answer you by email as soon as possible. Also you can follow your ticket status in your profile on site: https://rroadvpn.net/. Your ticket number:</value>
@@ -205,6 +217,12 @@
   </data>
   <data name="menu_needhelp_text_label" xml:space="preserve">
     <value>Need Help?</value>
+  </data>
+  <data name="new_version_header" xml:space="preserve">
+    <value>Update required</value>
+  </data>
+  <data name="new_version_message" xml:space="preserve">
+    <value>There is a new version of application. You have to download new version to continue. Open downloads page in your browser?</value>
   </data>
   <data name="unknown_system_error_header" xml:space="preserve">
     <value>Unknown system error</value>

@@ -169,6 +169,33 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string help_form_cancel_btn {
+            get {
+                return ResourceManager.GetString("help_form_cancel_btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Describe your problem.
+        /// </summary>
+        internal static string help_form_description_label {
+            get {
+                return ResourceManager.GetString("help_form_description_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        internal static string help_form_email_label {
+            get {
+                return ResourceManager.GetString("help_form_email_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter problem description to help us to resolve it as soon as possible.
         /// </summary>
         internal static string help_form_empty_description_message {
@@ -201,6 +228,15 @@ namespace RailRoadVPN.Properties {
         internal static string help_form_logfilescheckbox_notchecked_message {
             get {
                 return ResourceManager.GetString("help_form_logfilescheckbox_notchecked_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        internal static string help_form_send_btn {
+            get {
+                return ResourceManager.GetString("help_form_send_btn", resourceCulture);
             }
         }
         
@@ -318,6 +354,24 @@ namespace RailRoadVPN.Properties {
         internal static string menu_needhelp_text_label {
             get {
                 return ResourceManager.GetString("menu_needhelp_text_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update required.
+        /// </summary>
+        internal static string new_version_header {
+            get {
+                return ResourceManager.GetString("new_version_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is a new version of application. You have to download new version to continue. Open downloads page in your browser?.
+        /// </summary>
+        internal static string new_version_message {
+            get {
+                return ResourceManager.GetString("new_version_message", resourceCulture);
             }
         }
         

@@ -80,9 +80,15 @@ namespace RailRoadVPN
 
         private void initAppWorkder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error != null || e.Result == null)
+            if (e.Error != null)
             {
                 MessageBox.Show(e.Error.Message);
+                return;
+            }
+
+            if (e.Result == null)
+            {
+                this.Close();
                 return;
             }
 
@@ -117,6 +123,46 @@ namespace RailRoadVPN
         {
             setProgressLabelText("Cleanup application processes..");
             Utils.killAllOpenVPNProcesses();
+
+            ServiceAPI serviceAPI = new ServiceAPI();
+
+            setProgressLabelText("Check updates...");
+            string currentAppVersion = Properties.Settings.Default.app_version;
+
+            try
+            {
+                string version = serviceAPI.getAppVersion();
+                if (currentAppVersion != version)
+                {
+                    DialogResult dialogResult = MessageBox.Show(Properties.strings.new_version_message, Properties.strings.new_version_header, MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        string localeShort = Properties.Settings.Default.locale.Split(new char[] { '-' })[0];
+                        System.Diagnostics.Process.Start("https://rroadvpn.net/" + localeShort + "/downloads");
+                        return null;
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.log("Exception when check application version: " + ex.Message);
+            }
+
+            setProgressLabelText("Check permissions...");
+            string userUuidStr = Properties.Settings.Default.user_uuid;
+
+            try
+            {
+                User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(userUuidStr));
+                // TODO some checks
+            } catch (Exception ex)
+            {
+                logger.log("Exception when get user by uuid: " + ex.Message);
+            }
 
             setProgressLabelText("Read properties..");
             string user_uuid = null;

@@ -19,6 +19,7 @@ namespace RailRoadVPN
         private const string URL = "https://api.rroadvpn.net/api/v1";
 
         private const string GET_USER_BY_PINCODE_URL = "/users/pincode/{pincode}";
+        private const string GET_USER_BY_UUID_URL = "/users/pincode/{user_uuid}";
 
         private const string CREATE_USER_DEVICE_URL = "/users/{user_uuid}/devices";
         private const string UPDATE_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
@@ -31,6 +32,8 @@ namespace RailRoadVPN
         private const string UPDATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections/{connection_uuid}";
 
         private const string CREATE_USER_TICKET_URL = "/users/{user_uuid}/tickets";
+
+        private const string GET_APP_VERSION_URL = "/vpns/apps/windows/version";
 
         private RestClient client;
         private Logger logger = Logger.GetInstance();
@@ -70,6 +73,36 @@ namespace RailRoadVPN
                 this.logger.log("Response error developer message: " + response.Data.Errors[0].DeveloperMessage);
                 throw new RailroadException("you have entered wrong pincode");
             } else
+            {
+                this.logger.log("status code is 200");
+                this.logger.log("Got user with email: " + response.Data.data.email);
+
+                return response.Data.data;
+            }
+        }
+
+        public User getUserByUuid(Guid userUuid)
+        {
+            this.logger.log(System.String.Format("getUserByPincode: userUuid={0}", userUuid.ToString()));
+
+            this.logger.log("create request");
+            var request = new RestRequest(GET_USER_BY_UUID_URL, Method.GET);
+            request.AddUrlSegment("user_uuid", userUuid.ToString());
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute<UserAPIModel>(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.OK)
+            {
+                this.logger.log("status code is NOT 200");
+                this.logger.log("Response error code: " + response.Data.Errors[0].Code);
+                this.logger.log("Response error developer message: " + response.Data.Errors[0].DeveloperMessage);
+                throw new RailroadException("you have entered wrong pincode");
+            }
+            else
             {
                 this.logger.log("status code is 200");
                 this.logger.log("Got user with email: " + response.Data.data.email);
@@ -470,6 +503,38 @@ namespace RailRoadVPN
                 int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
 
                 return ticketNumber;
+            }
+        }
+
+        public string getAppVersion()
+        {
+            this.logger.log(System.String.Format("getAppVersion"));
+
+            this.logger.log("create request");
+            var request = new RestRequest(GET_APP_VERSION_URL, Method.GET);
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.OK)
+            {
+                this.logger.log("status code is NOT 200");
+                throw new RailroadException("something wrong with API");
+            }
+            else
+            {
+                this.logger.log("create JObject");
+                JObject o = JObject.Parse(response.Content);
+                this.logger.log("get data section and uuid field from JObject");
+                string server_uuid = (string)o["data"]["version"];
+                this.logger.log("server uuid: " + server_uuid);
+
+                this.logger.log("status code is 200");
+
+                return server_uuid;
             }
         }
     }

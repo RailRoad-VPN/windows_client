@@ -470,9 +470,6 @@ namespace RailRoadVPN
                                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                return;
                            }
-
-                           // TODO DEBUG!!! REMOVE THIS LINE!!!
-                           File.AppendAllText(configPath, "management 127.0.0.1 7505" + Environment.NewLine);
                        }
 
                        setVPNStatusText("Starting VPN...");

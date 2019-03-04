@@ -36,7 +36,7 @@
       <Value Profile="(Default)">a36ba82d98d7e7ef5315b37ae53b7528</Value>
     </Setting>
     <Setting Name="locale" Type="System.String" Scope="User">
-      <Value Profile="(Default)">en-US</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="device_id" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

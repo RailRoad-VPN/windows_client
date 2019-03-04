@@ -21,6 +21,11 @@ namespace RailRoadVPN
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
+
+
+
+
+
         public static extern bool ReleaseCapture();
 
         private void InputPinForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -55,6 +60,7 @@ namespace RailRoadVPN
             this.howGetPinTextLabel.Text = labelText;
             this.menuNeedHelpLabel.Text = Properties.strings.menu_needhelp_text_label;
             this.enter_pin_label.Text = Properties.strings.enter_pin_label;
+            this.getPinCodeLabelLink.Text = Properties.strings.get_pincode_text_link;
         }
 
         private void pin_1_KeyPress(object sender, KeyPressEventArgs e)
