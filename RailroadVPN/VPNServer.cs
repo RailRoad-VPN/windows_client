@@ -43,7 +43,7 @@ namespace RailRoadVPN
         public bool IsConnected { get; set; }
 
         [JsonProperty("connected_since")]
-        public DateTimeOffset ConnectedSince { get; set; }
+        public string ConnectedSince { get; set; }
 
         [JsonProperty("modify_reason")]
         public string ModifyReason { get; set; }

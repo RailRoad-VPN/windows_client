@@ -452,6 +452,7 @@ namespace RailRoadVPN
                 UserDeviceUuid = UserDeviceUuid,
                 DeviceIp = DeviceIp,
                 VirtualIp = VirtualIp,
+                ConnectedSince = ConnectedSince,
                 BytesI = BytesI,
                 BytesO = BytesO,
                 IsConnected = IsConnected

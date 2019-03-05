@@ -133,9 +133,10 @@ namespace RailRoadVPN
                                 return;
                             }
                             bool IsConnected = true;
-                            this.ConnectedSince = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK");
+                            this.ConnectedSince = DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture);
+                            this.logger.log("create connection: connected_since: " + this.ConnectedSince);
                             this.connectionUuid = this.serviceAPI.createConnection(UserUuid: UserUuid, ServerUuid: ServerUuid, UserDeviceUuid: UserDeviceUuid, DeviceIp: null,
-                                VirtualIp: virtualIp, BytesI: bytesI, BytesO: bytesO, IsConnected: IsConnected, ConnectedSince: ConnectedSince);
+                                VirtualIp: virtualIp, BytesI: bytesI, BytesO: bytesO, IsConnected: IsConnected, ConnectedSince: this.ConnectedSince);
                             this.logger.log("Connection created with uuid: " + this.connectionUuid);
                             connectionCreated = true;
                             this.BytesI = bytesI;
