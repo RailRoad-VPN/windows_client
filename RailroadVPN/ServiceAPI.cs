@@ -23,6 +23,7 @@ namespace RailRoadVPN
 
         private const string CREATE_USER_DEVICE_URL = "/users/{user_uuid}/devices";
         private const string UPDATE_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
+        private const string GET_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
 
         private const string GET_USER_RANDOM_SERVER_URL = "/users/{user_uuid}/servers?random";
         private const string GET_SERVER_URL = "/users/{user_uuid}/servers/{server_uuid}";
@@ -148,10 +149,10 @@ namespace RailRoadVPN
             }
         }
 
-        public void createUserDevice(Guid UserUuid, string DeviceId, string VirtualIp, string DeviceIp, string Location, bool IsActive)
+        public void createUserDevice(Guid UserUuid, string DeviceId, string Location, bool IsActive)
         {
-            this.logger.log(System.String.Format("createUserDevice: UserUuid={0}, DeviceId={1}, VirtualIp={2}, DeviceIp={3}, " +
-                "Location={4}, IsActive={5}", UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive));
+            this.logger.log(System.String.Format("createUserDevice: UserUuid={0}, DeviceId={1}, Location={2}, IsActive={3}", 
+                UserUuid, DeviceId, Location, IsActive));
 
             int PlatformId = 3; // Windows hard-code
             int VpnTypeId = 1; // OpenVPN hard-code
@@ -168,8 +169,6 @@ namespace RailRoadVPN
                 PlatformId = PlatformId,
                 VpnTypeId = VpnTypeId,
                 DeviceId = DeviceId,
-                VirtualIp = VirtualIp,
-                DeviceIp = DeviceIp,
                 Location = Location,
                 IsActive = IsActive,
                 ModifyReason = "init"
@@ -332,10 +331,42 @@ namespace RailRoadVPN
             }
         }
 
-        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string VirtualIp, string Location, bool IsActive, string ModifyReason, string DeviceIp = null)
+        public UserDevice getUserDevice(Guid userUuid, Guid deviceUuid)
         {
-            this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, VirtualIp={3}, DeviceIp={4}, " +
-                "Location={5}, IsActive={6}", DeviceUuid, UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive));
+            this.logger.log(System.String.Format("getUserDevice: userUuid={0}, userDeviceUuid={1}", userUuid, deviceUuid));
+
+            this.logger.log("create request");
+            var request = new RestRequest(GET_USER_DEVICE_URL, Method.GET);
+            this.logger.log("add url segment user_uuid");
+            request.AddUrlSegment("user_uuid", userUuid.ToString());
+            this.logger.log("add url segment device_uuid");
+            request.AddUrlSegment("device_uuid", deviceUuid.ToString());
+            this.logger.log("add request header X-Device-Token");
+            request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
+
+            request = this.prepareRequest(request);
+
+            this.logger.log("execute request");
+            var response = this.client.Execute<UserDeviceAPIModel>(request);
+            var statusCode = response.StatusCode;
+            this.logger.log(System.String.Format("response status code: {0}", statusCode));
+            if (statusCode != System.Net.HttpStatusCode.OK)
+            {
+                this.logger.log("status code is NOT 200");
+                this.logger.log("status code is: " + statusCode);
+                throw new RailroadException("we cant get user device");
+            }
+            else
+            {
+                this.logger.log("status code is 200");
+                return response.Data.data;
+            }
+        }
+
+        public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string Location, bool IsActive, string ModifyReason)
+        {
+            this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, Location={3}, IsActive={4}, ModifyReason={5}", 
+                DeviceUuid, UserUuid, DeviceId, Location, IsActive, ModifyReason));
 
             this.logger.log("create request");
             var request = new RestRequest(UPDATE_USER_DEVICE_URL, Method.PUT);
@@ -353,8 +384,6 @@ namespace RailRoadVPN
                 Uuid = DeviceUuid,
                 UserUuid = UserUuid,
                 DeviceId = DeviceId,
-                VirtualIp = VirtualIp,
-                DeviceIp = DeviceIp,
                 Location = Location,
                 IsActive = IsActive,
                 ModifyReason = ModifyReason

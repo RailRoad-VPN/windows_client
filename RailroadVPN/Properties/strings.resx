@@ -124,6 +124,18 @@
   <data name="check_internet_connect_message" xml:space="preserve">
     <value>Seems there is no internet connection. Please check it.</value>
   </data>
+  <data name="device_active_header" xml:space="preserve">
+    <value>Activating device</value>
+  </data>
+  <data name="device_active_message" xml:space="preserve">
+    <value>Your device is active again. Now you can connect to VPN.</value>
+  </data>
+  <data name="device_not_active_header" xml:space="preserve">
+    <value>Device problem</value>
+  </data>
+  <data name="device_not_active_message" xml:space="preserve">
+    <value>Your device is not active. Go to site https://rroadvpn.net/profile and active your device, than restart application. If this actions does not help you, contact us by email support@rroadvpn.net or by internal feedback form. Do you want to create issue within application?</value>
+  </data>
   <data name="disconnect_vpn_first" xml:space="preserve">
     <value>Disconnect VPN first</value>
   </data>
@@ -172,7 +184,7 @@
     <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_email_label" xml:space="preserve">
-    <value>Email</value>
+    <value>Your email (to contact you about your problem)</value>
     <comment>Feedback форма.</comment>
   </data>
   <data name="help_form_empty_description_message" xml:space="preserve">
@@ -268,15 +280,15 @@
     <comment>StartApp</comment>
   </data>
   <data name="user_disabled_message" xml:space="preserve">
-    <value>You account was disabled. Please contact us by email support@rroadvpn.net</value>
+    <value>You account was disabled. Please contact us through feedback form or by email support@rroadvpn.net</value>
     <comment>StartApp</comment>
   </data>
   <data name="user_expired_message" xml:space="preserve">
-    <value>You account was expired. Please contact us by email support@rroadvpn.net</value>
+    <value>You account was expired. Please contact us through feedback form or by email support@rroadvpn.net</value>
     <comment>StartApp</comment>
   </data>
   <data name="user_locked_message" xml:space="preserve">
-    <value>You account was locked. Please contact us by email support@rroadvpn.net</value>
+    <value>You account was locked. Please contact us through feedback form or by email support@rroadvpn.net</value>
     <comment>StartApp</comment>
   </data>
   <data name="user_password_expired_message" xml:space="preserve">
@@ -284,7 +296,7 @@
     <comment>StartApp</comment>
   </data>
   <data name="vpn_connect_status" xml:space="preserve">
-    <value>VPN STATUS</value>
+    <value>Click to connect</value>
     <comment>VPN форма.</comment>
   </data>
   <data name="wrong_pin_error_header" xml:space="preserve">

@@ -167,10 +167,6 @@ namespace RailRoadVPN
 
             this.logger.log("generate device id = guid without -");
             string DeviceId = Guid.NewGuid().ToString().Replace("-", "");
-            string VirtualIp = null;
-            
-            // TODO user api to get geo location of device
-            string DeviceIp = null;
 
             // TODO user api to get geo location of device
             this.logger.log("get culture info to set location field");
@@ -181,7 +177,7 @@ namespace RailRoadVPN
             try
             {
                 this.logger.log("call create user device");
-                this.serviceAPI.createUserDevice(UserUuid, DeviceId, VirtualIp, DeviceIp, Location, IsActive);
+                this.serviceAPI.createUserDevice(UserUuid: UserUuid, DeviceId: DeviceId, Location: Location, IsActive: IsActive);
             } catch (Exception e)
             {
                 this.logger.log("Exception when create user device: " + e.Message);

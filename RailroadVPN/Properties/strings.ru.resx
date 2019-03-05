@@ -123,6 +123,18 @@
   <data name="check_internet_connect_message" xml:space="preserve">
     <value>Видимо нет соединения с интернетом, проверьте что есть интернет</value>
   </data>
+  <data name="device_active_header" xml:space="preserve">
+    <value>Девай активен</value>
+  </data>
+  <data name="device_active_message" xml:space="preserve">
+    <value>Девай снова активировн. Теперь вы может присоединится к VPN.</value>
+  </data>
+  <data name="device_not_active_header" xml:space="preserve">
+    <value>Проблема с девайсом</value>
+  </data>
+  <data name="device_not_active_message" xml:space="preserve">
+    <value>Ваш девай не активен. Пройдите на сайтв личный кабинет https://rroadvpn.net/profile и сделайте девайс активным, после чего перезапустите приложение. Если это не поможет, напишите в техническую поддержку по email support@rroadvpn.net или через приложение. Открыть окно создания заявки в тех поддержку через приложение?ы</value>
+  </data>
   <data name="disconnect_vpn_first" xml:space="preserve">
     <value>Отключите от VPN</value>
   </data>
@@ -162,7 +174,7 @@
     <value>Опишите вашу проблему</value>
   </data>
   <data name="help_form_email_label" xml:space="preserve">
-    <value>Электронная почта</value>
+    <value>Ваша электронная почта (для связи с вами касательно проблемы нашего приложенияы)</value>
   </data>
   <data name="help_form_empty_description_message" xml:space="preserve">
     <value>Опишите Вашу проблему, чтобы мы могли понять, из-за чего могла возникнуть ошибка </value>
@@ -246,7 +258,7 @@
     <value>Внимание! Срок действия вашего пароля истек. Найдите пожалуйста время и измените пароль в личном кабинете на сайте https://rroadvpn.net/ чтобы исправить это.</value>
   </data>
   <data name="vpn_connect_status" xml:space="preserve">
-    <value>VPN статус</value>
+    <value>Нажмите, чтобы подключиться</value>
   </data>
   <data name="wrong_pin_error_header" xml:space="preserve">
     <value>Не верный пинкод</value>

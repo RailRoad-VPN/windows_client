@@ -59,5 +59,8 @@
     <Setting Name="app_version" Type="System.String" Scope="Application">
       <Value Profile="(Default)">1.0a</Value>
     </Setting>
+    <Setting Name="is_user_device_active" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

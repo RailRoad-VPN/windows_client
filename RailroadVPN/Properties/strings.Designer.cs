@@ -79,6 +79,42 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activating device.
+        /// </summary>
+        internal static string device_active_header {
+            get {
+                return ResourceManager.GetString("device_active_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your device is active again. Now you can connect to VPN..
+        /// </summary>
+        internal static string device_active_message {
+            get {
+                return ResourceManager.GetString("device_active_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device problem.
+        /// </summary>
+        internal static string device_not_active_header {
+            get {
+                return ResourceManager.GetString("device_not_active_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your device is not active. Go to site https://rroadvpn.net/profile and active your device, than restart application. If this actions does not help you, contact us by email support@rroadvpn.net or by internal feedback form. Do you want to create issue within application?.
+        /// </summary>
+        internal static string device_not_active_message {
+            get {
+                return ResourceManager.GetString("device_not_active_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disconnect VPN first.
         /// </summary>
         internal static string disconnect_vpn_first {
@@ -187,7 +223,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to Your email (to contact you about your problem).
         /// </summary>
         internal static string help_form_email_label {
             get {
@@ -403,7 +439,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You account was disabled. Please contact us by email support@rroadvpn.net.
+        ///   Looks up a localized string similar to You account was disabled. Please contact us through feedback form or by email support@rroadvpn.net.
         /// </summary>
         internal static string user_disabled_message {
             get {
@@ -412,7 +448,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You account was expired. Please contact us by email support@rroadvpn.net.
+        ///   Looks up a localized string similar to You account was expired. Please contact us through feedback form or by email support@rroadvpn.net.
         /// </summary>
         internal static string user_expired_message {
             get {
@@ -421,7 +457,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You account was locked. Please contact us by email support@rroadvpn.net.
+        ///   Looks up a localized string similar to You account was locked. Please contact us through feedback form or by email support@rroadvpn.net.
         /// </summary>
         internal static string user_locked_message {
             get {
@@ -439,7 +475,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VPN STATUS.
+        ///   Looks up a localized string similar to Click to connect.
         /// </summary>
         internal static string vpn_connect_status {
             get {

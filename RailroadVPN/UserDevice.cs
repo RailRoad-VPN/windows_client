@@ -35,12 +35,6 @@ namespace RailRoadVPN
         [JsonProperty("device_id")]
         public string DeviceId { get; set; }
 
-        [JsonProperty("virtual_ip")]
-        public string VirtualIp { get; set; }
-
-        [JsonProperty("device_ip")]
-        public string DeviceIp { get; set; }
-
         [JsonProperty("location")]
         public string Location { get; set; }
 

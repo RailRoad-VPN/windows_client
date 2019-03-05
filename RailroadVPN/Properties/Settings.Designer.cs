@@ -217,5 +217,17 @@ namespace RailRoadVPN.Properties {
                 return ((string)(this["app_version"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool is_user_device_active {
+            get {
+                return ((bool)(this["is_user_device_active"]));
+            }
+            set {
+                this["is_user_device_active"] = value;
+            }
+        }
     }
 }

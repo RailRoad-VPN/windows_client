@@ -55,7 +55,14 @@ namespace RailRoadVPN
 
         public void addVPNServer(VPNServer vpnServer)
         {
-            this.vpnServersDict.Add(vpnServer.Uuid.ToString(), vpnServer);
+            string key = vpnServer.Uuid.ToString();
+            if (this.vpnServersDict.ContainsKey(key))
+            {
+                this.vpnServersDict.Remove(key);
+            }
+
+            this.vpnServersDict.Add(key, vpnServer);
+
             this.persistVPNServers();
         }
 

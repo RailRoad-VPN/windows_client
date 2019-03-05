@@ -119,6 +119,21 @@ namespace RailRoadVPN
             }
         }
 
+        private void openHelpForm()
+        {
+            logger.log("open help form");
+
+            NeedHelpForm nhf = new NeedHelpForm();
+
+            int parent_left = this.Left;
+            int parent_top = this.Top;
+            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
+            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
+
+            nhf.Location = new Point(parent_left, parent_top);
+            nhf.ShowDialog();
+        }
+
         private Form prepareApplicationToStart(BackgroundWorker worker, DoWorkEventArgs e)
         {
             setProgressLabelText("Cleanup application processes..");
@@ -155,32 +170,136 @@ namespace RailRoadVPN
                 logger.log("Exception when check application version: " + ex.Message);
             }
 
-            setProgressLabelText("Check permissions...");
-            string userUuidStr = Properties.Settings.Default.user_uuid;
-
-            if (userUuidStr != "")
+            setProgressLabelText("Read properties..");
+            string user_uuid = null;
+            string device_token = null;
+            string device_uuid = null;
+            string locale = null;
+            string local_app_openvpn_binaries_dir_checksum = null;
+            int reportProgress = 3;
+            worker.ReportProgress(reportProgress);
+            try
             {
-                logger.log("user uuid is empty. no user check needed");
+                logger.log("get local_app_openvpn_binaries_dir_checksum variable from properties");
+                local_app_openvpn_binaries_dir_checksum = Properties.Settings.Default.local_app_openvpn_binaries_dir_checksum;
+                logger.log("local_app_openvpn_binaries_dir_checksum: " + local_app_openvpn_binaries_dir_checksum);
+
+                logger.log("get locale variable from properties");
+                locale = Properties.Settings.Default.locale;
+                logger.log("locale: " + locale);
+
+                logger.log("get user_uuid variable from properties");
+                user_uuid = Properties.Settings.Default.user_uuid;
+                logger.log("user_uuid: " + user_uuid);
+
+                logger.log("get device_uuid variable from properties");
+                device_uuid = Properties.Settings.Default.device_uuid;
+                logger.log("device_uuid: " + device_uuid);
+
+                logger.log("get device_token variable from properties");
+                device_token = Properties.Settings.Default.x_device_token;
+                logger.log("device_token: " + device_token);
+            }
+            catch (System.Configuration.ConfigurationException ex)
+            {
+                logger.log("Configuration Exception");
+                logger.log(ex.BareMessage);
+                setProgressLabelText("Error code: 01. Write to support..");
+
+                openHelpForm();
+
+                return null;
+            }
+            reportProgress = 9;
+            worker.ReportProgress(reportProgress);
+            // check user device
+            try
+            {
+                if (user_uuid != null && device_uuid != null && device_token != null && user_uuid != "" && device_uuid != "" && device_token != "")
+                {
+                    logger.log("check user device. all properties are not null and not empty");
+
+                    logger.log("get user device from server");
+                    UserDevice userDevice = serviceAPI.getUserDevice(userUuid: Guid.Parse(user_uuid), deviceUuid: Guid.Parse(device_uuid));
+                    if (userDevice.Uuid.ToString() != device_uuid)
+                    {
+                        logger.log("device uuid from properties NOT EQUAL to device uuid from server");
+                        setProgressLabelText("Error code: 04. Write to support..");
+
+                        openHelpForm();
+
+                        return null;
+                    }
+                    else if (userDevice.UserUuid.ToString() != user_uuid)
+                    {
+                        logger.log("user uuid from properties NOT EQUAL to user uuid from server");
+                        setProgressLabelText("Error code: 05. Write to support..");
+
+                        openHelpForm();
+
+                        return null;
+                    }
+                    else if (userDevice.IsActive == false)
+                    {
+                        logger.log("user device IS NOT active. DO SOMETHING!!!");
+                        //setProgressLabelText("Error code: 03. You device is not active");
+
+                        //DialogResult dialogResult = MessageBox.Show(Properties.strings.device_not_active_message, Properties.strings.device_not_active_header, MessageBoxButtons.YesNo);
+                        //if (dialogResult == DialogResult.Yes)
+                        //{
+                        //    logger.log("Dialog Yes");
+                        //    openHelpForm();
+                        //    return null;
+                        //}
+                        //else if (dialogResult == DialogResult.No)
+                        //{
+                        //    logger.log("Dialog No");
+                        //    return null;
+                        //}
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.log("Exception when check user device: " + ex.Message);
+                setProgressLabelText("Error code: 02. Write to support..");
+
+                openHelpForm();
+
+                return null;
+            }
+
+            // check user
+            if (user_uuid != null && user_uuid != "")
+            {
+                logger.log("check user. user uuid is NOT empty");
                 try
                 {
-                    User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(userUuidStr));
+                    User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(user_uuid));
                     if (!user.enabled)
                     {
+                        logger.log("user enabled is FALSE");
                         MessageBox.Show(Properties.strings.user_disabled_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        openHelpForm();
                         return null;
                     }
                     else if (user.is_locked)
                     {
+                        logger.log("user is_locked is TRUE");
                         MessageBox.Show(Properties.strings.user_locked_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        openHelpForm();
                         return null;
                     }
                     else if (user.is_expired)
                     {
+                        logger.log("user is_expired is TRUE");
                         MessageBox.Show(Properties.strings.user_expired_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        openHelpForm();
                         return null;
                     }
                     else if (user.is_password_expired)
                     {
+                        logger.log("user is_password_expired is TRUE");
                         MessageBox.Show(Properties.strings.user_password_expired_message, "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
@@ -188,34 +307,15 @@ namespace RailRoadVPN
                 {
                     logger.log("Exception when get user by uuid: " + ex.Message);
                 }
+            } else
+            {
+                logger.log("user_uuid is empty. no check needed");
             }
 
-            setProgressLabelText("Read properties..");
-            string user_uuid = null;
-            int reportProgress = 3;
-            worker.ReportProgress(reportProgress);
-            logger.log("get user_uuid variable from properties");
-            reportProgress = 6;
-            worker.ReportProgress(reportProgress);
-            try
-            {
-                user_uuid = Properties.Settings.Default.user_uuid;
-                reportProgress = 9;
-                worker.ReportProgress(reportProgress);
-            }
-            catch (System.Configuration.ConfigurationException ex)
-            {
-                logger.log("Configuration Exception");
-                logger.log(ex.BareMessage);
-                setProgressLabelText("Error code: 01. Write to support..");
-                return null;
-            }
-
-            logger.log("user_uuid: " + user_uuid);
             reportProgress = 15;
             worker.ReportProgress(reportProgress);
 
-            string locale = Properties.Settings.Default.locale;
+            
             logger.log("User locale: " + locale);
             logger.log("create culture info");
             var culture = new CultureInfo(locale);
@@ -242,7 +342,7 @@ namespace RailRoadVPN
 
                 reportProgress = 25;
                 worker.ReportProgress(reportProgress);
-                if (checksum != Properties.Settings.Default.local_app_openvpn_binaries_dir_checksum)
+                if (local_app_openvpn_binaries_dir_checksum == null || local_app_openvpn_binaries_dir_checksum == "" || checksum != local_app_openvpn_binaries_dir_checksum)
                 {
                     reportProgress = 26;
                     worker.ReportProgress(reportProgress);

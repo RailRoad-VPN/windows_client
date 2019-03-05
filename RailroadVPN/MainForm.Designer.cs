@@ -255,14 +255,14 @@ namespace RailRoadVPN
             // statusLabel
             // 
             this.statusLabel.AutoEllipsis = true;
-            this.statusLabel.AutoSize = true;
             this.statusLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
             this.statusLabel.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.Location = new System.Drawing.Point(142, 130);
+            this.statusLabel.Location = new System.Drawing.Point(69, 129);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(108, 18);
+            this.statusLabel.Size = new System.Drawing.Size(258, 18);
             this.statusLabel.TabIndex = 14;
             this.statusLabel.Text = "VPN STATUS";
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // semaphoreTimer
             // 

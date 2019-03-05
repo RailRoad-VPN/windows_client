@@ -42,6 +42,15 @@ namespace RailRoadVPN
         private int _menuBtnStartPos;
 
         private Thread handleConnectionThread;
+        private Thread checkUserDeviceThread;
+        private Thread vpnConnectingThread;
+        private Thread vpnDisconnectingThread;
+
+        private volatile bool handeConnectionThreadCanceled = false;
+        private volatile bool checkUserDeviceThreadCanceled = false;
+        private volatile bool updateVPNConnectionThreadCanceled = false;
+
+        private bool inactiveDeviceMessageShown = false;
 
         public MainForm()
         {
@@ -81,14 +90,9 @@ namespace RailRoadVPN
                 Thread.CurrentThread.IsBackground = true;
 
                 bool connectionCreated = false;
-                while(true)
+                while(!handeConnectionThreadCanceled)
                 {
                     string status = this.getOpenVPNStatus();
-
-                    //if (status == "CONNECTED")
-                    //{
-                    //    logger.log("status is connected, and VPN_CONNECT_STATUS is " + VPN_CONNECT_STATUS);
-                    //}
 
                     if (status == "CONNECTED" && connectionCreated == false)
                     {
@@ -145,7 +149,6 @@ namespace RailRoadVPN
                     }
                     else if (status == "CONNECTED" && connectionCreated == true)
                     {
-                        //this.logger.log("update connection");
                         // UPDATE CONNECTION
                         try
                         {
@@ -175,9 +178,229 @@ namespace RailRoadVPN
                         Thread.Sleep(10000);
                     }
                 }
+                this.handeConnectionThreadCanceled = false;
+            });
+            handleConnectionThread.Start();
+
+            this.checkUserDeviceThread = new Thread(() => {
+                while (!checkUserDeviceThreadCanceled)
+                {
+                    bool isOk = checkUserDevice();
+                    Properties.Settings.Default.is_user_device_active = isOk;
+
+                    if (!isOk)
+                    {
+                        if (this.VPN_CONNECT_STATUS == "CONNECTED")
+                        {
+                            this.logger.log("update connection because checkuserdevice");
+                            try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception ex) { this.logger.log("Exception when update connection while checkuserdevice: " + ex.Message); }
+                            if (this.vpnConnectingThread.IsAlive)
+                            {
+                                this.vpnConnectingThread.Abort();
+                            }
+                            this.createVPNDisconnectingThread();
+                            this.vpnDisconnectingThread.Start();
+                        }
+
+                        if (!this.inactiveDeviceMessageShown)
+                        {
+                            this.inactiveDeviceMessageShown = true;
+                            this.setVPNStatusText("Code: 03. You device is not active");
+
+                            DialogResult dialogResult = MessageBox.Show(Properties.strings.device_not_active_message, Properties.strings.device_not_active_header, MessageBoxButtons.YesNo);
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                logger.log("Dialog Yes");
+                                openHelpForm();
+                            }
+                            else if (dialogResult == DialogResult.No)
+                            {
+                                logger.log("Dialog No");
+                            }
+                        }
+                    } else
+                    {
+                        if (this.inactiveDeviceMessageShown)
+                        {
+                            this.inactiveDeviceMessageShown = false;
+                            this.setVPNStatusText("Your device is active!");
+                            MessageBox.Show(Properties.strings.device_active_message, Properties.strings.device_active_message, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        }
+                    }
+
+                    if (this.inactiveDeviceMessageShown)
+                    {
+                        Thread.Sleep(10000);
+                    } else
+                    {
+                        Thread.Sleep(600000);
+                    }
+                }
+            });
+            this.checkUserDeviceThread.Start();
+        }
+
+        private void createVPNConnectingThread()
+        {
+            this.logger.log("create vpn connecting thread");
+            this.vpnConnectingThread = new Thread(() =>
+            {
+                this.logger.log("connecting vpn thread: start");
+
+                Thread.CurrentThread.IsBackground = true;
+                /* run your code here */
+                this.logger.log("connecting vpn thread: set vpn status text to Get server...");
+                this.setVPNStatusText("Detect server...");
+                this.logger.log("connecting vpn thread: get random server");
+                Guid userGuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+
+                string randomServerUuid;
+                try
+                {
+                    randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
+                }
+                catch (Exception ex)
+                {
+                    this.logger.log("connecting vpn thread: Exception when get random server uuid: " + ex.Message);
+                    this.VPN_CONNECT_STATUS = "INTERUPTED";
+                    this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                    MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+
+                }
+
+                Properties.Settings.Default.server_uuid = randomServerUuid;
+
+                string configPath = Utils.getServersConfigDirPath() + "\\" + randomServerUuid + ".ovpn";
+
+                this.logger.log("connecting vpn thread: check existing configuration of this server");
+                if (!propertiesHelper.hasVPNServer(uuid: randomServerUuid) || !File.Exists(configPath))
+                {
+                    this.logger.log("connecting vpn thread: we have not this server. get it");
+                    setVPNStatusText("Get server...");
+                    Guid userUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
+                    Guid serverUuid = Guid.Parse(randomServerUuid);
+
+                    VPNServer vpnServer = null;
+                    try
+                    {
+                        vpnServer = this.serviceAPI.getVPNServer(userUuid: userUuid, serverUuid: serverUuid);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.VPN_CONNECT_STATUS = "INTERUPTED";
+                        this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                        this.semaphorePic.BackgroundImage = Properties.Resources.red;
+
+                        this.logger.log("connecting vpn thread: Exception: " + ex.Message);
+                        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    propertiesHelper.addVPNServer(vpnServer: vpnServer);
+
+                    setVPNStatusText("connecting vpn thread: Get server configuration...");
+                    this.logger.log("connecting vpn thread: get server configuration file");
+
+                    string configStr;
+                    try
+                    {
+                        configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
+                    }
+                    catch (Exception ex)
+                    {
+                        this.VPN_CONNECT_STATUS = "INTERUPTED";
+                        this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                        this.semaphorePic.BackgroundImage = Properties.Resources.red;
+
+                        this.logger.log("connecting vpn thread: Exception: " + ex.Message);
+                        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    try
+                    {
+                        this.logger.log("connecting vpn thread: save server configuration to file: " + configPath);
+                        System.IO.File.WriteAllText(configPath, configStr);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.log("connecting vpn thread: Exception when save server configuration to file: " + ex.Message);
+                        this.VPN_CONNECT_STATUS = "INTERUPTED";
+                        this.setVPNStatusText(Properties.strings.check_internet_connect_header);
+                        this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                setVPNStatusText("Starting VPN...");
+                this.openVPNService.startOpenVPN(serverUuid: randomServerUuid);
+                Thread.Sleep(2000);
+                setVPNStatusText("Starting Manager...");
+                try
+                {
+                    this.openVPNService.connectManager();
+                }
+                catch (Exception ex)
+                {
+                    logger.log("connecting vpn thread: Exception when connec to manager: " + ex.Message);
+                }
+                // TODO
+                Thread.Sleep(1000);
+
+                Properties.Settings.Default.vpn_status = "connected";
             });
 
-            handleConnectionThread.Start();
+        }
+
+        private void createVPNDisconnectingThread()
+        {
+            this.logger.log("create vpn disconnecting thread");
+            this.vpnDisconnectingThread = new Thread(() =>
+            {
+                this.logger.log("disconnecting vpn thread: start");
+                Thread.CurrentThread.IsBackground = true;
+                /* run your code here */
+                this.logger.log("disconnecting vpn thread: update connection");
+                try
+                {
+                    this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince);
+                    Thread.Sleep(2000);
+                }
+                catch (Exception ex)
+                {
+                    this.logger.log("Exception when update connection while disconnect to VPN: " + ex.Message);
+                }
+                this.logger.log("disconnecting vpn thread: stop openvpn");
+                try { this.openVPNService.stopOpenVPN(); } catch (Exception) { }
+
+                try
+                {
+                    this.logger.log("disconnecting vpn thread: disable status text timer");
+                    this.semaphoreTimer.Enabled = false;
+                    this.statusTextTimer.Enabled = false;
+                    this.logger.log("disconnecting vpn thread: set help text green label visible false");
+                    this.changeLabelVisible(this.helpTextGreenLabel, false);
+                    this.logger.log("disconnecting vpn thread: set help text red label visible true");
+                    this.changeLabelVisible(this.helpTextRedLabel, true);
+                    this.logger.log("disconnecting vpn thread: change help text 2 label left attribute");
+                    this.changeLabelLeftAttr(this.helpText2Label, this.helpText2LabelLeftRedPos);
+                    this.logger.log("disconnecting vpn thread: change help text 2 label text");
+                    this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelRedText);
+                    this.logger.log("disconnecting vpn thread: set vpn status text to Disconnected");
+                    this.setVPNStatusText("Disconnected");
+                    this.logger.log("disconnecting vpn thread: set VPN CONNECT STATUS to NOT_CONNECTED");
+                    this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
+                    this.logger.log("disconnecting vpn thread: set semaphore picture to red");
+                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
+                    this.updateHelpTextUI();
+                } catch (Exception ex)
+                {
+                    this.logger.log("disconnecting vpn thread: exception with resources");
+                }
+                Properties.Settings.Default.vpn_status = "disconnected";
+            });
         }
 
         delegate void UpdateHelpTextUICallback();
@@ -221,16 +444,32 @@ namespace RailRoadVPN
 
         private void closeBtn_Click(object sender, EventArgs e)
         {
-            this.logger.log("close btn click");
-            try {
-                this.logger.log("abort handleconnection thread");
-                this.handleConnectionThread.Abort();
-                this.logger.log("stop vpn");
-                this.openVPNService.stopOpenVPN();
-            } catch (Exception) { }
-
             this.logger.log("update connection (disconnect)");
             try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception) { }
+
+            this.logger.log("close btn click");
+            try {
+                if (this.vpnConnectingThread.IsAlive)
+                {
+                    this.logger.log("connecting alive. try to abort");
+                    this.vpnConnectingThread.Abort();
+                }
+                if (this.vpnDisconnectingThread.IsAlive)
+                {
+                    this.logger.log("disconnecting alive. try to abort");
+                    this.vpnDisconnectingThread.Abort();
+                }
+            }
+            catch (Exception) { }
+            this.logger.log("try to stop vpn");
+            if (this.VPN_CONNECT_STATUS == "CONNECTED")
+            {
+                try { this.openVPNService.stopOpenVPN(); } catch (Exception) { }
+            }
+            this.logger.log("abort handleconnection thread");
+            try { this.handleConnectionThread.Abort(); } catch (Exception) { }
+            this.logger.log("abort checkuserdevice thread");
+            try { this.checkUserDeviceThread.Abort();} catch (Exception) { }
 
             this.Close();
         }
@@ -295,13 +534,10 @@ namespace RailRoadVPN
         }
 
         private string VPN_CONNECT_STATUS = "NOT_CONNECTED";
-        private Thread vpnConnectingThread;
-        private Thread vpnDisconnectingThread;
-        private Thread updateVPNConnectionThread;
 
         private int btnPressedWhileConnecting = 1;
 
-        private void updateUserDevice(bool IsActive, string VirtualIp, string ModifyReason, string DeviceIp = null)
+        private void updateUserDevice(bool IsActive, string VirtualIp, string ModifyReason)
         {
             this.logger.log("updateUserDevice method in Form");
 
@@ -320,7 +556,7 @@ namespace RailRoadVPN
             try
             {
                 this.logger.log("call update user device");
-                this.serviceAPI.updateUserDevice(DeviceUuid: DeviceUuid, UserUuid: UserUuid, DeviceId: DeviceId, VirtualIp: this.VirtualIp, Location: Location, IsActive: IsActive, ModifyReason: ModifyReason);
+                this.serviceAPI.updateUserDevice(DeviceUuid: DeviceUuid, UserUuid: UserUuid, DeviceId: DeviceId, Location: Location, IsActive: IsActive, ModifyReason: ModifyReason);
             }
             catch (Exception e)
             {
@@ -328,10 +564,169 @@ namespace RailRoadVPN
             }
         }
 
+        private void openHelpForm()
+        {
+            logger.log("open help form");
+
+            NeedHelpForm nhf = new NeedHelpForm();
+
+            int parent_left = this.Left;
+            int parent_top = this.Top;
+            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
+            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
+
+            nhf.Location = new Point(parent_left, parent_top);
+            nhf.ShowDialog();
+        }
+
+        private bool checkUserDevice(bool showForm = false)
+        {
+            string user_uuid = null;
+            string device_token = null;
+            string device_uuid = null;
+            try
+            {
+                logger.log("get user_uuid variable from properties");
+                user_uuid = Properties.Settings.Default.user_uuid;
+                logger.log("user_uuid: " + user_uuid);
+
+                logger.log("get device_uuid variable from properties");
+                device_uuid = Properties.Settings.Default.device_uuid;
+                logger.log("device_uuid: " + device_uuid);
+
+                logger.log("get device_token variable from properties");
+                device_token = Properties.Settings.Default.x_device_token;
+                logger.log("device_token: " + device_token);
+            }
+            catch (System.Configuration.ConfigurationException ex)
+            {
+                logger.log("Configuration Exception");
+                logger.log(ex.BareMessage);
+                this.setVPNStatusText("Error code: 01");
+
+                openHelpForm();
+
+                return false;
+            }
+
+            this.setVPNStatusText("Device checklist...");
+            // check user device
+            try
+            {
+                logger.log("check user device. all properties are not null and not empty");
+
+                logger.log("get user device from server");
+                UserDevice userDevice = serviceAPI.getUserDevice(userUuid: Guid.Parse(user_uuid), deviceUuid: Guid.Parse(device_uuid));
+                if (userDevice.Uuid.ToString() != device_uuid)
+                {
+                    logger.log("device uuid from properties NOT EQUAL to device uuid from server");
+                    this.setVPNStatusText("Error code: 04");
+
+                    openHelpForm();
+
+                    return false;
+                }
+                else if (userDevice.UserUuid.ToString() != user_uuid)
+                {
+                    logger.log("user uuid from properties NOT EQUAL to user uuid from server");
+                    this.setVPNStatusText("Error code: 05");
+
+                    openHelpForm();
+
+                    return false;
+                }
+                else if (userDevice.IsActive == false)
+                {
+                    logger.log("user device IS NOT active. DO SOMETHING!!!");
+
+                    this.setVPNStatusText("You device is not active");
+
+                    if (showForm)
+                    {
+                        DialogResult dialogResult = MessageBox.Show(Properties.strings.device_not_active_message, Properties.strings.device_not_active_header, MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            logger.log("Dialog Yes");
+                            openHelpForm();
+                            return false;
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            logger.log("Dialog No");
+                            return false;
+                        }
+                    } else
+                    {
+                        return false;
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.log("Exception when check user device: " + ex.Message);
+            }
+
+            // check user
+            this.setVPNStatusText("Account checklist...");
+            logger.log("check user");
+            try
+            {
+                User user = serviceAPI.getUserByUuid(userUuid: Guid.Parse(user_uuid));
+                if (!user.enabled)
+                {
+                    logger.log("user enabled is FALSE");
+                    this.setVPNStatusText("Account problem");
+                    MessageBox.Show(Properties.strings.user_disabled_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    openHelpForm();
+                    return false;
+                }
+                else if (user.is_locked)
+                {
+                    logger.log("user is_locked is TRUE");
+                    this.setVPNStatusText("Account problem");
+                    MessageBox.Show(Properties.strings.user_locked_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    openHelpForm();
+                    return false;
+                }
+                else if (user.is_expired)
+                {
+                    logger.log("user is_expired is TRUE");
+                    this.setVPNStatusText("Account problem");
+                    MessageBox.Show(Properties.strings.user_expired_message, Properties.strings.user_bad_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    openHelpForm();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.log("Exception when get user by uuid: " + ex.Message);
+            }
+
+            if (this.VPN_CONNECT_STATUS == "CONNECTED")
+            {
+                this.setVPNStatusText("Connected");
+            } else if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
+            {
+                this.setVPNStatusText(Properties.strings.vpn_connect_status);
+            }
+
+            return true;
+        }
+
         private void semaphorePic_Click(object sender, EventArgs e)
         {
+
             if (this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
             {
+                bool isUserDeviceActive = Properties.Settings.Default.is_user_device_active;
+                if (!isUserDeviceActive)
+                {
+                    if (!this.checkUserDevice(showForm: true)) {
+                        return;
+                    }
+                }
+
                 this.setVPNStatusText("Checking driver...");
                 List<NetworkAdapterInfo> nicList = Utils.getNetworkInformation();
                 this.logger.log("check is tap driver exist");
@@ -370,110 +765,10 @@ namespace RailRoadVPN
                 this.logger.log("set semaphore picture to yellow");
                 this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
 
-                this.logger.log("create vpn connecting thread");
-                this.vpnConnectingThread = new Thread(() =>
-                   {
-                       Thread.CurrentThread.IsBackground = true;
-                       /* run your code here */
-                       this.logger.log("set vpn status text to Get server...");
-                       this.setVPNStatusText("Detect server...");
-                       this.logger.log("get random server");
-                       Guid userGuid = Guid.Parse(Properties.Settings.Default.user_uuid);
-
-                       string randomServerUuid;
-                       try
-                       {
-                           randomServerUuid = this.serviceAPI.getUserRandomServer(userGuid);
-                       } catch (Exception ex)
-                       {
-                           this.logger.log("Exception when get random server uuid: " + ex.Message);
-                           this.VPN_CONNECT_STATUS = "INTERUPTED";
-                           this.setVPNStatusText(Properties.strings.check_internet_connect_header);
-                           this.semaphorePic.BackgroundImage = Properties.Resources.red;
-                           MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                           return;
-
-                       }
-
-                       Properties.Settings.Default.server_uuid = randomServerUuid;
-
-                       string configPath = Utils.getServersConfigDirPath() + "\\" + randomServerUuid + ".ovpn";
-
-                       this.logger.log("check existing configuration of this server");
-                       if (!propertiesHelper.hasVPNServer(uuid: randomServerUuid) || !File.Exists(configPath))
-                       {
-                           this.logger.log("we have not this server. get it");
-                           setVPNStatusText("Get server...");
-                           Guid userUuid = Guid.Parse(Properties.Settings.Default.user_uuid);
-                           Guid serverUuid = Guid.Parse(randomServerUuid);
-
-                           VPNServer vpnServer = null;
-                           try
-                           {
-                               vpnServer = this.serviceAPI.getVPNServer(userUuid: userUuid, serverUuid: serverUuid);
-                           } catch (Exception ex)
-                           {
-                               this.VPN_CONNECT_STATUS = "INTERUPTED";
-                               this.setVPNStatusText(Properties.strings.check_internet_connect_header);
-                               this.semaphorePic.BackgroundImage = Properties.Resources.red;
-
-                               this.logger.log("Exception: " + ex.Message);
-                               MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                               return;
-                           }
-                           propertiesHelper.addVPNServer(vpnServer: vpnServer);
-
-                           setVPNStatusText("Get server configuration...");
-                           this.logger.log("get server configuration file");
-
-                           string configStr;
-                           try
-                           {
-                               configStr = this.serviceAPI.getUserVPNServerConfiguration(userUuid: userGuid, serverUuid: Guid.Parse(randomServerUuid));
-                           }
-                           catch (Exception ex)
-                           {
-                               this.VPN_CONNECT_STATUS = "INTERUPTED";
-                               this.setVPNStatusText(Properties.strings.check_internet_connect_header);
-                               this.semaphorePic.BackgroundImage = Properties.Resources.red;
-
-                               this.logger.log("Exception: " + ex.Message);
-                               MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                               return;
-                           }
-
-                           try
-                           {
-                               this.logger.log("save server configuration to file: " + configPath);
-                               System.IO.File.WriteAllText(configPath, configStr);
-                           } catch (Exception ex)
-                           {
-                               this.logger.log("Exception when save server configuration to file: " + ex.Message);
-                               this.VPN_CONNECT_STATUS = "INTERUPTED";
-                               this.setVPNStatusText(Properties.strings.check_internet_connect_header);
-                               this.semaphorePic.BackgroundImage = Properties.Resources.red;
-                               MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                               return;
-                           }
-                       }
-
-                       setVPNStatusText("Starting VPN...");
-                       this.openVPNService.startOpenVPN(serverUuid: randomServerUuid);
-                       Thread.Sleep(2000);
-                       setVPNStatusText("Starting Manager...");
-                       try
-                       {
-                           this.openVPNService.connectManager();
-                       } catch (Exception ex)
-                       {
-                           logger.log("exception when connec to manager: " + ex.Message);
-                       }
-                       Thread.Sleep(2000);
-
-                       Properties.Settings.Default.vpn_status = "connected";
-                   });
                 this.semaphoreTimer.Enabled = true;
                 this.statusTextTimer.Enabled = true;
+
+                this.createVPNConnectingThread();
                 this.vpnConnectingThread.Start();
             }
             else if (VPN_CONNECT_STATUS == "CONNECTING")
@@ -523,49 +818,7 @@ namespace RailRoadVPN
                 this.logger.log("set semaphore picture to yellow");
                 this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
 
-                this.logger.log("create vpn disconnecting thread");
-                this.vpnDisconnectingThread = new Thread(() =>
-                {
-                    this.logger.log("disconnecting vpn thread: start");
-                    Thread.CurrentThread.IsBackground = true;
-                    /* run your code here */
-                    this.logger.log("disconnecting vpn thread: stop openvpn");
-                    this.openVPNService.stopOpenVPN();
-                    // this.logger.log("disconnecting vpn thread: disable status text timer");
-                    // this.statusTextTimer.Enabled = false;
-                    this.logger.log("disconnecting vpn thread: set help text green label visible false");
-                    this.changeLabelVisible(this.helpTextGreenLabel, false);
-                    this.logger.log("disconnecting vpn thread: set help text red label visible true");
-                    this.changeLabelVisible(this.helpTextRedLabel, true);
-                    this.logger.log("disconnecting vpn thread: change help text 2 label left attribute");
-                    this.changeLabelLeftAttr(this.helpText2Label, this.helpText2LabelLeftRedPos);
-                    this.logger.log("disconnecting vpn thread: change help text 2 label text");
-                    this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelRedText);
-                    this.logger.log("disconnecting vpn thread: set vpn status text to Disconnected");
-                    this.setVPNStatusText("Disconnected");
-                    this.logger.log("disconnecting vpn thread: set VPN CONNECT STATUS to NOT_CONNECTED");
-                    this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
-                    this.logger.log("disconnecting vpn thread: set semaphore picture to red");
-                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
-                    this.updateHelpTextUI();
-                    Properties.Settings.Default.vpn_status = "disconnected";
-
-                    try
-                    {
-                        this.logger.log("check update vpn connection thread");
-                        if (this.updateVPNConnectionThread.IsAlive)
-                        {
-                            this.logger.log("update vpn connection thread is alive. aborting...");
-                            this.updateVPNConnectionThread.Abort();
-                            this.updateVPNConnectionThread = null;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.log("Exception: " + ex.Message);
-                    }
-                });
-
+                this.createVPNDisconnectingThread();
                 this.logger.log("start vpn disconnecting thread");
                 this.vpnDisconnectingThread.Start();
             }
@@ -580,60 +833,7 @@ namespace RailRoadVPN
                 this.logger.log("set semaphore picture to yellow");
                 this.semaphorePic.BackgroundImage = Properties.Resources.yellow;
 
-                this.logger.log("create vpn disconnecting thread");
-                this.vpnDisconnectingThread = new Thread(() =>
-                {
-                    this.logger.log("disconnecting vpn thread: start");
-                    Thread.CurrentThread.IsBackground = true;
-                    /* run your code here */
-                    this.logger.log("disconnecting vpn thread: stop openvpn");
-                    this.openVPNService.stopOpenVPN();
-                    this.logger.log("disconnecting vpn thread: disable status text timer");
-                    this.semaphoreTimer.Enabled = false;
-                    this.statusTextTimer.Enabled = false;
-                    this.logger.log("disconnecting vpn thread: set help text green label visible false");
-                    this.changeLabelVisible(this.helpTextGreenLabel, false);
-                    this.logger.log("disconnecting vpn thread: set help text red label visible true");
-                    this.changeLabelVisible(this.helpTextRedLabel, true);
-                    this.logger.log("disconnecting vpn thread: change help text 2 label left attribute");
-                    this.changeLabelLeftAttr(this.helpText2Label, this.helpText2LabelLeftRedPos);
-                    this.logger.log("disconnecting vpn thread: change help text 2 label text");
-                    this.changeLabelTextAttr(this.helpText2Label, this.helpText2LabelRedText);
-                    this.logger.log("disconnecting vpn thread: set vpn status text to Disconnected");
-                    this.setVPNStatusText("Disconnected");
-                    this.logger.log("disconnecting vpn thread: set VPN CONNECT STATUS to NOT_CONNECTED");
-                    this.VPN_CONNECT_STATUS = "NOT_CONNECTED";
-                    this.logger.log("disconnecting vpn thread: set semaphore picture to red");
-                    this.semaphorePic.BackgroundImage = Properties.Resources.red;
-                    this.updateHelpTextUI();
-                    Properties.Settings.Default.vpn_status = "disconnected";
-
-                    //try
-                    //{
-                    //    this.logger.log("check update vpn connection thread");
-                    //    if (this.updateVPNConnectionThread.IsAlive)
-                    //    {
-                    //        this.logger.log("update vpn connection thread is alive. aborting...");
-                    //        this.updateVPNConnectionThread.Abort();
-                    //        this.updateVPNConnectionThread = null;
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    this.logger.log("Exception: " + ex.Message);
-                    //}
-                });
-
-                //bool IsConnected = false;
-
-                //try
-                //{
-                //    this.updateConnection(IsConnected: IsConnected, ConnectedSince: this.ConnectedSince);
-                //} catch (Exception ex)
-                //{
-                //    this.logger.log("Exception when check update connection: " + ex.Message);
-                //}
-
+                this.createVPNDisconnectingThread();
                 this.logger.log("start vpn disconnecting thread");
                 this.vpnDisconnectingThread.Start();
             } else
@@ -816,69 +1016,198 @@ RECONNECTING  -- A restart has occurred.
 EXITING       -- A graceful exit is in progress.
          */
         private string getOpenVPNStatus() {
-            //this.logger.log("getOpenVPNStatus");
-
-            //this.logger.log("get state");
-            String stateRaw = this.openVPNService.GetState();
-            //this.logger.log("stateRaw: " + stateRaw);
-            if (stateRaw == null || this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
+            try
             {
-                //this.logger.log("stateRaw is null. vpn not connected");
+                String stateRaw = this.openVPNService.GetState();
+                if (stateRaw == null || this.VPN_CONNECT_STATUS == "NOT_CONNECTED")
+                {
+                    return this.VPN_CONNECT_STATUS;
+                }
+                string[] stateArr = stateRaw.Split(new char[] { ',' });
+                string statusText = stateArr[1]; // CONNECTED
+                return statusText;
+            }
+            catch (Exception ex)
+            {
+                this.logger.log("Exception when getOpenVPNStatus: " + ex.Message);
                 return this.VPN_CONNECT_STATUS;
             }
-            //this.logger.log("split state with comma");
-            string[] stateArr = stateRaw.Split(new char[] { ',' });
-            //this.logger.log("get 1 element");
-            string statusText = stateArr[1]; // CONNECTED
-            //this.logger.log("statusText is " + statusText);
-            return statusText;
         }
 
         private string getOpenVPNVirtualIP()
         {
-            //this.logger.log("getOpenVPNVirutalIP");
-            String state = this.openVPNService.GetState();
-            if (state == null)
+            try
             {
-                this.logger.log("getOpenVPNVirtualIP state is null");
+                String state = this.openVPNService.GetState();
+                if (state == null)
+                {
+                    this.logger.log("getOpenVPNVirtualIP state is null");
+                    return null;
+                }
+                string[] stateArr = state.Split(new char[] { ',' });
+                string virtIp = stateArr[3]; // virtualIP (10.10.0.10)
+                return virtIp;
+            }
+            catch (Exception ex)
+            {
+                this.logger.log("Exception when getOpenVPNVirtualIP: " + ex.Message);
                 return null;
             }
-            string[] stateArr = state.Split(new char[] { ',' });
-            string virtIp = stateArr[3]; // virtualIP (10.10.0.10)
-            return virtIp;
         }
 
         private OpenVPNTrafficInfo getOpenVPNTrafficInfo()
         {
-            string statusRaw = this.openVPNService.GetStatus();
-            if (statusRaw == null)
+            try
             {
-                // TODO
+                string statusRaw = this.openVPNService.GetStatus();
+                if (statusRaw == null)
+                {
+                    // TODO
+                    return null;
+                }
+
+                string[] statusArr = statusRaw.Split(
+                    new[] { "\r\n", "\r", "\n" },
+                    StringSplitOptions.None
+                );
+
+                long read_bytes = 0;
+                long write_bytes = 0;
+                foreach (string statusTxt in statusArr)
+                {
+                    if (statusTxt.StartsWith("TCP/UDP read"))
+                    {
+                        read_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
+                    }
+                    else if (statusTxt.StartsWith("TCP/UDP write"))
+                    {
+                        write_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
+                    }
+                }
+
+                OpenVPNTrafficInfo trafficInfo = new OpenVPNTrafficInfo(BytesI: read_bytes, BytesO: write_bytes);
+
+                return trafficInfo;
+            } catch (Exception ex)
+            {
+                this.logger.log("Exception when getOpenVPNTrafficInfo: " + ex.Message);
                 return null;
             }
+        }
 
-            string[] statusArr = statusRaw.Split(
-                new[] { "\r\n", "\r", "\n" },
-                StringSplitOptions.None
-            );
+        private void enLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "en-US";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Restart application", "Change language", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
-            long read_bytes = 0;
-            long write_bytes = 0;
-            foreach (string statusTxt in statusArr)
+        private void ruLangBtn_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.locale = "ru-RU";
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void menuLogoutLabel_Click(object sender, EventArgs e)
+        {
+            logger.log("logout menu click");
+
+            bool is_vpn_connected = this.VPN_CONNECT_STATUS == "CONNECTED" || Properties.Settings.Default.vpn_status == "connected" || Utils.isTapDriverBusy();
+
+            if (is_vpn_connected)
             {
-                if (statusTxt.StartsWith("TCP/UDP read"))
-                {
-                    read_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
-                }
-                else if (statusTxt.StartsWith("TCP/UDP write"))
-                {
-                    write_bytes = Convert.ToInt64(statusTxt.Split(new char[] { ',' })[1]);
-                }
+                MessageBox.Show(Properties.strings.disconnect_vpn_first, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            OpenVPNTrafficInfo trafficInfo = new OpenVPNTrafficInfo(BytesI: read_bytes, BytesO: write_bytes);
+            try
+            {
+                // in case something goes so so so so wrong
+                if (this.VPN_CONNECT_STATUS == "CONNECTED")
+                {
+                    this.createVPNDisconnectingThread();
+                    this.vpnDisconnectingThread.Start();
+                    this.vpnDisconnectingThread.Join();
 
-            return trafficInfo;
+                    this.handeConnectionThreadCanceled = true;
+                    this.checkUserDeviceThreadCanceled = true;
+                    if (this.vpnConnectingThread.IsAlive)
+                    {
+                        this.logger.log("alive. try to abort");
+                        this.vpnConnectingThread.Abort();
+                    }
+                }
+            }
+            catch (Exception ex) { this.logger.log("Exception stop vpn and cancel threads when logout"); }
+
+            this.logger.log("update user device (logout)");
+            try { this.updateUserDevice(IsActive: false, VirtualIp: this.VirtualIp, ModifyReason: "logout action"); } catch (Exception ex) { this.logger.log("Exception when update user device while logout: " + ex.Message); }
+
+            this.logger.log("clear properties");
+            propertiesHelper.clearProperties();
+
+            this.logger.log("open input pin form");
+            InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
+            ipf.Location = this.Location;
+            this.Hide();
+            ipf.Closed += (s, args) => this.Close();
+            ipf.Show();
+        }
+
+        private void menuNeedHelpLabel_Click(object sender, EventArgs e)
+        {
+            if (this.VPN_CONNECT_STATUS == "CONNECTED" || Properties.Settings.Default.vpn_status == "connected" || Utils.isTapDriverBusy())
+            {
+                MessageBox.Show(Properties.strings.disconnect_vpn_first, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            NeedHelpForm nhf = new NeedHelpForm();
+
+            int parent_left = this.Left;
+            int parent_top = this.Top;
+            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
+            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
+
+            nhf.Location = new Point(parent_left, parent_top);
+            nhf.ShowDialog();
+        }
+
+        private void menuMyProfileLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.White;
+            this.menuMyProfileLabel.Refresh();
+        }
+
+        private void menuMyProfileLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuMyProfileLabel.Refresh();
+        }
+
+        private void menuLogoutLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuLogoutLabel.ForeColor = System.Drawing.Color.White;
+            this.menuLogoutLabel.Refresh();
+        }
+
+        private void menuLogoutLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuLogoutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuLogoutLabel.Refresh();
+        }
+
+        private void menuNeedHelpLabel_MouseHover(object sender, EventArgs e)
+        {
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.White;
+            this.menuNeedHelpLabel.Refresh();
+        }
+
+        private void menuNeedHelpLabel_MouseLeave(object sender, EventArgs e)
+        {
+            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
+            this.menuNeedHelpLabel.Refresh();
         }
 
         delegate void SetVPNStatusTextCallback(string text);
@@ -939,99 +1268,6 @@ EXITING       -- A graceful exit is in progress.
             {
                 label.Text = text;
             }
-        }
-
-        private void enLangBtn_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.locale = "en-US";
-            Properties.Settings.Default.Save();
-            MessageBox.Show("Restart application", "Change language", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void ruLangBtn_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.locale = "ru-RU";
-            Properties.Settings.Default.Save();
-            MessageBox.Show("Перезапустите приложение", "Смена языка", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void menuLogoutLabel_Click(object sender, EventArgs e)
-        {
-            logger.log("logout menu click");
-            if (VPN_CONNECT_STATUS == "CONNECTED")
-            {
-                this.logger.log("update connection (disconnect)");
-                try { this.updateConnection(IsConnected: false, ConnectedSince: this.ConnectedSince); } catch (Exception ex) {this.logger.log("Exception when update connection while logout: " + ex.Message); }
-                try { this.openVPNService.stopOpenVPN(); } catch (Exception) { }
-                try { this.handleConnectionThread.Abort(); } catch (Exception) { }
-                try { this.vpnConnectingThread.Abort(); } catch (Exception) { }
-            }
-
-            this.logger.log("update user device (logout)");
-            try { this.updateUserDevice(IsActive: false, VirtualIp: this.VirtualIp, ModifyReason: "logout action"); } catch (Exception ex) { this.logger.log("Exception when update user device while logout: " + ex.Message); }
-
-            propertiesHelper.clearProperties();
-
-            InputPinForm ipf = FormManager.Current.CreateForm<InputPinForm>();
-            ipf.Location = this.Location;
-            this.Hide();
-            ipf.Closed += (s, args) => this.Close();
-            ipf.Show();
-        }
-
-        private void menuMyProfileLabel_MouseHover(object sender, EventArgs e)
-        {
-            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.White;
-            this.menuMyProfileLabel.Refresh();
-        }
-
-        private void menuMyProfileLabel_MouseLeave(object sender, EventArgs e)
-        {
-            this.menuMyProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
-            this.menuMyProfileLabel.Refresh();
-        }
-
-        private void menuLogoutLabel_MouseHover(object sender, EventArgs e)
-        {
-            this.menuLogoutLabel.ForeColor = System.Drawing.Color.White;
-            this.menuLogoutLabel.Refresh();
-        }
-
-        private void menuLogoutLabel_MouseLeave(object sender, EventArgs e)
-        {
-            this.menuLogoutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
-            this.menuLogoutLabel.Refresh();
-        }
-
-        private void menuNeedHelpLabel_MouseHover(object sender, EventArgs e)
-        {
-            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.White;
-            this.menuNeedHelpLabel.Refresh();
-        }
-
-        private void menuNeedHelpLabel_MouseLeave(object sender, EventArgs e)
-        {
-            this.menuNeedHelpLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(204)))), ((int)(((byte)(70)))));
-            this.menuNeedHelpLabel.Refresh();
-        }
-
-        private void menuNeedHelpLabel_Click(object sender, EventArgs e)
-        {
-            if (this.VPN_CONNECT_STATUS == "CONNECTED" || Properties.Settings.Default.vpn_status == "connected" || Utils.isTapDriverBusy())
-            {
-                MessageBox.Show(Properties.strings.disconnect_vpn_first, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            NeedHelpForm nhf = new NeedHelpForm();
-
-            int parent_left = this.Left;
-            int parent_top = this.Top;
-            parent_left = parent_left + ((this.Width - nhf.Width) / 2);
-            parent_top = parent_top + ((this.Height - nhf.Height) / 2);
-
-            nhf.Location = new Point(parent_left, parent_top);
-            nhf.ShowDialog();
         }
     }
 }

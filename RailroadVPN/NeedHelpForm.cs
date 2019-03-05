@@ -128,9 +128,10 @@ namespace RailRoadVPN
             Guid userUuid;
             this.logger.log("get user uuid");
             string userUuidStr = Properties.Settings.Default.user_uuid;
-            if (userUuidStr != "")
+            string deviceUuid = Properties.Settings.Default.device_uuid;
+            if (userUuidStr != "" && deviceUuid != "")
             {
-                this.logger.log("there is user uuid, try parse");
+                this.logger.log("there is user uuid and device_uuid, try parse");
                 userUuid = Guid.Parse(userUuidStr);
                 try
                 {
@@ -162,8 +163,11 @@ namespace RailRoadVPN
                     return;
                 }
                 this.logger.log("got ticket number: " + ticketNumber);
-                MessageBox.Show(Properties.strings.help_form_anonym_thank_message + " " + ticketNumber, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Properties.strings.help_form_anonym_thank_message + " " + ticketNumber, ticketNumber.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            this.sendBtn.Enabled = true;
+            this.cancelBtn.Enabled = true;
 
             this.logger.log("close form");
             this.Close();
