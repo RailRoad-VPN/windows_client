@@ -322,7 +322,7 @@ namespace RailRoadVPN
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InputPinForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "RRoadVPN - Enter pin";
+            this.Text = "RRoadVPN - PIN-CODE";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.InputPinForm_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.closeBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minimizeBtn)).EndInit();

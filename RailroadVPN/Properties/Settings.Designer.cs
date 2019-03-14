@@ -229,5 +229,17 @@ namespace RailRoadVPN.Properties {
                 this["is_user_device_active"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string user_email {
+            get {
+                return ((string)(this["user_email"]));
+            }
+            set {
+                this["user_email"] = value;
+            }
+        }
     }
 }

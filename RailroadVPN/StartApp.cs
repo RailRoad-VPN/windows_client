@@ -206,6 +206,8 @@ namespace RailRoadVPN
                 logger.log(ex.BareMessage);
                 setProgressLabelText("Error code: 01. Write to support..");
 
+                MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 openHelpForm();
 
                 return null;
@@ -226,6 +228,8 @@ namespace RailRoadVPN
                         logger.log("device uuid from properties NOT EQUAL to device uuid from server");
                         setProgressLabelText("Error code: 04. Write to support..");
 
+                        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                         openHelpForm();
 
                         return null;
@@ -235,6 +239,8 @@ namespace RailRoadVPN
                         logger.log("user uuid from properties NOT EQUAL to user uuid from server");
                         setProgressLabelText("Error code: 05. Write to support..");
 
+                        MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                         openHelpForm();
 
                         return null;
@@ -242,20 +248,8 @@ namespace RailRoadVPN
                     else if (userDevice.IsActive == false)
                     {
                         logger.log("user device IS NOT active. DO SOMETHING!!!");
-                        //setProgressLabelText("Error code: 03. You device is not active");
 
-                        //DialogResult dialogResult = MessageBox.Show(Properties.strings.device_not_active_message, Properties.strings.device_not_active_header, MessageBoxButtons.YesNo);
-                        //if (dialogResult == DialogResult.Yes)
-                        //{
-                        //    logger.log("Dialog Yes");
-                        //    openHelpForm();
-                        //    return null;
-                        //}
-                        //else if (dialogResult == DialogResult.No)
-                        //{
-                        //    logger.log("Dialog No");
-                        //    return null;
-                        //}
+                        Properties.Settings.Default.is_user_device_active = false;
                     }
                 }
             }
@@ -264,9 +258,16 @@ namespace RailRoadVPN
                 logger.log("Exception when check user device: " + ex.Message);
                 setProgressLabelText("Error code: 02. Write to support..");
 
-                openHelpForm();
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
 
-                return null;
+                user_uuid = "";
+                device_token = "";
+                device_uuid = "";
+
+                MessageBox.Show("Your device was deactivated or deleted. If you did not do this - please contact us by email support@rroadvpn.net or by help form (we will open it after you close this window).", "Device problem", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                openHelpForm();
             }
 
             // check user
@@ -455,7 +456,6 @@ namespace RailRoadVPN
                 reportProgress = 85;
                 worker.ReportProgress(reportProgress);
                 logger.log("Loading MainForm");
-                //form = new MainForm();
                 form = FormManager.Current.CreateForm<MainForm>();
                 Thread.Sleep(500);
                 reportProgress = 90;
@@ -466,7 +466,6 @@ namespace RailRoadVPN
                 reportProgress = 85;
                 worker.ReportProgress(reportProgress);
                 logger.log("Loading InpuntPinForm");
-                //form = new InputPinForm();
                 form = FormManager.Current.CreateForm<InputPinForm>();
                 Thread.Sleep(500);
                 reportProgress = 90;

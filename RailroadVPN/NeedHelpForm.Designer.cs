@@ -109,6 +109,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NeedHelpForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "RRoadVPN - Help";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.NeedHelpForm_MouseDown);
             this.ResumeLayout(false);
             this.PerformLayout();

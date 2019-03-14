@@ -39,6 +39,10 @@ namespace RailRoadVPN
             this.descriptionTextBoxLabel.Text = Properties.strings.help_form_description_label;
             this.sendBtn.Text = Properties.strings.help_form_send_btn;
             this.cancelBtn.Text = Properties.strings.help_form_cancel_btn;
+
+            if (Properties.Settings.Default.user_email != "") {
+                this.emailTextBox.Text = Properties.Settings.Default.user_email;
+            }
         }
 
         private void NeedHelpForm_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

@@ -577,6 +577,7 @@ namespace RailRoadVPN
             parent_top = parent_top + ((this.Height - nhf.Height) / 2);
 
             nhf.Location = new Point(parent_left, parent_top);
+
             nhf.ShowDialog();
         }
 
@@ -661,6 +662,32 @@ namespace RailRoadVPN
                         return false;
                     }
                     
+                }
+            }
+            catch (UserDeviceNotFound ex)
+            {
+                logger.log("UserDeviceNotFound when check user device: " + ex.Message);
+
+                this.setVPNStatusText("You device was deleted");
+
+                if (showForm)
+                {
+                    DialogResult dialogResult = MessageBox.Show(Properties.strings.device_not_active_message, Properties.strings.device_not_active_header, MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        logger.log("Dialog Yes");
+                        openHelpForm();
+                        return false;
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        logger.log("Dialog No");
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -1144,6 +1171,11 @@ EXITING       -- A graceful exit is in progress.
 
             this.logger.log("update user device (logout)");
             try { this.updateUserDevice(IsActive: false, VirtualIp: this.VirtualIp, ModifyReason: "logout action"); } catch (Exception ex) { this.logger.log("Exception when update user device while logout: " + ex.Message); }
+
+            String device_uuid = Properties.Settings.Default.device_uuid;
+            String user_uuid = Properties.Settings.Default.user_uuid;
+            try { this.serviceAPI.deleteUserDevice(DeviceUuid: Guid.Parse(device_uuid), UserUuid: Guid.Parse(user_uuid)); } catch (Exception ex) { this.logger.log("Exception when delete user device while logout: " + ex.Message); }
+
 
             this.logger.log("clear properties");
             propertiesHelper.clearProperties();

@@ -150,7 +150,7 @@ namespace RailRoadVPN
             try {
                 this.logger.log("call get user by pincode");
                 user = this.serviceAPI.getUserByPincode(pincode);
-                this.logger.log("got user with email: " + user);
+                this.logger.log("got user with email: " + user.email);
             } catch (RailroadException e) {
                 this.logger.log("RailroadException when register new user: " + e.Message);
                 MessageBox.Show(Properties.strings.wrong_pin_error_message, Properties.strings.wrong_pin_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -184,6 +184,9 @@ namespace RailRoadVPN
                 MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
+            Properties.Settings.Default.user_uuid = user.uuid;
+            Properties.Settings.Default.user_email = user.email;
 
             return true;
         }

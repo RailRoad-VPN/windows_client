@@ -40,6 +40,14 @@ namespace RailRoadVPN
         }
     }
 
+    public class UserDeviceNotFound : RailroadException
+    {
+        public UserDeviceNotFound(string message) : base(message)
+        {
+
+        }
+    }
+
     public class OpenVPNNotConnectedException : RailroadException
     {
         public OpenVPNNotConnectedException(string message) : base(message)

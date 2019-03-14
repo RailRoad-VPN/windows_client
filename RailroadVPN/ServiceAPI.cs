@@ -25,7 +25,7 @@ namespace RailRoadVPN
         private const string UPDATE_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
         private const string GET_USER_DEVICE_URL = "/users/{user_uuid}/devices/{device_uuid}";
 
-        private const string GET_USER_RANDOM_SERVER_URL = "/users/{user_uuid}/servers?random";
+        private const string GET_USER_RANDOM_SERVER_URL = "/users/{user_uuid}/servers?random&type_id=1";
         private const string GET_SERVER_URL = "/users/{user_uuid}/servers/{server_uuid}";
 
         private const string GET_USER_SERVER_CONFIGURATIONS_URL = "/users/{user_uuid}/servers/{server_uuid}/configurations?platform_id=3&vpn_type_id=1";
@@ -350,7 +350,12 @@ namespace RailRoadVPN
             var response = this.client.Execute<UserDeviceAPIModel>(request);
             var statusCode = response.StatusCode;
             this.logger.log(System.String.Format("response status code: {0}", statusCode));
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (statusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                this.logger.log("status code is 404. this means user device was deleted");
+                throw new UserDeviceNotFound("user device not found");
+            }
+            else if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 this.logger.log("status code is NOT 200");
                 this.logger.log("status code is: " + statusCode);
