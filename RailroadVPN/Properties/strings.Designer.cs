@@ -304,7 +304,7 @@ namespace RailRoadVPN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button.
+        ///   Looks up a localized string similar to How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. You will see order page\r\n3. Complete order steps\r\n4. In profile page press GENERATE PIN-CODE.
         /// </summary>
         internal static string how_get_pin_text_label {
             get {

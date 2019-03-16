@@ -220,7 +220,7 @@
     <comment>VPN форма.</comment>
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
-    <value>How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. Your browser will open site\r\n3. Sign in or sign up\r\n4. Press GENERATE PIN-CODE button</value>
+    <value>How to get pincode?\r\n1. Press GET PIN-CODE link \r\n2. You will see order page\r\n3. Complete order steps\r\n4. In profile page press GENERATE PIN-CODE</value>
     <comment>Форма пин-кода.</comment>
   </data>
   <data name="main_form_tap_adapter_busy_header" xml:space="preserve">

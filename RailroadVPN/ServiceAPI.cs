@@ -32,7 +32,7 @@ namespace RailRoadVPN
         private const string CREATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections";
         private const string UPDATE_USER_SERVER_CONNECTION_URL = "/users/{user_uuid}/servers/{server_uuid}/connections/{connection_uuid}";
 
-        private const string CREATE_USER_TICKET_URL = "/users/{user_uuid}/tickets";
+        private const string CREATE_USER_TICKET_URL = "/tickets";
 
         private const string GET_APP_VERSION_URL = "/vpns/apps/windows/version";
 
@@ -151,7 +151,7 @@ namespace RailRoadVPN
 
         public void createUserDevice(Guid UserUuid, string DeviceId, string Location, bool IsActive)
         {
-            this.logger.log(System.String.Format("createUserDevice: UserUuid={0}, DeviceId={1}, Location={2}, IsActive={3}", 
+            this.logger.log(System.String.Format("createUserDevice: UserUuid={0}, DeviceId={1}, Location={2}, IsActive={3}",
                 UserUuid, DeviceId, Location, IsActive));
 
             int PlatformId = 3; // Windows hard-code
@@ -370,7 +370,7 @@ namespace RailRoadVPN
 
         public void updateUserDevice(Guid DeviceUuid, Guid UserUuid, string DeviceId, string Location, bool IsActive, string ModifyReason)
         {
-            this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, Location={3}, IsActive={4}, ModifyReason={5}", 
+            this.logger.log(System.String.Format("updateUserDevice: DeviceUuid={0}, UserUuid={1}, DeviceId={2}, Location={3}, IsActive={4}, ModifyReason={5}",
                 DeviceUuid, UserUuid, DeviceId, Location, IsActive, ModifyReason));
 
             this.logger.log("create request");
@@ -423,7 +423,7 @@ namespace RailRoadVPN
             request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
 
             request = this.prepareRequest(request);
-            
+
             var response = this.client.Execute(request);
             var statusCode = response.StatusCode;
             if (statusCode != System.Net.HttpStatusCode.OK)
@@ -540,21 +540,25 @@ namespace RailRoadVPN
             }
         }
 
-        public int createTicket(Guid UserUuid, string ContactEmail, string Description, string ExtraInfo, byte[] ZipFileBytesArr)
+        public int createTicket(String UserUuid, string ContactEmail, string Description, string ExtraInfo, byte[] ZipFileBytesArr)
         {
             this.logger.log(System.String.Format("createTicket: userUuid={0}, ContactEmail={1}, Description={2}, ExtraInfo={3}", UserUuid, ContactEmail, Description, ExtraInfo));
 
             this.logger.log("create request");
             var request = new RestRequest(CREATE_USER_TICKET_URL, Method.POST);
-            this.logger.log("add url segment user_uuid");
-            request.AddUrlSegment("user_uuid", UserUuid.ToString());
+
             this.logger.log("add request header X-Device-Token");
             request.AddHeader("X-Device-Token", Properties.Settings.Default.x_device_token);
 
             request = this.prepareRequest(request);
 
+            if (UserUuid == null || UserUuid == "")
+            {
+                UserUuid = null;
+            }
+
             this.logger.log("create UserTicket object");
-            UserTicket userDevice = new UserTicket()
+            UserTicket userTicket = new UserTicket()
             {
                 UserUuid = UserUuid,
                 ContactEmail = ContactEmail,
@@ -564,7 +568,7 @@ namespace RailRoadVPN
             };
             // when i serialize it to JSON, byte array become as base64 string, so in other side you have to decode base64 to get bytes
             this.logger.log("serialize UserTicket object to JSON");
-            var json = JsonConvert.SerializeObject(userDevice);
+            var json = JsonConvert.SerializeObject(userTicket);
 
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
 
@@ -577,54 +581,6 @@ namespace RailRoadVPN
                 this.logger.log("status code is NOT 201");
                 this.logger.log("status code is: " + statusCode);
                 throw new RailroadException("we cant create user ticket");
-            }
-            else
-            {
-                this.logger.log("status code is 201");
-
-                this.logger.log("split location to get ticket number");
-                string location = response.Headers.ToList().Find(x => x.Name == "Location").Value.ToString();
-                string[] locationSplitted = location.Split(new char[] { '/' });
-                int ticketNumber = Int32.Parse(locationSplitted[locationSplitted.Length - 1]);
-
-                return ticketNumber;
-            }
-        }
-
-        public int createAnonymousTicket(string ContactEmail, string Description, string ExtraInfo, byte[] ZipFileBytesArr)
-        {
-            this.logger.log(System.String.Format("createAnonymousTicket: ContactEmail={0}, Description={1}, ExtraInfo={2}", ContactEmail, Description, ExtraInfo));
-
-            this.logger.log("create request");
-            var request = new RestRequest(CREATE_USER_TICKET_URL, Method.POST);
-            this.logger.log("add url segment user_uuid");
-            request.AddUrlSegment("user_uuid", "anonymous");
-
-            request = this.prepareRequest(request);
-
-            this.logger.log("create UserTicket object");
-            UserTicket userDevice = new UserTicket()
-            {
-                ContactEmail = ContactEmail,
-                Description = Description,
-                ExtraInfo = ExtraInfo,
-                ZipFileBytesArr = ZipFileBytesArr
-            };
-
-            this.logger.log("serialize UserTicket object to JSON");
-            var json = JsonConvert.SerializeObject(userDevice);
-
-            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
-
-            this.logger.log("execute request");
-            var response = this.client.Execute(request);
-            var statusCode = response.StatusCode;
-            this.logger.log(System.String.Format("response status code: {0}", statusCode));
-            if (statusCode != System.Net.HttpStatusCode.Created)
-            {
-                this.logger.log("status code is NOT 201");
-                this.logger.log("status code is: " + statusCode);
-                throw new RailroadException("we cant create anonymous ticket");
             }
             else
             {

@@ -1302,5 +1302,10 @@ EXITING       -- A graceful exit is in progress.
                 label.Text = text;
             }
         }
+
+        private void menuMyProfileLabel_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://rroadvpn.net/profile");
+        }
     }
 }

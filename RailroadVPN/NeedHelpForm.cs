@@ -104,21 +104,27 @@ namespace RailRoadVPN
 
             byte[] zipBytesArr = null;
             this.logger.log("get log files");
-            List<FileInfo> logFiles = Utils.getLogFiles();
-
-            this.logger.log("create zip with all log files");
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                using (ZipStorer zip = ZipStorer.Create(ms, "RailRoadVPN"))
+                List<FileInfo> logFiles = Utils.getLogFiles();
+
+                this.logger.log("create zip with all log files");
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    zip.EncodeUTF8 = true;
-                    foreach (FileInfo logFile in logFiles)
+                    using (ZipStorer zip = ZipStorer.Create(ms, "RailRoadVPN"))
                     {
-                        zip.AddFile(ZipStorer.Compression.Deflate, logFile.FullName, logFile.Name, "");
+                        zip.EncodeUTF8 = true;
+                        foreach (FileInfo logFile in logFiles)
+                        {
+                            zip.AddFile(ZipStorer.Compression.Deflate, logFile.FullName, logFile.Name, "");
+                        }
                     }
+                    this.logger.log("memory stream to array");
+                    zipBytesArr = ms.ToArray();
                 }
-                this.logger.log("memory stream to array");
-                zipBytesArr = ms.ToArray();
+            } catch (Exception ex)
+            {
+                this.logger.log("Exception when get logs to create ticket");
             }
 
             this.logger.log("get extra system information");
@@ -129,46 +135,24 @@ namespace RailRoadVPN
 
             int ticketNumber;
 
-            Guid userUuid;
             this.logger.log("get user uuid");
             string userUuidStr = Properties.Settings.Default.user_uuid;
-            string deviceUuid = Properties.Settings.Default.device_uuid;
-            if (userUuidStr != "" && deviceUuid != "")
+
+            try
             {
-                this.logger.log("there is user uuid and device_uuid, try parse");
-                userUuid = Guid.Parse(userUuidStr);
-                try
-                {
-                    ticketNumber = this.serviceAPI.createTicket(UserUuid: userUuid, ContactEmail: email, Description: description, ExtraInfo: esiJson, ZipFileBytesArr: zipBytesArr);
-                } catch (Exception ex)
-                {
-                    this.logger.log("Exception when create ticket: " + ex.Message);
-                    MessageBox.Show(Properties.strings.unknown_system_error_message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.logger.log("enable controls");
-                    this.sendBtn.Enabled = true;
-                    this.cancelBtn.Enabled = true;
-                    return;
-                }
-                this.logger.log("got ticket number: " + ticketNumber);
-                MessageBox.Show(Properties.strings.help_form_thank_message + " " + ticketNumber, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } else
-            {
-                this.logger.log("there is NO user uuid, anonymous help form");
-                try
-                {
-                    ticketNumber = this.serviceAPI.createAnonymousTicket(ContactEmail: email, Description: description, ExtraInfo: esiJson, ZipFileBytesArr: zipBytesArr);
-                } catch (Exception ex)
-                {
-                    this.logger.log("Exception when create anonymous ticket: " + ex.Message);
-                    MessageBox.Show(Properties.strings.unknown_system_error_message, Properties.strings.unknown_system_error_header, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.logger.log("enable controls");
-                    this.sendBtn.Enabled = true;
-                    this.cancelBtn.Enabled = true;
-                    return;
-                }
-                this.logger.log("got ticket number: " + ticketNumber);
-                MessageBox.Show(Properties.strings.help_form_anonym_thank_message + " " + ticketNumber, ticketNumber.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ticketNumber = this.serviceAPI.createTicket(UserUuid: userUuidStr, ContactEmail: email, Description: description, ExtraInfo: esiJson, ZipFileBytesArr: zipBytesArr);
             }
+            catch (Exception ex)
+            {
+                this.logger.log("Exception when create ticket: " + ex.Message);
+                MessageBox.Show(Properties.strings.unknown_system_error_message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.logger.log("enable controls");
+                this.sendBtn.Enabled = true;
+                this.cancelBtn.Enabled = true;
+                return;
+            }
+            this.logger.log("got ticket number: " + ticketNumber);
+            MessageBox.Show(Properties.strings.help_form_thank_message + " " + ticketNumber, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.sendBtn.Enabled = true;
             this.cancelBtn.Enabled = true;

@@ -296,7 +296,7 @@ namespace RailRoadVPN
 
         private void getPinCodeLabelLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://rroadvpn.net/profile");
+            System.Diagnostics.Process.Start("https://rroadvpn.net/order");
         }
 
         private void pin_1_TextChanged(object sender, EventArgs e)

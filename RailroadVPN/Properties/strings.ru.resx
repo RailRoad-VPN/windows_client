@@ -133,7 +133,7 @@
     <value>Проблема с девайсом</value>
   </data>
   <data name="device_not_active_message" xml:space="preserve">
-    <value>Ваш девай не активен. Пройдите на сайтв личный кабинет https://rroadvpn.net/profile и сделайте девайс активным, после чего перезапустите приложение. Если это не поможет, напишите в техническую поддержку по email support@rroadvpn.net или через приложение. Открыть окно создания заявки в тех поддержку через приложение?ы</value>
+    <value>Ваш девай не активен. Пройдите на сайтв личный кабинет https://rroadvpn.net/profile и сделайте девайс активным, после чего перезапустите приложение. Если это не поможет, напишите в техническую поддержку по email support@rroadvpn.net или через приложение. Открыть окно создания заявки в тех поддержку через приложение?</value>
   </data>
   <data name="disconnect_vpn_first" xml:space="preserve">
     <value>Отключите от VPN</value>
@@ -201,7 +201,7 @@
     <value>красный</value>
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
-    <value>Как получить пинкод?\r\n1. Нажмите на ссылку GET PIN-CODE \r\n2. Ваш браузер откроет сайт\r\n3. Войдите в систему\r\n4. Нажмите кнопку GENERATE PIN-CODE</value>
+    <value>Как получить PIN-CODE?\n1. Нажмите на ссылку ПОЛУЧИТЬ PIN-CODE\n2. Откроется страница оформления подписки\n3. Оформите подписку\n4. В личном кабинете нажмите GENERATE PIN-CODE</value>
   </data>
   <data name="main_form_tap_adapter_busy_header" xml:space="preserve">
     <value>Не может подключиться к VPN</value>

@@ -17,10 +17,10 @@ namespace RailRoadVPN
     public class UserTicket
     {
         [JsonProperty("uuid")]
-        public Guid Uuid { get; set; }
+        public String Uuid { get; set; }
 
         [JsonProperty("user_uuid")]
-        public Guid UserUuid { get; set; }
+        public String UserUuid { get; set; }
 
         [JsonProperty("number")]
         public int Number { get; set; }

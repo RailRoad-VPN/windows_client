@@ -121,7 +121,7 @@ namespace RailRoadVPN
             this.menuNavPanel.Controls.Add(this.enLangBtn);
             this.menuNavPanel.Location = new System.Drawing.Point(0, 0);
             this.menuNavPanel.Name = "menuNavPanel";
-            this.menuNavPanel.Size = new System.Drawing.Size(0, 600);
+            this.menuNavPanel.Size = new System.Drawing.Size(150, 600);
             this.menuNavPanel.TabIndex = 12;
             // 
             // panel4
@@ -208,6 +208,7 @@ namespace RailRoadVPN
             this.menuMyProfileLabel.Size = new System.Drawing.Size(71, 13);
             this.menuMyProfileLabel.TabIndex = 16;
             this.menuMyProfileLabel.Text = "MY PROFILE";
+            this.menuMyProfileLabel.Click += new System.EventHandler(this.menuMyProfileLabel_Click);
             this.menuMyProfileLabel.MouseLeave += new System.EventHandler(this.menuMyProfileLabel_MouseLeave);
             this.menuMyProfileLabel.MouseHover += new System.EventHandler(this.menuMyProfileLabel_MouseHover);
             // 
