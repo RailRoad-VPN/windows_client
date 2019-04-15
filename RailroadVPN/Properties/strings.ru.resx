@@ -201,7 +201,7 @@
     <value>красный</value>
   </data>
   <data name="how_get_pin_text_label" xml:space="preserve">
-    <value>Как получить PIN-CODE?\n1. Нажмите на ссылку ПОЛУЧИТЬ PIN-CODE\n2. Откроется страница оформления подписки\n3. Оформите подписку\n4. В личном кабинете нажмите GENERATE PIN-CODE</value>
+    <value>Как получить PIN-CODE?\r\n1. Нажмите на ссылку ПОЛУЧИТЬ PIN-CODE\r\n2. Откроется страница оформления подписки\r\n3. Оформите подписку\r\n4. В личном кабинете нажмите GENERATE PIN-CODE</value>
   </data>
   <data name="main_form_tap_adapter_busy_header" xml:space="preserve">
     <value>Не может подключиться к VPN</value>
